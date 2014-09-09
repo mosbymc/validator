@@ -13,7 +13,7 @@ validator
 JavaScript validator
 
 
-validator.js is a validation tool that can be used to validate input elements, both as part of a form, or as a single input. Because the validator runs on data attributes and classes, no programming is required for basic usage. validator.js  also supports custom validation rules and successful validation function via callbacks, as well as many other options and features.
+validator.js is a JQuery dependent validation tool that can be used to validate input elements, both as part of a form, or as a single input. Because the validator runs on data attributes and classes, no programming is required for basic usage. validator.js  also supports custom validation rules and successful validation function via callbacks, as well as many other options and features.
 When an input fails validation, an error message is displayed to alert the user to the problem. Standard error message divs are displayed as a fixed position element so it will not affect the layout of the dom when placed. 
 Initialization:
 To initialize the validator all that is required is to call the init function: validator().init(). Ideally this is done in your parent view after the document first loads. Because the validator listens to the input and click events at the document level, it does not need to be initialized again until the user switches web pages. Switching partial views does not require re-initialization.
