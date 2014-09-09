@@ -1,3 +1,10 @@
+While validator.js is mostly functional at the moment, there is still some clean up that needs to be done. I also need to add some comments in some places and remove some from others.
+
+Also, until I have the time to write a proper readme or figure out how to upload a .docx file, the wiki for this repo contains the same info, but in a slightly nicer format.
+
+The CSS file in this repo is the one I've been using to test the validator in my mock up website. It does contain all the necessary classes, but they have additional styling being used on them.
+
+
 validator
 =========
 
