@@ -1,0 +1,193 @@
+#showErrors {
+	background-color: #ffd;
+	padding-left: 30px;
+	padding-bottom: 10px;
+	margin-left: auto;"
+	width: 80%;
+	color: #A41919;
+	border: 2px solid #A41919;
+}
+
+#fieldValidate1 {
+	float: left;
+	display: inline-block;
+}
+
+#fieldValidate2 {
+	float: center;
+	display: inline-block;
+}
+
+#fieldValidate3 {
+	float: right;
+	display: inline-block;
+}
+
+#fieldValidate4 {
+	float: left;
+	display: inline-block;
+}
+
+#fieldValidate5 {
+	float: center;
+	display: inline-block;
+}
+
+/*Put on inputs when grouping errors at input level*/
+.alignInput {
+	vertical-align: top;
+}
+
+/*Put on the header of the form grouped errors container - will likely remove*/
+.errorMsg {
+	color: rgb(163, 25, 25);
+}
+
+/*Put on the basic fixed div error message container*/
+.errorMessage {
+    background-color: #FFF;
+    user-select: none;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+  	-moz-user-select: none;     /* Firefox all */
+  	-ms-user-select: none; 
+    border: 1px solid red;
+    border-radius: 5px;
+    font: normal 11px 'Lucida Grande', Verdana, sans-serif;
+    text-align: center;
+    width: auto;
+    position: fixed;
+}
+
+/*Generic classes used on all fixed error containers - currently: helpText and basic error divs*/
+.hideMessage {
+	visibility: hidden;
+	display: none;
+}
+
+.showMessage {
+	visibility: visible;
+	display: block;
+	position: fixed;
+}
+
+/*Used on the form error group container. Should be placed by developer - removed when there are validation errors*/
+.hideGroupedErrors {
+	visibility: hidden;
+	display: none;
+}
+
+/*Put on the form error group container - primarily used for showing the div*/
+.showGroupedErrors {
+	visibility: visible;
+	display: block;
+}
+
+/*Class for highlighting the errors that apply to a given input for grouped form errors*/
+.groupHighlight {
+	font: bold 13px 'Lucida Grande', Verdana, sans-serif;
+	color: #EE4040;
+}
+
+/*Put on the div surrounding the grouped errors at the input level*/
+.inputGroup {
+	display: inline-block;
+	width: 200px;
+	margin-left: 5px;
+	border: 1px solid red;
+	border-radius: 5px;
+	text-align: center;
+	font: normal 11px 'Lucida Grande', Verdana, sans-serif;
+}
+
+/*Put on the spans containing the error text for input level error message grouping*/
+.inputGrpErrorSpan {
+
+}
+
+/*Put on the inputs that fail validation*/
+.invalid {
+	border: 2px inset red;
+}
+
+/*Used for help text spans - this class is not added or removed; it is placed by developer*/
+.helptext {
+	background-color: #ffd;
+	color: #A41919;
+	padding: 5px;
+	border: 2px inset #A41919;
+	border-radius: 5px;
+	font: normal 11px 'Lucida Grande', Verdana, sans-serif;
+	max-width: 250px;
+}
+
+body {
+	width: 2000px;
+}
+
+fieldset dl {
+	padding-bottom:15px;
+}
+
+fieldset dt {
+	float:left;
+	width:150px;
+	padding:5px;
+}
+
+fieldset dd {
+	width:550px;
+	margin:0;
+	padding:5px;
+}
+
+form {
+	margin:0;
+	padding:0;
+}
+
+fieldset {
+	width: 606px;
+	margin:0 5px 10px 4px;
+	padding:5px;
+	border:1px solid #333333;
+	font: normal 12px 'Lucida Grande', Verdana, sans-serif;
+}
+
+fieldset p {
+	color: #FF5555;
+	padding: 5px;
+	border:1px solid #666666;
+	font-color: #FF0000;
+}
+
+legend {
+	margin: 0;
+	padding: 5px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #FFFFFF #AAAAAA #666666 #FFFFFF;
+	font-weight: bold;
+}
+
+label {
+}
+
+.hightlight {
+	background-color: #FF5555;
+	text-decoration: underlined;
+}
+
+fieldset .button {
+	background-color:#777777;
+	color:#FFFFFF;
+	height:30px;
+	width:80px;
+	border: 3px double #333333;
+}
+
+.button {
+	background-color:#777777;
+	color:#FFFFFF;
+	height:30px;
+	width:80px;
+}

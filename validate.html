@@ -1,0 +1,439 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
+		<link rel="stylesheet" href="form.css" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<!--<script src="jquery-1.11.1.js"></script> -->
+ 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+ 		<!--<script src="jquery-ui.min.js"></script>-->
+		<script LANGUAGE="javascript" SRC="validator.js"></script>
+		<script type="text/javascript">
+		function things() {
+			$("#modal").dialog({
+		        autoOpen: false,
+		        modal: true,
+		        width: 800,
+		        height: 500,
+		        resizable: false,
+		        draggable: false,
+		        position: {
+		            my: "center",
+		            at: "center top+300",
+		            of: window,
+		            collision: "none"
+		        },
+		        open: function (event, ui) {
+		            $(".ui-dialog-titlebar").hide();
+		            //$(".ui-dialog-titlebar").css("visibility", "hidden");
+
+		            var html = '<div id="modalValidate" class="formValidate" data-formaction="sumbitAndClose" data-modalid="modal">' + 
+								'<h2>Group Validated</h2><label for="fName">Name: </label><input type="text" id="modalfName" data-requiredfield data-type="name"/>' +
+								'<br/><label for="homeNum">Home Phone: </label><input type="text" id="modalhomeNum" data-requiredfield data-type="phone"/>' +
+								'<br/><label for="cellNum">Cell Phone: </label><input type="text" id="modalcellNum" data-type="phone"/>' +
+								'<br><label for="zip">Zip: </label><input type="text" id="modalzip" data-requiredfield data-type="zip" />' +
+								'<br/><label for="email">Email: </label><input type="text" id="modalemail" data-requiredfield data-type="email,custom"/>' +
+								'<br/><label for="selector">Select something: </label><select id="modalchoose" data-requiredfield>' +
+								'<option value="0">Select</option><option value="1">Good Choice</option><option value="2">Acceptable Choice</option><option value="3">Bad Choice</option></select>' +
+								'<br/><input type="submit" id="modalSubmit" style="width:800px;" value="Submit" data-form="modalValidate"/></div>';
+					$("#modal").append(html);
+		        }
+		    });
+
+		    validator().init(["change"]);
+		}
+
+		function openModal() {
+		    $("#modal").dialog("open");
+		}
+
+		function closeModal() {
+			$("#modalValidate").remove();
+			validator().removeErrors("modal");
+		    $("#modal").dialog("close");
+		}
+
+		function submitThisForm() {
+			alert('Submitting the form.');
+		}
+
+		function validInput() {
+			alert('You input is valid!');
+		}
+
+		function sumbitAndClose() {
+			alert('Submitting the form.');
+			closeModal();
+		}
+
+		function showElement() {
+			$("#text").css("visibility", "visible");
+		}
+
+		function customRule(obj, vState, callback) {
+			if (obj.val().length > 1 || obj.val() === 0) {
+		        callback({ valid: false, message: "Failed custom rule.", width: 150 }, vState);
+		    }
+		    else {
+		    	callback({ valid: true }, vState);
+		    }
+		}
+		
+		function custom(obj, vState, callback) {
+		    setTimeout(function() {
+		    	if (obj.val().length > 1 || obj.val() === 0) {
+			        callback({ valid: false, message: "Failed custom rule.", width: 150 }, vState);
+			    }
+			    else {
+			    	callback({ valid: true }, vState);
+			    }},2000);
+		}
+
+		function testFirst(form, options, callback) {
+			setTimeout(function() {
+				alert("Call before validating");
+				callback(true, form, options);
+			},2000);
+		}
+
+		function notMark(obj, vState, callback) {
+			setTimeout(function() {
+				if (obj.val() !== "Mark")
+					callback({ valid: false, message: "You're not Mark!", width: 200 }, vState);
+				else {
+					callback({ valid: true }, vState);
+				}}, 3000);
+		}
+
+		function get_XmlHttp() {
+		  // create the variable that will contain the instance of the XMLHttpRequest object (initially with null value)
+		  var xmlHttp = null;
+
+		  if(window.XMLHttpRequest) {		// for Forefox, IE7+, Opera, Safari, ...
+		    xmlHttp = new XMLHttpRequest();
+		  }
+		  else if(window.ActiveXObject) {	// for Internet Explorer 5 or 6
+		    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+		  }
+
+		  return xmlHttp;
+		}
+
+		// sends data to a php file, via POST, and displays the received answer
+		function ajaxrequest(obj, vState, callback) {
+		  var request =  get_XmlHttp();		// call the function for the XMLHttpRequest instance
+
+		  request.open("POST", testAjax.php, true);			// set the request
+
+		  // adds  a header to tell the PHP script to recognize the data as is sent via POST
+		  request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		  request.send(the_data);		// calls the send() method with datas as parameter
+
+		  // Check request status
+		  // If the response is received completely, will be transferred to the HTML tag with tagID
+		  request.onreadystatechange = function() {
+		    if (request.readyState == 4) {
+		    	if (request.responseText === "false") {
+		    		callback({valid: false, message: "Ajax is working"}, vState);
+		    	}
+		    	else {
+					callback({valid: true}, vState);
+		    	}
+		    }
+		}
+	}
+
+	function preventPaste(e){
+	   e.preventDefault();
+	   return false;
+	}
+
+	function testHook() {
+		validator().validationHook("fieldValidate4");
+	}
+
+	$(document).on("validated", function(e, eventData) {
+		if (eventData.element === "fieldValidate3") {
+			alert(eventData.element + " finished validation." + 
+				"\nPassed: " + eventData.passed + 
+				"\nNumber of failed inputs: " + eventData.count +
+				"\nTime: " + eventData.time);
+			validator().validationHook("fieldValidate5");
+		}
+	});
+
+		</script>
+	</head>
+	<body onload="things()" style="height:1500px;">
+		<div>
+			<h2>Validation by field</h2>
+			<span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
+			<label for="name">Name: </label><input type="text" id="name" data-type="name" data-inputaction="showElement" data-validateon="input" class="inputValidate"/>
+			<br/>
+			<input type="textarea" id="text"/>
+			<br>
+			<label for="numbers">Number: </label><input type="text" id="numbers"/>
+			<br/>
+			<label for="selector">Select something: </label><select id="selector">
+				<option value="1">Good Choice</option>
+				<option value="2">Acceptable Choice</option>
+				<option value="3">Bad Choice</option>
+			</select>
+			<br/>
+			<input type="submit" id="submit" value="Submit"/>
+			<br/>
+			<br/>
+			<input type="button" id="openModal" value="Modal" onclick="openModal()"/>
+			<div id="modal" style="height: 500px;">
+				<div>
+					<br/><br/>
+					<label for="modal">Modal Test: </label>
+					<br/><br/>
+					<input type="button" id="closeModal" value="Close" onclick="closeModal()"/>
+					<br/><br/>
+					<span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
+					<input type="text" id="modalInput" data-validateon="input" data-type="name" data-inputaction="submitThisForm" data-modalid="modal" class="inputValidate hover"/>
+					<BR><BR><BR><BR><BR><BR><BR><BR><BR>
+				</div>
+			</div>
+			<br>
+			<div style="width:800px; margin-left:auto; margin-right:auto;">
+				<span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
+				<label for="top">Top: </label><input type="text" id="top" data-location="top" data-offsetwidth="100" data-offsetheight="50" data-type="phone" data-validateon="change" class="inputValidate"/>
+				<br/><br/>
+				<input type="text" id="left" data-location="right" data-requiredfield data-customrules="custom,notMark" data-validateon="input" class="inputValidate"/><label for="left">Left: </label>
+				<br/><br/>
+				<label for="right">Right: </label><input type="text" id="right" data-offsetwidth="100" data-offsetheight="50" data-type="name,phone" class="inputValidate"/>
+				<br/><br/>
+				<label for="bottom">Bottom: </label><input type="text" id="bottom" data-location="bottom" data-inputaction="validInput" data-offsetwidth="-100" data-offsetheight="50" data-type="phone" data-validateon="input" class="inputValidate"/>
+			</div>
+		</div>
+		<br><br><br>
+		<input type="submit" id="hookSbumit" value="Hook Tester" onclick="testHook()"/>
+		<br><br>
+		<div id="groupValidate" class="formValidate hover" data-formaction='submitThisForm'>
+			<h2>Group Validated</h2>
+			<label for="fName">Name: </label><input type="text" id="Name" data-requiredfield data-type='name' data-displayon=".displaytest,down"/>
+			<br/>
+			<label for="displayTest">Display Name Error Here: </label><input type="text" id="displayTest" class="displaytest"/>
+			</br>
+			<label for="homeNum">Home Phone: </label><input type="text" id="homeNum" data-requiredfield data-type='phone,email' data-offsetwidth="200"/>
+			<br/>
+			<label for="displayTests">Display Cell Error Here: </label><input type="text" id="displayTest2" class="displaytest"/>
+			</br>
+			<label for="cellNum">Cell Phone: </label><input type="text" id="cellNum" data-type="phone" data-displayon=".displaytest,up"/>
+			<br>
+			<label for="zip">Zip: </label><input type="text" id="zip" data-requiredfield data-type='zip' />
+			<br/>
+			<label for="email">Email: </label><input type="text" id="email" data-requiredfield data-type='email,custom'/>
+			<br/>
+			<label for="selector">Select something: </label><select id="choose" data-requiredfield>
+				<option value="0">Select</option>
+				<option value="1">Good Choice</option>
+				<option value="2">Acceptable Choice</option>
+				<option value="3">Bad Choice</option>
+			</select>
+			</br>
+			<label for="password">Password: </label><input type="text" id="password" data-requiredfield data-type="password" class="inputValidate hover" data-validateon="input"/>
+			</br>
+			<label for="date">Date: </label><input type="text" id="date" data-requiredfield data-type=",date"/>
+			</br>
+			<label for="website">Website: </label><input type="text" id="website" data-requiredfield data-type="url"/>
+			</br>
+			<input type="submit" id="groupSubmit" value="Submit" data-form="groupValidate"/>
+		</div>
+
+		<fieldset id="fieldValidate1" class="formValidate" data-formaction="submitThisForm">
+	    	<legend>Group Validation</legend>
+	      	<dl align='left'>
+	      		<dt><label for='fv1fName'>First Name: </label></dt>
+				<dd><input type='text' id='fv1fName' title="First Name" size='20' data-requiredfield data-type="phone" data-customrules="notMark,custom"/></dd>
+				<dt><label for='fv1lName'>Last Name: </label></dt>
+				<dd><input type='text' id='fv1lName' size='20' title="Last Name" data-requiredfield data-type="name" data-customrules="notMark" data-displayon="#fv1displayTest4,down"/></dd>
+				<dt><label for="fv1displayTest4">Last Name Error Here: </label></dt>
+				<dd><input type="text" id="fv1displayTest4" class="displaytest"/></dd>
+				<dt><label for="fv1homephone">Home Phone: </label></dt>
+				<dd><input type="text" id="fv1homephone" title="Home Phone" data-requiredfield data-type="phone"/></dd>
+				<dt><label for="fv1displayTest3">Cell Error Here: </label></dt>
+				<dd><input type="text" id="fv1displayTest3" class="displaytest"/></dd>
+				<dt><label for="fv1cellNum2">Cell Phone: </label></dt>
+				<dd><input type="text" id="fv1cellNum2" title="Cell Phone" data-type="phone" data-displayon=".displaytest,up"/></dd>
+
+				<dt><label for="fv1zip">Zip: </label></dt>
+				<dd><input type="text" id="fv1zip1" title="Zip Code" data-requiredfield data-type='zip' /></dd>
+				<dt><label for="fv1email">Email: </label></dt>
+				<dd><input type="text" id="fv1email1" title="Email" data-requiredfield data-type='email'/></dd>
+				<dt><label for="fv1selector">Select something: </label></dt>
+				<dd><select id="fv1choose1" title="Selector" data-requiredfield style="width:155px;">
+					<option value="0">Select</option>
+					<option value="1">Good Choice</option>
+					<option value="2">Acceptable Choice</option>
+					<option value="3">Bad Choice</option>
+				</select></dd>
+
+				<dt><label for="fv1password">Password: </label></dt>
+				<dd><span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
+					<input type="text" id="fv1password1" title="Password" data-requiredfield data-type="password" data-validateon="input"/></dd>
+				<dt><label for="fv1date">Date: </label></dt>
+				<dd><input type="text" id="fv1date1" title="Date" data-requiredfield data-type="date"/></dd>
+				<dt><label for="fv1website">Website: </label></dt>
+				<dd><input type="text" id="fv1website1" title="Website" data-requiredfield data-type="url"/></dd>
+				<dt><input type="submit" id="fv1groupSubmit" value="Submit" data-form="fieldValidate1"/></dt>
+			</dl>
+		</fieldset>
+
+		<fieldset id="fieldValidate2" class="formValidate hover inputValidate" data-formaction="submitThisForm" data-beforevalidate="testFirst" data-excludeinputs="fv2password1">
+	    	<legend>Group Validation</legend>
+	      	<dl align='left'>
+	      		<dt><label for='fv2fName'>First Name: </label></dt>
+				<dd><input type='text' id='fv2fName' title="First Name" size='20' data-requiredfield data-type="name"/></dd>
+				<dt><label for='fv2lName'>Last Name: </label></dt>
+				<dd><input type='text' id='fv2lName' size='20' data-errorprefix-"Last Name" title="Last Name" data-requiredfield data-type="name" data-displayon=".displaytest,down"/></dd>
+				<dt><label for="fv2displayTest4">Last Name Error Here: </label></dt>
+				<dd><input type="text" id="fv2displayTest4" class="displaytest"/></dd>
+				<dt><label for="fv2homephone">Home Phone: </label></dt>
+				<dd><input type="text" id="fv2homephone" title="Home Phone" data-requiredfield data-type="phone"/></dd>
+				<dt><label for="fv2displayTest3">Cell Error Here: </label></dt>
+				<dd><input type="text" id="fv2displayTest3" class="displaytest"/></dd>
+				<dt><label for="fv2cellNum2">Cell Phone: </label></dt>
+				<dd><input type="text" id="fv2cellNum2" title="Cell Phone" data-type="phone" data-displayon=".displaytest,up"/></dd>
+
+				<dt><label for="fv2zip">Zip: </label></dt>
+				<dd><input type="text" id="fv2zip1" title="Zip Code" data-requiredfield data-type='zip' /></dd>
+				<dt><label for="fv2email">Email: </label></dt>
+				<dd><input type="text" id="fv2email1" title="Email" data-requiredfield data-type='email,phone'/></dd>
+				<dt><label for="fv2selector">Select something: </label></dt>
+				<dd><select id="fv2choose1" title="Selector" data-requiredfield style="width:155px;">
+					<option value="0">Select</option>
+					<option value="1">Good Choice</option>
+					<option value="2">Acceptable Choice</option>
+					<option value="3">Bad Choice</option>
+				</select></dd>
+
+				<dt><label for="fv2password">Password: </label></dt>
+				<dd><span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
+					<input type="text" id="fv2password1" title="Password" data-requiredfield data-type="password" data-validateon="input"/></dd>
+				<dt><label for="fv2date">Date: </label></dt>
+				<dd><input type="text" id="fv2date1" title="Date" data-requiredfield data-type="date"/></dd>
+				<dt><label for="fv2website">Website: </label></dt>
+				<dd><input type="text" id="fv2website1" title="Website" data-requiredfield data-type="url"/></dd>
+				<dt><input type="submit" id="fv2groupSubmit" value="Submit" data-form="fieldValidate2"/></dt>
+			</dl>
+		</fieldset>
+
+		<fieldset id="fieldValidate3" class="formValidate highlightErrors" data-formaction="submitThisForm" data-grouperrors="showErrors">
+	    	<legend>Group Validation</legend>
+	    	<div id="showErrors" class="hideGroupedErrors">
+	    		<h3 class='errorMsg'>There was a problem with your request.</h3>
+	    	</div>
+	      	<dl align='left'>
+	      		<dt><label for='fv3fName'>First Name: </label></dt>
+				<dd><input type='text' id='fv3fName' data-errorprefix="First Name" size='20' data-requiredfield data-type="phone" data-customrules="notMark,custom"/></dd>
+				<dt><label for='fv3lName'>Last Name: </label></dt>
+				<dd><input type='text' id='fv3lName' size='20' data-errorprefix="Last Name" data-requiredfield data-type="name" data-displayon=".displaytest,down"/></dd>
+				<dt><label for="fv3displayTest4">Last Name Error Here: </label></dt>
+				<dd><input type="text" id="fv3displayTest4" class="displaytest"/></dd>
+				<dt><label for="fv3homephone">Home Phone: </label></dt>
+				<dd><input type="text" id="fv3homephone" data-errorprefix="Home Phone" data-requiredfield data-type="phone"/></dd>
+				<dt><label for="fv3displayTest3">Cell Error Here: </label></dt>
+				<dd><input type="text" id="fv3displayTest3" class="displaytest"/></dd>
+				<dt><label for="fv3cellNum2">Cell Phone: </label></dt>
+				<dd><input type="text" id="fv3cellNum2" data-errorprefix="Cell Phone" data-type="phone" data-displayon=".displaytest,up"/></dd>
+
+				<dt><label for="fv3zip">Zip: </label></dt>
+				<dd><input type="text" id="fv3zip1" data-errorprefix="Zip Code" data-requiredfield data-type='zip' /></dd>
+				<dt><label for="fv3email">Email: </label></dt>
+				<dd><input type="text" id="fv3email1" data-errorprefix="Email" data-requiredfield data-type='email'/></dd>
+				<dt><label for="fv3selector">Select something: </label></dt>
+				<dd><select id="fv3choose1" data-errorprefix="Selector" data-requiredfield style="width:155px;">
+					<option value="0">Select</option>
+					<option value="1">Good Choice</option>
+					<option value="2">Acceptable Choice</option>
+					<option value="3">Bad Choice</option>
+				</select></dd>
+
+				<dt><label for="fv3password">Password: </label></dt>
+				<dd><span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
+					<input type="text" id="fv3password1" data-errorprefix="Password" data-location="bottom" data-location="left" data-requiredfield data-type="password" class="inputValidate" data-validateon="input"/></dd>
+				<dt><label for="fv3date">Date: </label></dt>
+				<dd><input type="text" id="fv3date1" data-errorprefix="Date" data-requiredfield data-type="date"/></dd>
+				<dt><label for="fv3website">Website: </label></dt>
+				<dd><input type="text" id="fv3website1" data-errorprefix="Website" data-requiredfield data-type="url"/></dd>
+				<dt><input type="submit" id="fv3groupSubmit" value="Submit" data-form="fieldValidate3"/></dt>
+			</dl>
+		</fieldset>
+
+		<fieldset id="fieldValidate4" class="formValidate groupByInput" data-formaction="submitThisForm" data-excludeinputs="fv4password">
+	    	<legend>Group Validation</legend>
+	      	<dl align='left'>
+	      		<dt><label for='fv4fName'>First Name: </label></dt>
+				<dd><input type='text' id='fv4fName' data-errorprefix="First Name" size='20' data-requiredfield data-type="phone" data-customrules="custom,notMark"/></dd>
+				<dt><label for='fv4lName'>Last Name: </label></dt>
+				<dd><input type='text' id='fv4lName' size='20' data-errorprefix="Last Name" data-requiredfield data-type="name"  data-displayon=".displaytest,down"/></dd>
+				<dt><label for="fv3displayTest4">Last Name Error Here: </label></dt>
+				<dd><input type="text" id="fv3displayTest4" class="displaytest"/></dd>
+				<dt><label for="fv4homephone">Home Phone: </label></dt>
+				<dd><input type="text" id="fv4homephone" data-errorprefix="Home Phone" data-requiredfield data-type="phone"/></dd>
+				<dt><label for="fv4cellNum2">Alpha-Numeric: </label></dt>
+				<dd><input type="text" id="fv4cellNum2" data-errorprefix="Cell Phone" data-requiredfield data-type="phone" class="restrictInput" data-inputType="alphaNumeric"/></dd>
+
+				<dt><label for="fv4zip">Non-Numeric: </label></dt>
+				<dd><input type="text" id="fv4zip1" data-errorprefix="Zip Code" data-requiredfield data-type='zip' class="restrictInput" data-inputType="nonNumeric"/></dd>
+				<dt><label for="fv4email">Numeric: </label></dt>
+				<dd><input type="text" id="fv4email" data-errorprefix="Email" data-requiredfield data-type='email' class="restrictInput" data-inputType="numeric"/></dd>
+				<dt><label for="fv4selector">Select something: </label></dt>
+				<dd><select id="fv4choose1" data-errorprefix="Selector" data-requiredfield style="width:155px;">
+					<option value="0">Select</option>
+					<option value="1">Good Choice</option>
+					<option value="2">Acceptable Choice</option>
+					<option value="3">Bad Choice</option>
+				</select></dd>
+
+				<dt><label for="fv4password">Password: </label></dt>
+				<dd><span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
+					<input type="text" id="fv4password" data-errorprefix="Password" data-requiredfield data-type="password" class="inputValidate" data-validateon="input"/></dd>
+				<dt><label for="fv4date">Date: </label></dt>
+				<dd><input type="text" id="fv4date" data-errorprefix="Date" data-requiredfield data-type="date"/></dd>
+				<dt><label for="fv4website">Website: </label></dt>
+				<dd><input type="text" id="fv4website" data-errorprefix="Website" data-requiredfield data-type="url"/></dd>
+				<dt><input type="submit" id="fv4groupSubmit" value="Submit" data-form="fieldValidate4"/></dt>
+			</dl>
+		</fieldset>
+
+		<fieldset id="fieldValidate5" class="formValidate inputValidate" data-formaction="submitThisForm" data-excludeinputs="fv5password,fv5lName,fv5homephone,fv5date,fv5website">
+	    	<legend>Group Validation</legend>
+	      	<dl align='left'>
+	      		<dt><label for='fv5fName'>First Name: </label></dt>
+				<dd><input type='text' id='fv5fName' class="groupByInput" data-errorprefix="First Name" size='20' data-requiredfield data-type="phone" data-location="left" data-customrules="custom,notMark"/></dd>
+				<dt><label for='fv5lName'>Last Name: </label></dt>
+				<dd><input type='text' id='fv5lName' size='20' data-errorprefix="Last Name" data-requiredfield data-type="name"  data-displayon=".displaytest,down"/></dd>
+				<dt><label for="fv5displayTest">Last Name Error Here: </label></dt>
+				<dd><input type="text" id="fv5displayTest" class="displaytest"/></dd>
+				<dt><label for="fv5homephone">Home Phone: </label></dt>
+				<dd><input type="text" id="fv5homephone" data-errorprefix="Home Phone" data-requiredfield data-type="phone"/></dd>
+				<dt><label for="fv5cellNum2">Alpha-Numeric: </label></dt>
+				<dd><input type="text" id="fv5cellNum2" data-errorprefix="Cell Phone" data-type="phone" class="restrictInput" data-inputType="alphaNumeric"/></dd>
+
+				<dt><label for="fv5zip">Non-Numeric: </label></dt>
+				<dd><input type="text" id="fv5zip" data-errorprefix="Zip Code" data-requiredfield data-type='zip' class="restrictInput" data-inputType="nonNumeric"/></dd>
+				<dt><label for="fv5email">Numeric: </label></dt>
+				<dd><input type="text" id="fv5email" data-errorprefix="Email" onpaste="preventPaste(event)" data-requiredfield data-type='email' class="restrictInput" data-inputType="numeric,alphaNumeric,printable"/></dd>
+				<dt><label for="fv5selector">Select something: </label></dt>
+				<dd><select id="fv5choose1" data-errorprefix="Selector" data-requiredfield style="width:155px;">
+					<option value="0">Select</option>
+					<option value="1">Good Choice</option>
+					<option value="2">Acceptable Choice</option>
+					<option value="3">Bad Choice</option>
+				</select></dd>
+
+				<dt><label for="fv5password">Password: </label></dt>
+				<dd><span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
+					<input type="text" id="fv5password" data-errorprefix="Password" data-requiredfield data-type="password" class="inputValidate" data-validateon="input"/></dd>
+				<dt><label for="fv5date">Date: </label></dt>
+				<dd><input type="text" id="fv5date" data-errorprefix="Date" data-requiredfield data-type="date"/></dd>
+				<dt><label for="fv5website">Website: </label></dt>
+				<dd><input type="text" id="fv5website" data-errorprefix="Website" data-requiredfield data-type="url"/></dd>
+				<dt><input type="submit" id="fv5groupSubmit" value="Submit" data-form="fieldValidate5"/></dt>
+			</dl>
+		</fieldset>
+	</body>
+</html>
