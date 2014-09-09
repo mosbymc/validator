@@ -1,65 +1,32 @@
 /*
+
+The MIT License (MIT) 
+Copyright © 2014 <copyright holders>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this 
+software and associated documentation files (the “Software”), to deal in the Software 
+without restriction, including without limitation the rights to use, copy, modify, merge, 
+publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons 
+to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or 
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
     validator.js
 
 =========================================================================================================
-                                VERSION 2.0
 
-    TODO: Remove error boxes when scrolled outside of modal - DONE
-          Add ability to show error box on a different element - DONE
-          Objectize the functionality - DONE
-          Make input border be inset - DONE
-          Expand search for different element display - DONE
-          Make offsetHeight work - DONE
-          Group functionality in dom traversal code - DONE
-          Add user defined offset for error displays - DONE
-          Add data types for validation rules sets - DONE
-          Add "callBefore" functonality - DONE
-          Encapsulate the library of validation rules - DONE
-          Add ability to show error messages inside a new "all errors" div - DONE
-
-=========================================================================================================
-                                VERSION 2.0.1
-
-    TODO: Add asynchronous custom rule support - DONE
-          Add asynchronous call support before validation - DONE
-          Add focus pop-up help text via spans - DONE
-          Add asynchronous support for single input validation - DONE
-          Disable sumbit button until validator is through - DONE
-          Add offsetWidth and offsetHeight explicitly - DONE
-          Add Try/Catch blocks where necessary - DONE
-          Check to see if error div exists before creating a new one - DONE
-          Highlight error span in grouped error on input focus - DONE
-          Stop kendo's grid from adjusting the dom when inserting error div as sibling - DONE
-          Try using visibility instead of display to hide/show elements - DONE
-          Add indexing for form-level grouped errors - DONE
-          Add data attr to error message divs like the spans - DONE
-          Create event to notify when validation is finished - DONE
-          Add input types to restrict character input - DONE
-          Add GroupBy option to group errors by input - DONE
-          Add public function to support event-based validation - DONE
-          Hook input message groups into display other functionality - DONE
-          Separate form/input "validate" classes - DONE
-          Re-enable submit button in catch blocks where necessary - DONE
-          Add data-excludeInputs attr to exclude specified inputs from input validation - DONE
-          Add multiple character restrictions support - DONE
-          Add ScrollLeft() listener for window and modals - DONE
-          Solve the modal hovering problem - DONE
-          Clean up helptext CSS and add classes - DONE
-          Prevent help text from displaying when input level grouped errors are shown - DONE
-          Get helptext to work with modaloffset - DONE
-          Get helptext to use offsets and locations - DONE
-          Correct async form-level input from ignoring <br> on insert - DONE
-          Fix FF/IE/Chrome issue of left align error divs - DONE
-          Get multiple left aligned errors to display correctly - DONE
-          Move required testing to data-required attr - DONE
-          Fix custom error scroll on left display - DONE
-          Unbind modal scroll listener on blur for helptext - PSEUDO DONE
-          Get groupByInput to listen to the data-location attribute
-
-=========================================================================================================
                                 COMING SOON
                                  
     TODO: Add forced field text
+          Remove JQuery dependency
 
 */
 
@@ -195,35 +162,6 @@ var validator =  function() {
                 $(target).data("displayhelptext", "false");
                 helptext.addClass("hideMessage");
                 helptext.removeClass("showMessage");
-                /*var modal;
-                if ($(target).data("modalid") === undefined) {
-                    if ($(target).parents(".formValidate:first").length > 0) {
-                        modal = $(target).parents(".formValidate:first").data("modalId") === undefined ? null : $(target).parents(".formValidate:first").data("modalId")
-                    }
-                    else if ($(target).parents(".inputValidate:first").length > 0) {
-                        modal = $(target).parents(".inputValidate:first").data("modalId") === undefined ? null : $(target).parents(".inputValidate:first").data("modalId");
-                    }
-                    else {
-                        modal = null;
-                    }
-                }
-                else {
-                    modal = $(target).data("modalid");
-                }
-                var helpOptions = {
-                    input: target,
-                    modalId: modal,
-                    helpText: helptext
-                };
-                if (modal !== null) {
-                    //See comment below on the scrollModalHTListener function for how the .off() function works/doesn't work.
-                    //I don't rememeber the arrangement now, but there was some combination of things that would remove the
-                    //help text from the scroll handlers, but there were still exceptions being thrown and the scrolling wasn't
-                    //working properly.
-                    removeHelpText(helpOptions);
-                    //$("#" + modal).off("scroll", scrollModalHTListener().hideShowDiv);
-                }
-                $(window).off("scroll", scrollModalHTListener().hideShowDiv);*/
             }
         });
 
@@ -842,11 +780,7 @@ var validator =  function() {
         $("#" + options.modalId).on("scroll", hideShowDiv);
 
         $(window).on("scroll", hideShowDiv);
-
-        //hideShowDiv needs to be defined inside scrollModalHTListener because the JQ .on() function
-        //cannot pass parameters through the callback. But if I could define it within the validator's
-        //scope, then I could call it with parameters which would make turning it off work alot better.
-        //Use the "this.hideShowDiv" format to play around with the .off functionality.
+        
         function hideShowDiv() {
             if (element.data("displayhelptext") !== undefined && element.data("displayhelptext") !== "false") {
                 if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
@@ -998,24 +932,6 @@ var validator =  function() {
         else {
             $(window).on("scroll", function() {
                 placement = determinePlacement(position, elem, errorOffsets.width, errorOffsets.height, helpText);
-                helpText.css('top', placement[1]);
-                helpText.css('left', placement[0]);
-            });
-        }
-    };
-
-    var removeHelpText = function(helpOptions) {
-        var elem = $(helpOptions.input);
-        var helpText = elem.prevUntil(":input").filter(".helptext:first");
-
-        if (helpOptions.modalId !== null) {
-            //JQ doesn't like this as a callback - it just wants the function names: scrollModalHTListener().hideShowDiv
-            //But then it throws an exception because the parameters are undefined.
-            $("#" + helpOptions.modalId).off("scroll", scrollModalHTListener(helpOptions, elem, 0, 0, helpText).hideShowDiv);
-        }
-        else {
-            $(window).off("scroll", function() {
-                placement = determinePlacement(position, elem, 0, 0, helpText);
                 helpText.css('top', placement[1]);
                 helpText.css('left', placement[0]);
             });
