@@ -2,7 +2,9 @@ While validator.js is mostly functional at the moment, there is still some clean
 
 Also, until I have the time to write a proper readme or figure out how to upload a .docx file, the wiki for this repo contains the same info, but in a slightly nicer format.
 
-The CSS file in this repo is the one I've been using to test the validator in my mock up website. It does contain all the necessary classes, but they have additional styling being used on them.
+The validator.css file in this repo is the one you'd want to use should you decide to play around with the validator. It is a stripped down css file with all the necessary classes and only the minimal required styles. form.css is the one I've been using to test the validator in my mock up website. It does contain all the necessary classes, but they have additional styling being used on them.
+
+The html page is my test page for the validator to do initial testing of new features. You'll find it's fairly scatter-brained, but I believe all of the functionality of validator.js is on display there. Some of the functionality has been tested against production websites, but not all of it has been vetted in the real world yet. I look forward to hearing about the bugs and additional feature requests from anyone who uses this.
 
 
 validator
