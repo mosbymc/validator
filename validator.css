@@ -1,0 +1,63 @@
+/*These CSS classes are used by validator.js. Some are used functionally, but most are added
+and removed as a way to give the developer control over what the error message look like and
+how they are displaued.
+
+Add whatever styles you wish to these classes, just leave the ones that are currently defined as is.
+*/
+
+
+/*Put on inputs when grouping errors at input level*/
+.alignInput {
+	vertical-align: top;
+}
+
+/*Put on the basic fixed div error message container*/
+.errorMessage {
+    position: fixed;
+}
+
+/*Generic classes used on all fixed error containers - currently: helpText and basic error divs*/
+.hideMessage {
+	visibility: hidden;
+	display: none;
+}
+
+.showMessage {
+	visibility: visible;
+	display: block;
+	position: fixed;
+}
+
+/*Used on the form error group container. Should be placed by developer - removed when there are validation errors*/
+.hideGroupedErrors {
+	visibility: hidden;
+	display: none;
+}
+
+/*Put on the form error group container - primarily used for showing the div*/
+.showGroupedErrors {
+	visibility: visible;
+	display: block;
+}
+
+/*Class for highlighting the errors that apply to a given input for grouped form errors when the option is turned on*/
+.groupHighlight {
+}
+
+/*Put on the div surrounding the grouped errors at the input level*/
+.inputGroup {
+	display: inline-block;
+}
+
+/*Put on the spans containing the error text for input level error message grouping*/
+.inputGrpErrorSpan {
+
+}
+
+/*Put on the inputs that fail validation*/
+.invalid {
+}
+
+/*Used for help text spans - this class is not added or removed; it is placed by developer*/
+.helptext {
+}
