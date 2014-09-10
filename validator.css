@@ -49,6 +49,11 @@ Add whatever styles you wish to these classes, just leave the ones that are curr
 	display: inline-block;
 }
 
+/*Used to wrap individual error messages when grouped by input*/
+.errorSpan {
+	
+}
+
 /*Put on the spans containing the error text for input level error message grouping*/
 .inputGrpErrorSpan {
 
