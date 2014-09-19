@@ -655,16 +655,12 @@ var validator =  function() {
         {
             case "right": 
                 return [position.left + element.width() + offsetWidth + offset.left + 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
-                break;
             case "left":
                 return [position.left - messageWidth - offsetWidth - offset.left - 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
-                break;
             case "top":
                 return [position.left + offset.left - $(window).scrollLeft(), position.top - $(window).scrollTop() - 5 - height - offsetHeight - offset.top];
-                break;
             case "bottom":
                 return [position.left + offset.left - $(window).scrollLeft(), position.top - $(window).scrollTop() + element[0].clientHeight + 8 + offsetHeight + offset.top];
-                break;
             default:
                 return [position.left + element.width() + offsetWidth + offset.left + 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
         }
@@ -953,7 +949,7 @@ var validator =  function() {
         if (testedArray.length > 1) {
             for (var i = 0; i < testedArray.length-1; i++) {
                 if (!(testedArray[i] && testedArray[i+1])) {
-                    return false
+                    return false;
                 }
             }
             return true;
@@ -969,41 +965,44 @@ var validator =  function() {
 
     var inputTypes = {
         numeric: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode
+            var unicode = e.charCode? e.charCode : e.keyCode;
             if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
                 if (unicode < 48 || unicode > 57) { //if not a number
                     return false; //disable key press
                 }
                 return true;
             }
+            return true;
         },
         nonNumeric: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode
+            var unicode = e.charCode? e.charCode : e.keyCode;
             if (unicode !=8 ) { //if the key isn't the backspace key (which we should allow)
                 if (unicode < 48 || unicode > 57) { //if a number
                     return true; //disable key press
                 }
                 return false;
             }
+            return true;
         },
         alphaNumeric: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode
+            var unicode = e.charCode? e.charCode : e.keyCode;
             if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
                 if ((unicode < 48 || unicode > 57) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) { //if not alpha-numeric
                     return false; //disable key press
                 }
                 return true;
             }
+            return true;
         },
         printable: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode
+            var unicode = e.charCode? e.charCode : e.keyCode;
             if (unicode > 31 || unicode < 128) { //if not alpha-numeric
                 return true; //disable key press
             }
             return false;
         },
         printableNonNumeric: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode
+            var unicode = e.charCode? e.charCode : e.keyCode;
             if ((unicode > 32 || unicode < 48) || (unicode > 57 || unicode < 128)) { //if not alpha-numeric
                 return true; //disable key press
             }
