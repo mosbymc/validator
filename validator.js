@@ -251,8 +251,9 @@ var validator =  function() {
         }
 
         var typeRules = elem.data("type");
+        var rules;
         if (typeRules !== undefined && typeRules.split(",").length > 0) {
-            var rules = typeRules.split(",");
+            rules = typeRules.split(",");
             for (var l = 0; l < rules.length; l++) {
                 inputObj = {
                     input: $(input),
@@ -265,7 +266,7 @@ var validator =  function() {
 
         var customRules = elem.data('customrules');
         if (customRules !== undefined && customRules.split(",").length > 0) {
-            var rules = customRules.split(",");
+            rules = customRules.split(",");
             for (var k = 0; k < rules.length; k++) {
                 inputObj = {
                     input: $(input),
@@ -309,6 +310,7 @@ var validator =  function() {
 
             var inputs = $(form).find(":input").filter(":input");
             var inputArray = [];
+            var rules;
             for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray for each input with the required/type/custom rules and their status.
                 var inputObj = {};
                 var elem = $(inputs[j]);
@@ -322,7 +324,7 @@ var validator =  function() {
                 }
                 var typeRules = elem.data("type");
                 if (typeRules !== undefined && typeRules.split(",").length > 0) {
-                    var rules = typeRules.split(",");
+                    rules = typeRules.split(",");
                     for (var l = 0; l < rules.length; l++) {
                         inputObj = {
                             input: $(inputs[j]),
@@ -334,7 +336,7 @@ var validator =  function() {
                 }
                 var customRules = elem.data('customrules');
                 if (customRules !== undefined && customRules.split(",").length > 0) {
-                    var rules = customRules.split(",");
+                    rules = customRules.split(",");
                     for (var k = 0; k < rules.length; k++) {
                         inputObj = {
                             input: $(inputs[j]),
@@ -359,6 +361,7 @@ var validator =  function() {
         var typeRules = elem.data("type");  //The predefined rules that are part of this library.
         var customRules = elem.data('customrules'); //User defined validation rules.
         var isRequired = elem.attr("data-requiredfield");
+        var rules;
 
         elem.data("vts", options.time);
 
@@ -387,7 +390,7 @@ var validator =  function() {
         //If the input passed the required validation or didn't need it, then continue to "type rules" and custom rules.
         if (!failedRequired) {
             if (typeRules !== undefined) {
-                var rules = typeRules.split(',');
+                rules = typeRules.split(',');
                 $.each(rules, function(index, value) {
                     var fn = dataTypeRules[value];
                     if (typeof fn === "function") {
@@ -408,7 +411,7 @@ var validator =  function() {
             }
             
             if (customRules !== undefined) {
-                var rules = customRules.split(',');
+                rules = customRules.split(',');
                 $.each(rules, function(index, value) {
                     if (value === "required")
                         return;
@@ -488,7 +491,6 @@ var validator =  function() {
             if (form.hasClass("highlightErrors")) {
                 form.find(":input").each(function(idx, input) {
                     $(input).on("focus", $(input), function() {
-                        var asdas = $("[data-parentinput='" + input.id + "']");
                         $("[data-parentinput='" + input.id + "']").each(function(index, val) {
                             $(val).addClass("groupHighlight");
                         });
@@ -654,11 +656,8 @@ var validator =  function() {
     var determinePlacement = function(position, element, offsetWidth, offsetHeight, messageDiv) {
         var location = element.data("location") === undefined ? "right" : element.data("location");
         var offset = getElemOffset(element);
-        var width = element.width();
-        var scroll = $(window).scrollLeft();
         var messageWidth = messageDiv.width();
         var height = messageDiv.height();
-        var errorOffsets = getMessageOffset(element);
         switch (location)
         {
             case "right": 
