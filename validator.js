@@ -50,6 +50,7 @@ var validator =  function() {
                         button: $(target),
                         time: time
                     };
+                    Object.freeze(formOptions);
                     $(target).prop("disabled", true);
                     callBeforeValidate(form, formOptions);
                 }
@@ -73,6 +74,7 @@ var validator =  function() {
                         button: $(target),
                         time: time
                     };
+                    Object.freeze(formOptions);
                     $(target).prop("disabled", true);
                     callBeforeValidate(form, formOptions);
                 }
@@ -95,6 +97,7 @@ var validator =  function() {
                             group: $(target).hasClass("groupByInput") === false ? $(target).parents(".formValidate:first").hasClass("groupByInput") : $(target).hasClass("groupByInput"),
                             time: time
                         };
+                        Object.freeze(inputOptions);
                         validateInput($(target), inputOptions);
                     }
                 }
@@ -109,6 +112,7 @@ var validator =  function() {
                     group: $(target).hasClass("groupByInput") === false ? $(target).parents(".formValidate:first").hasClass("groupByInput") : $(target).hasClass("groupByInput"),
                     time: time
                 };
+                Object.freeze(inputOptions);
                 validateInput($(target), inputOptions);
             }
         });
@@ -151,6 +155,7 @@ var validator =  function() {
                     modalId: modal,
                     helpText: helptext
                 };
+                Object.freeze(helpOptions);
                 displayHelpText(helpOptions);
             }
         });
@@ -184,6 +189,7 @@ var validator =  function() {
                                         group: $(target).parents(".formValidate:first").hasClass("groupByInput"),
                                         time: time
                                     };
+                                    Object.freeze(inputOptions);
                                     validateInput($(target), inputOptions);
                                 }
                             }
@@ -198,6 +204,7 @@ var validator =  function() {
                                 group: $(target).parents(".formValidate:first").hasClass("groupByInput"),
                                 time: time
                             };
+                            Object.freeze(inputOptions);
                             validateInput($(target), inputOptions);
                         }
                     });
@@ -413,6 +420,7 @@ var validator =  function() {
                             rule: value,
                             inputArray: inputsArray
                         };
+                        Object.freeze(inputState);
                         try {
                             fn.call(this, elem, inputState, customRulesCallback);
                         }
