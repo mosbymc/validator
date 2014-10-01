@@ -868,7 +868,7 @@ var validator =  function() {
                 $("[id^='" + inputs[i].id + "error']").each(function(index, val) {
                     $(val).remove();
                 });
-                $("[id^='" + inputs[i].id + "InputGrp'").each(function(index, val) {
+                $("[id^='" + inputs[i].id + "InputGrp']").each(function(index, val) {
                     $(val).remove();
                 });
             }
