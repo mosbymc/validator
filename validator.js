@@ -42,10 +42,10 @@ var validator =  function() {
                     var formOptions = {
                         form: $(target).data("form"),
                         display: form.hasClass("hover") === false ? false : "hover",
-                        success: form.data("formaction") === undefined ? null : form.data("formaction"),
-                        modalId: form.data("modalid") === undefined ? null : form.data("modalid"),
-                        groupErrors: form.data("grouperrors") === undefined ? null : form.data("grouperrors"),
-                        callBefore: form.data("beforevalidate") === undefined ? false : form.data("beforevalidate"),
+                        success: form.data("formaction") || null,
+                        modalId: form.data("modalid") || null,
+                        groupErrors: form.data("grouperrors") || null,
+                        callBefore: form.data("beforevalidate") || false,
                         group: form.hasClass("groupByInput"),
                         button: $(target),
                         time: time
@@ -66,10 +66,10 @@ var validator =  function() {
                     var formOptions = {
                         form: $(target).data("form"),
                         display: form.hasClass("hover") === false ? false : "hover",
-                        success: form.data("formaction") === undefined ? null : form.data("formaction"),
-                        modalId: form.data("modalid") === undefined ? null : form.data("modalid"),
-                        groupErrors: form.data("grouperrors") === undefined ? null : form.data("grouperrors"),
-                        callBefore: form.data("beforevalidate") === undefined ? false : form.data("beforevalidate"),
+                        success: form.data("formaction") || null,
+                        modalId: form.data("modalid") || null,
+                        groupErrors: form.data("grouperrors") || null,
+                        callBefore: form.data("beforevalidate") || false,
                         group: form.hasClass("groupByInput"),
                         button: $(target),
                         time: time
@@ -92,8 +92,8 @@ var validator =  function() {
                         var inputOptions = {
                             input: target,
                             display: $(target).hasClass("hover") === false ? false : "hover",
-                            success: $(target).data("inputaction") === undefined ? null : $(target).data("inputaction"),
-                            modalId: $(target).data("modalid") === undefined ? null : $(target).data("modalid"),
+                            success: $(target).data("inputaction") || null,
+                            modalId: $(target).data("modalid") || null,
                             group: $(target).hasClass("groupByInput") === false ? $(target).parents(".formValidate:first").hasClass("groupByInput") : $(target).hasClass("groupByInput"),
                             time: time
                         };
@@ -107,8 +107,8 @@ var validator =  function() {
                 var inputOptions = {
                     input: target,
                     display: $(target).hasClass("hover") === false ? false : "hover",
-                    success: $(target).data("inputaction") === undefined ? null : $(target).data("inputaction"),
-                    modalId: $(target).data("modalid") === undefined ? null : $(target).data("modalid"),
+                    success: $(target).data("inputaction") || null,
+                    modalId: $(target).data("modalid") || null,
                     group: $(target).hasClass("groupByInput") === false ? $(target).parents(".formValidate:first").hasClass("groupByInput") : $(target).hasClass("groupByInput"),
                     time: time
                 };
@@ -138,10 +138,10 @@ var validator =  function() {
                 var modal = null;
                 if ($(target).data("modalid") === undefined) {
                     if ($(target).parents(".formValidate:first").length > 0) {
-                        modal = $(target).parents(".formValidate:first").data("modalId") === undefined ? null : $(target).parents(".formValidate:first").data("modalId")
+                        modal = $(target).parents(".formValidate:first").data("modalId") || null;
                     }
                     else if ($(target).parents(".inputValidate:first").length > 0) {
-                        modal = $(target).parents(".inputValidate:first").data("modalId") === undefined ? null : $(target).parents(".inputValidate:first").data("modalId");
+                        modal = $(target).parents(".inputValidate:first").data("modalId") || null;
                     }
                     else {
                         modal = null;
@@ -184,8 +184,8 @@ var validator =  function() {
                                     var inputOptions = {
                                         input: target,
                                         display: $(target).hasClass("hover") === false ? false : "hover",
-                                        success: $(target).data("inputaction") === undefined ? null : $(target).data("inputaction"),
-                                        modalId: $(target).data("modalid") === undefined ? null : $(target).data("modalid"),
+                                        success: $(target).data("inputaction") || null,
+                                        modalId: $(target).data("modalid") || null,
                                         group: $(target).parents(".formValidate:first").hasClass("groupByInput"),
                                         time: time
                                     };
@@ -199,8 +199,8 @@ var validator =  function() {
                             var inputOptions = {
                                 input: target,
                                 display: $(target).hasClass("hover") === false ? false : "hover",
-                                success: $(target).data("inputaction") === undefined ? null : $(target).data("inputaction"),
-                                modalId: $(target).data("modalid") === undefined ? null : $(target).data("modalid"),
+                                success: $(target).data("inputaction") || null,
+                                modalId: $(target).data("modalid") || null,
                                 group: $(target).parents(".formValidate:first").hasClass("groupByInput"),
                                 time: time
                             };
@@ -224,10 +224,10 @@ var validator =  function() {
             var formOptions = {
                 form: form[0].id,
                 display: form.hasClass("hover") === false ? false : "hover",
-                success: form.data("formaction") === undefined ? null : form.data("formaction"),
-                modalId: form.data("modalid") === undefined ? null : form.data("modalid"),
-                groupErrors: form.data("grouperrors") === undefined ? null : form.data("grouperrors"),
-                callBefore: form.data("beforevalidate") === undefined ? false : form.data("beforevalidate"),
+                success: form.data("formaction") || null,
+                modalId: form.data("modalid") || null,
+                groupErrors: form.data("grouperrors") || null,
+                callBefore: form.data("beforevalidate") || false,
                 group: form.hasClass("groupByInput"),
                 button: button
             };
