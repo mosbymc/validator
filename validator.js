@@ -1003,6 +1003,16 @@ var validator =  function() {
             }
             return true;
         },
+        nonAlphaNumeric: function(obj, e) {
+            var unicode = e.charCode? e.charCode : e.keyCode;
+            if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
+                if ((unicode < 48 || unicode > 57) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) {  //if alphaNumeric
+                    return true;
+                }
+                return false;
+            }
+            return true;
+        },
         printable: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
             if (unicode > 31 || unicode < 128) { //if not alpha-numeric
