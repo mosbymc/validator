@@ -221,6 +221,7 @@ var validator =  function() {
         var form = $("#" + formId);
         if (form !== undefined && form.hasClass("formValidate")) {
             var button = form.find("[data-form='" + formId + "']");
+            var time = new Date().getTime();
             var formOptions = {
                 form: form[0].id,
                 display: form.hasClass("hover") === false ? false : "hover",
@@ -229,7 +230,8 @@ var validator =  function() {
                 groupErrors: form.data("grouperrors") || null,
                 callBefore: form.data("beforevalidate") || false,
                 group: form.hasClass("groupByInput"),
-                button: button
+                button: button,
+                time: time
             };
             button.prop("disabled", true);
             callBeforeValidate(form, formOptions);
