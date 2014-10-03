@@ -3,9 +3,11 @@ validator
 
 JavaScript validator
 
-While validator.js is mostly functional at the moment, there is still some clean up that needs to be done. I also need to add some comments in some places and remove some from others.
+validator.js is a simple to use JavaScript form validation tool that provides plenty of options for displaying and placing error messages and has been written to make the least amount of coding on the developer's part as possible. Everything runs off html data-attributes and css classes. There is no need to create a validation object with rules and elements/forms to validate. It allows custom validation rules to be written, and they can even be asynchronous. The validator also supports help text and character restrictions on inputs.
 
-Also, until I have the time to write a proper readme, the wiki for this repo contains the same info, but in a slightly nicer format. I have also uploaded a .docx file - which details a slightly older version of validator.js, but it does have code samples as illustrations.
+A good place to start is with the HTML page included in this repo. All the functionality of the validator is used on that page. The html will need both JQuery and JQuery UI to be fully functional, although the validator itself only requires JQuery 1.7+.
+
+The wiki for this repo contains setup/usage instructions. I have also uploaded a .docx file - which details a slightly older version of validator.js, but it does have code samples and screenshots.
 
 The validator.css file in this repo is the one you'd want to use should you decide to play around with the validator. It is a stripped down css file with all the necessary classes and only the minimal required styles. form.css is the one I've been using to test the validator in my mock up website. It does contain all the necessary classes, but they have additional styling being used on them.
 
