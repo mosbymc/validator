@@ -210,7 +210,7 @@ var validator =  function() {
         }
     };
 
-    this.validationHook = function(formId) {    //Public function for starting off the validation process.
+    this.validate = function(formId) {    //Public function for starting off the validation process.
         var form = $("#" + formId);
         if (form !== undefined && form.hasClass("formValidate")) {
             var button = form.find("[data-form='" + formId + "']");
