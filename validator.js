@@ -21,13 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
     validator.js
 
-=========================================================================================================
-
-                                COMING SOON
-                                 
-    TODO: Add forced field text
-          Remove JQuery dependency
-
 */
 
 //The starting point of valdation
