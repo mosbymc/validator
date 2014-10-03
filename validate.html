@@ -109,7 +109,7 @@
 		}
 	
 		function testHook() {
-			validator().validationHook("fieldValidate4");
+			validator().validate("fieldValidate4");
 		}
 	
 		$(document).on("validated", function(e, eventData) {
@@ -118,7 +118,7 @@
 					"\nPassed: " + eventData.passed + 
 					"\nNumber of failed inputs: " + eventData.count +
 					"\nTime: " + eventData.time);
-				validator().validationHook("fieldValidate5");
+				validator().validate("fieldValidate5");
 			}
 		});
 
