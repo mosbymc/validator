@@ -13,7 +13,7 @@ The html page is my test page for the validator to do initial testing of new fea
 
 
 # **validator.js**
-validator.js is a JQuery-dependent validation tool that can be used to validate input elements, both as part of a form, or as a single input. While it certainly allows a developer to write their own validation rules, it also has a library of predefined rules you can use to check against, like email, phone number, zip codes, URLs, etc.
+validator.js is a JQuery 1.7+ dependent validation tool that can be used to validate input elements, both as part of a form, or as a single input. While it certainly allows a developer to write their own validation rules, it also has a library of predefined rules you can use to check against, like email, phone number, zip codes, URLs, etc.
 
 When initialized, the validator listens at the window level for specific events to start off the validation process. This means that even if you switch partial views or dynamically insert DOM elements, you'll never need to re-initialize the validator and any "new" form that is a part of the page is already being monitored by the validator.
 
