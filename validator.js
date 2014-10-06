@@ -1020,6 +1020,23 @@ var validator =  function() {
                 return true; //disable key press
             }
             return false;
+        },
+        shortDate: function(obj, e) {
+            var unicode = e.charCode? e.charCode : e.keyCode;
+            if ((unicode >= 48 && unicode <= 57) || unicode === 47 || unicode === 46 || unicode === 95) {
+                return true;
+            }
+            return false;
+        },
+        longDate: function(obj, e) {
+            var unicode = e.charCode? e.charCode : e.keyCode;
+            if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
+                if ((unicode < 48 || unicode > 57) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122) && (unicode !== 46) && (unicode !== 44)) { //if not alpha-numeric or space or period
+                    return false; //disable key press
+                }
+                return true;
+            }
+            return true;
         }
     };
 
