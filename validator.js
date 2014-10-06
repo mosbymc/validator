@@ -168,13 +168,14 @@ var validator =  function() {
                 try {
                     $(document).on(val, "input", function(event) {
                         var target = event.currentTarget;
+                        var inputOptions, time;
                         if (!$(target).hasClass("inputValidate") && $(target).data("validateon") === val) {
                             var parent = $(target).parents(".inputValidate:first");
                             if (parent !== undefined) {
                                 var exclude = parent.data("excludeinputs");
                                 if (exclude !== undefined && exclude.indexOf(target.id) === -1) {
-                                    var time = new Date().getTime();
-                                    var inputOptions = {
+                                    time = new Date().getTime();
+                                    inputOptions = {
                                         input: target,
                                         display: $(target).hasClass("hover") === false ? false : "hover",
                                         success: $(target).data("inputaction") || null,
@@ -188,8 +189,8 @@ var validator =  function() {
                             }
                         }
                         else if ($(target).hasClass("inputValidate") && $(target).data("validateon") === val) {
-                            var time = new Date().getTime();
-                            var inputOptions = {
+                            time = new Date().getTime();
+                            inputOptions = {
                                 input: target,
                                 display: $(target).hasClass("hover") === false ? false : "hover",
                                 success: $(target).data("inputaction") || null,
