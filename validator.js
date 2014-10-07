@@ -770,7 +770,7 @@ var validator =  function() {
         });
     };
 
-    var scrollModalHTListener = function(options, element, offsetWidth, offsetHeight, messageDiv) {
+    var helpTextScrollModalListener = function(options, element, offsetWidth, offsetHeight, messageDiv) {
         if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
             messageDiv.addClass("hideMessage");
             messageDiv.removeClass("showMessage");
@@ -926,7 +926,7 @@ var validator =  function() {
         elem.data("displayhelptext", "true");
 
         if (helpOptions.modalId !== null) {
-            scrollModalHTListener(helpOptions, elem, errorOffsets.width, errorOffsets.height, helpText);
+            helpTextScrollModalListener(helpOptions, elem, errorOffsets.width, errorOffsets.height, helpText);
         }
         else {
             $(window).on("scroll", function() {
