@@ -27,4 +27,4 @@ When an input fails validation, an error message is displayed to alert the user 
 
 
 
-Continue to: https://github.com/mosbymc/validator/wiki
+Continue to validator.js wiki: https://github.com/mosbymc/validator/wiki
