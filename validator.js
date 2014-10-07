@@ -76,13 +76,14 @@ var validator =  function() {
 
         $(document).on("input", "input", function(event) {      //Bind input event listener on input event. The input itself or its parent must have the "inputValidate" class.
             var target = event.currentTarget;
+            var time, inputOptions;
             if (!$(target).hasClass("inputValidate") && ($(target).data("validateon") === "input" || $(target).data("validateon") === undefined)) {
                 var parent = $(target).parents(".inputValidate:first");
                 if (parent !== undefined) {
                     var exclude = parent.data("excludeinputs");
                     if (exclude !== undefined && exclude.indexOf(target.id) === -1) {
-                        var time = new Date().getTime();
-                        var inputOptions = {
+                        time = new Date().getTime();
+                        inputOptions = {
                             input: target,
                             display: $(target).hasClass("hover") === false ? false : "hover",
                             success: $(target).data("inputaction") || null,
@@ -96,8 +97,8 @@ var validator =  function() {
                 }
             }
             else if ($(target).hasClass("inputValidate") && ($(target).data("validateon") === "input" || $(target).data("validateon") === undefined)) {
-                var time = new Date().getTime();
-                var inputOptions = {
+                time = new Date().getTime();
+                inputOptions = {
                     input: target,
                     display: $(target).hasClass("hover") === false ? false : "hover",
                     success: $(target).data("inputaction") || null,
@@ -233,7 +234,7 @@ var validator =  function() {
     }
 
     var validateInput = function(input, options) {  //Where inputs go to be validated and the success function called if supplied.
-        var inputObj = {};
+        var inputObj;
         var inputArray = [];
         var elem = $(input);
 
