@@ -1043,7 +1043,7 @@ var validator =  function() {
         },
         shortDate: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if ((unicode >= 48 && unicode <= 57) || unicode === 47 || unicode === 46 || unicode === 95) {
+            if (unicode >= 45 && unicode <= 57) {
                 return true;
             }
             return false;
