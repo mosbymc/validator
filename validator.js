@@ -1010,20 +1010,20 @@ var validator =  function() {
         alphaNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
             if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
-                if ((unicode < 48 || unicode > 57) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) { //if not alpha-numeric
-                    return false; //disable key press
+                if ((unicode > 47 || unicode < 58) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) { //if alpha-numeric
+                    return true; //disable key press
                 }
-                return true;
+                return false;
             }
             return true;
         },
         nonAlphaNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
             if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
-                if ((unicode < 48 || unicode > 57) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) {  //if alphaNumeric
-                    return true;
+                if ((unicode > 47 || unicode < 58) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) { //if alpha-numeric
+                    return false;
                 }
-                return false;
+                return true;
             }
             return true;
         },
@@ -1036,7 +1036,7 @@ var validator =  function() {
         },
         printableNonNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if ((unicode > 32 || unicode < 48) || (unicode > 57 || unicode < 128)) { //if not alpha-numeric
+            if ((unicode > 31 && unicode < 48) || (unicode > 57 && unicode < 128)) { //if not alpha-numeric
                 return true; //disable key press
             }
             return false;
