@@ -970,6 +970,26 @@ var validator =  function() {
         numeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
             if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
+                if ((unicode > 43 && unicode < 47) || (unicode > 47 && unicode < 58)) { //if a number, decimal, comma, or minus
+                    return true; //disable key press
+                }
+                return false;
+            }
+            return true;
+        },
+        integer: function(obj, e) {
+            var unicode = e.charCode? e.charCode : e.keyCode;
+            if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
+                if ((unicode !== 45) || (unicode < 48 || unicode > 57)) { //if not a number or minus
+                    return false; //disable key press
+                }
+                return true;
+            }
+            return true;
+        },
+        positiveInt: function(obj, e) {
+            var unicode = e.charCode? e.charCode : e.keyCode;
+            if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
                 if (unicode < 48 || unicode > 57) { //if not a number
                     return false; //disable key press
                 }
