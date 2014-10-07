@@ -1041,6 +1041,14 @@ var validator =  function() {
             }
             return false;
         },
+        phone: function(obj, e) {
+            var unicode = e.charCode? e.charCode : e.keyCode;
+            if (unicode === 32 || unicode === 40 || unicode === 41 || unicode === 45 || unicode === 46 || (unicode >= 48 && unicode <= 57)) {
+                return true;
+            }
+            return false;
+            //32, 40, 41, 45, 46, 48-57
+        },
         shortDate: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
             if (unicode >= 45 && unicode <= 57) {
