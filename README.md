@@ -24,3 +24,7 @@ Depending on your usage, after the initialization, you wouldn't need to write or
 Because validator.js uses callbacks for user defined validation rules, it is able to support asynchronous input testing. A common usage of this would be checking to see if a user name is already taken. Rather than having to submit the whole form only to find out that the username is taken, the validator will allow you to write your own asynchronous function to check the availability, and wait for the response before either submitting the form or displaying the error message.
 
 When an input fails validation, an error message is displayed to alert the user to the problem. Standard error message divs are displayed as a fixed position element so it will not affect the layout of the dom when placed. However, there are several options available for how and where to display the error messages, so if the default display doesn't work well on your website, you can try one of the other display methods.
+
+
+
+Continue to: https://github.com/mosbymc/validator/wiki
