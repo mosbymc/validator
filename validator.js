@@ -308,7 +308,7 @@ var validator =  function() {
             var inputArray = [];
             var rules;
             for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray for each input with the required/type/custom rules and their status.
-                var inputObj = {};
+                var inputObj;
                 var elem = $(inputs[j]);
                 if (elem.attr("data-requiredfield") !== undefined) {
                     inputObj = {
