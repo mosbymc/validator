@@ -13,6 +13,8 @@ The validator.css file in this repo is the one you'd want to use should you deci
 
 The html page is my test page for the validator to do initial testing of new features. You'll find it's fairly scatter-brained, but I believe all of the functionality of validator.js is on display there. Some of the functionality has been tested against production websites, but not all of it has been vetted in the real world yet. I look forward to hearing about the bugs and additional feature requests from anyone who uses this.
 
+I am currently working on an extension to validator.js that will format inputs for the user as specified by the developer. IT will be able to take in basic formatting or a regex string can be supplied that will format input as the user types - only allowing characters as specified and adding any formatting such as "-", or ",". I will be starting up that repo in the next few days and will have link to it from here.
+
 
 # **validator.js**
 validator.js is a JQuery 1.7+ dependent validation tool that can be used to validate input elements, both as part of a form, or as a single input. While it certainly allows a developer to write their own validation rules, it also has a library of predefined rules you can use to check against, like email, phone number, zip codes, URLs, etc.
