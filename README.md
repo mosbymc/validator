@@ -13,7 +13,10 @@ The validator.css file in this repo is the one you'd want to use should you deci
 
 The html page is my test page for the validator to do initial testing of new features. You'll find it's fairly scatter-brained, but I believe all of the functionality of validator.js is on display there. Some of the functionality has been tested against production websites, but not all of it has been vetted in the real world yet. I look forward to hearing about the bugs and additional feature requests from anyone who uses this.
 
-I am currently working on an extension to validator.js that will format inputs for the user as specified by the developer. IT will be able to take in basic formatting or a regex string can be supplied that will format input as the user types - only allowing characters as specified and adding any formatting such as "-", or ",". I will be starting up that repo in the next few days and will have link to it from here.
+I am currently working on an extension to validator.js that will format inputs for the user as specified by the developer. IT will be able to take in basic formatting or a regex string can be supplied that will format input as the user types - only allowing characters as specified and adding any formatting such as "-", or ",".
+
+The repo for the formatter is at: https://github.com/mosbymc/inputformatter
+Over the next few days I will be commiting the inital code to this repository, so check back often as it will be changing rather quickly.
 
 
 # **validator.js**
