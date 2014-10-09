@@ -16,6 +16,7 @@ The html page is my test page for the validator to do initial testing of new fea
 I am currently working on an extension to validator.js that will format inputs for the user as specified by the developer. IT will be able to take in basic formatting or a regex string can be supplied that will format input as the user types - only allowing characters as specified and adding any formatting such as "-", or ",".
 
 The repo for the formatter is at: https://github.com/mosbymc/inputformatter
+
 Over the next few days I will be commiting the inital code to this repository, so check back often as it will be changing rather quickly.
 
 
