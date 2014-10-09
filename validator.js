@@ -952,7 +952,7 @@ var validator =  function() {
 
         if (testedArray.length > 1) {
             for (var i = 0; i < testedArray.length-1; i++) {
-                if (!(testedArray[i] && testedArray[i+1])) {
+                if (!testedArray[i]) {
                     return false;
                 }
             }
@@ -974,7 +974,6 @@ var validator =  function() {
                 return true; //disable key press
             }
             return false;
-            }
         },
         integer: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
