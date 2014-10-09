@@ -970,61 +970,44 @@ var validator =  function() {
     var inputTypes = {
         numeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
-                if ((unicode > 43 && unicode < 47) || (unicode > 47 && unicode < 58)) { //if a number, decimal, comma, or minus
-                    return true; //disable key press
-                }
-                return false;
+            if ((unicode > 43 && unicode < 47) || (unicode > 47 && unicode < 58)) { //if a number, decimal, comma, or minus
+                return true; //disable key press
             }
-            return true;
+            return false;
+            }
         },
         integer: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
-                if ((unicode !== 45) || (unicode < 48 || unicode > 57)) { //if not a number or minus
-                    return false; //disable key press
-                }
-                return true;
+            if ((unicode !== 45) || (unicode < 48 || unicode > 57)) { //if not a number or minus
+                return false; //disable key press
             }
             return true;
         },
         positiveInt: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
-                if (unicode < 48 || unicode > 57) { //if not a number
-                    return false; //disable key press
-                }
-                return true;
+            if (unicode < 48 || unicode > 57) { //if not a number
+                return false; //disable key press
             }
             return true;
         },
         nonNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode !=8 ) { //if the key isn't the backspace key (which we should allow)
-                if (unicode < 48 || unicode > 57) { //if a number
-                    return true; //disable key press
-                }
-                return false;
+            if (unicode < 48 || unicode > 57) { //if a number
+                return true; //disable key press
             }
-            return true;
+            return false;
         },
         alphaNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
-                if ((unicode > 47 || unicode < 58) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) { //if alpha-numeric
-                    return true; //disable key press
-                }
-                return false;
+            if ((unicode > 47 || unicode < 58) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) { //if alpha-numeric
+                return true; //disable key press
             }
-            return true;
+            return false;
         },
         nonAlphaNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
-                if ((unicode > 47 || unicode < 58) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) { //if alpha-numeric
-                    return false;
-                }
-                return true;
+            if ((unicode > 47 || unicode < 58) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) { //if alpha-numeric
+                return false;
             }
             return true;
         },
@@ -1059,11 +1042,8 @@ var validator =  function() {
         },
         longDate: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode !== 8) { //if the key isn't the backspace key (which we should allow)
-                if ((unicode < 48 || unicode > 57) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122) && (unicode !== 46) && (unicode !== 44)) { //if not alpha-numeric or space or period
-                    return false; //disable key press
-                }
-                return true;
+            if ((unicode < 48 || unicode > 57) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122) && (unicode !== 46) && (unicode !== 44)) { //if not alpha-numeric or space or period
+                return false; //disable key press
             }
             return true;
         }
