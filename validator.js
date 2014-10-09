@@ -860,6 +860,7 @@ var validator =  function() {
 
     this.removeErrors = function(elem) {
         if (elem !== undefined) {
+            var element = $("#" + elem);
             var inputs = $("#" + elem).find(":input").filter(":input");
             for (var i = 0; i < inputs.length; i++) {
                 $("[id^='" + inputs[i].id + "error']").each(function(index, val) {
@@ -869,8 +870,7 @@ var validator =  function() {
                     $(val).remove();
                 });
             }
-
-            var element = $("#" + elem);
+            
             $("[id^='" + element[0].id + "error']").each(function(index, val) {
                 val.remove();
             });
@@ -893,24 +893,25 @@ var validator =  function() {
             });
             return;
         }
-
-        $("body").find(".errorMessage").each(function(index, val) {
+        else {
+            $("body").find(".errorMessage").each(function(index, val) {
             val.remove();
-        });
+            });
 
-        $("body").find(".invalid").each(function(index, val) {
-            $(val).removeClass("invalid");
-        });
+            $("body").find(".invalid").each(function(index, val) {
+                $(val).removeClass("invalid");
+            });
 
-        $("body").find(".groupedErrors").each(function(index, val) {
-            $(val).empty();
-            $(val).removeClass("showGroupedErrors");
-            $(val).addClass("hideGroupedErrors");
-        });
+            $("body").find(".groupedErrors").each(function(index, val) {
+                $(val).empty();
+                $(val).removeClass("showGroupedErrors");
+                $(val).addClass("hideGroupedErrors");
+            });
 
-        $("body").find(".inputGroup").each(function(index, val) {
-            val.remove();
-        });
+            $("body").find(".inputGroup").each(function(index, val) {
+                val.remove();
+            });
+        }
     }
 
     var displayHelpText = function(helpOptions) {
