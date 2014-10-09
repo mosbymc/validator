@@ -891,7 +891,6 @@ var validator =  function() {
                 $(val).empty();
                 $(val).css("display", "none");
             });
-            return;
         }
         else {
             $("body").find(".errorMessage").each(function(index, val) {
