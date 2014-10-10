@@ -49,7 +49,7 @@ Add whatever styles you wish to these classes, just leave the ones that are curr
 	display: inline-block;
 }
 
-/*Used to wrap individual error messages when grouped by input*/
+/*Used to wrap individual error messages when grouped by form*/
 .errorSpan {
 	
 }
