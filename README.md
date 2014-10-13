@@ -17,7 +17,7 @@ I am currently working on an extension to validator.js that will format inputs f
 
 The repo for the formatter is at: https://github.com/mosbymc/inputformatter
 
-Over the next few days I will be commiting the inital code to this repository, so check back often as it will be changing rather quickly.
+I am still waiting on the cable company to activate the internet at my new apartment - 2 weeks now. Wouldn't think it would be that difficult, but what do I know of flipping switches? Once they can actually turn on the internet, I will begin committing to the formatter repo.
 
 
 # **validator.js**
