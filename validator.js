@@ -1058,7 +1058,19 @@ var validator =  function() {
         if (obj.val().length < 1) {
             return { valid: false, message: "Required field.", width: 100 };
         }
-    return { valid: true }
+        return { valid: true }
+    };
+    
+    var requiredGroup = function(obj) {
+        if (obj.attr("name")) {
+            var grpName = obj.attr("name");
+            var selected = $("input[name=" + grpName + "]:checked").val();
+            if (selected < 1) {
+                return { valid: false, message: "You must selected at least one option." };
+            }
+            return { valid: true };
+        }
+        return { valid: false, message: "This input has no identifying name." };
     };
 
     var dataTypeRules = {
