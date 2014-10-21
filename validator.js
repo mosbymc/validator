@@ -274,6 +274,26 @@ var validator =  function() {
             }
         }
         
+        var min = elem.data('min');
+        if (min !== undefined && min !== "" && parseInt(min) !== NaN) {
+            inputObj = {
+                input: $(input),
+                rule: min,
+                valid: "waiting"
+            }
+            inputArray.push(inputObj);
+        }
+
+        var max = elem.data("max");
+        if (max !== undefined && max !== "" && parseInt(max) !== NaN) {
+            inputObj = {
+                input: $(input),
+                rule: max,
+                valid: "waiting"
+            }
+            inputArray.push(inputObj);
+        }
+        
         validateElement(input, options, inputArray);    //Main function where validation is done.
         finalizeValidation(inputArray, options);        //Checks when the validation is complete if it should call the succes function, sends event, etc.
     };
@@ -343,6 +363,24 @@ var validator =  function() {
                         inputArray.push(inputObj);
                     }
                 }
+                var min = elem.data('min');
+                if (min !== undefined && min !== "" && parseInt(min) !== NaN) {
+                    inputObj = {
+                        input: $(inputs[j]),
+                        rule: min,
+                        valid: "waiting"
+                    }
+                    inputArray.push(inputObj);
+                }
+                var max = elem.data("max");
+                if (max !== undefined && max !== "" && parseInt(max) !== NaN) {
+                    inputObj = {
+                        input: $(inputs[j]),
+                        rule: max,
+                        valid: "waiting"
+                    }
+                    inputArray.push(inputObj);
+                }
             }
 
             for (var i = 0; i < inputs.length; i++) {
@@ -386,6 +424,37 @@ var validator =  function() {
             for (var i = 0; i < inputsArray.length; i++) {
                 if (elem[0] === inputsArray[i].input[0] && "required" === inputsArray[i].rule) {
                     inputsArray[i].valid = tested.valid;
+                }
+            }
+        }
+        
+        if (!failedRequired) {
+            if (minVal !== undefined) {
+                var tested = testMinValue(elem);
+                if (!tested.valid) {
+                    var errorOffsets = getMessageOffset(elem);
+                    createErrorMessage(elem, tested, options, "min", errorOffsets.width, errorOffsets.height);
+                    groupByForm(options, elem, "min");
+                    groupByInput(options, elem, "min"); //See if these can be moved to the createErrorMessage function
+                }
+                for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
+                    if (elem[0] === inputsArray[i].input[0] && "min" === inputsArray[i].rule) {
+                        inputsArray[i].valid = tested.valid;
+                    }
+                }
+            }
+            if (maxVal !== undefined) {
+                var tested = testMaxValue(elem);
+                if (!tested.valid) {
+                    var errorOffsets = getMessageOffset(elem);
+                    createErrorMessage(elem, tested, options, "max", errorOffsets.width, errorOffsets.height);
+                    groupByForm(options, elem, "max");
+                    groupByInput(options, elem, "max"); //See if these can be moved to the createErrorMessage function
+                }
+                for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
+                    if (elem[0] === inputsArray[i].input[0] && "max" === inputsArray[i].rule) {
+                        inputsArray[i].valid = tested.valid;
+                    }
                 }
             }
         }
@@ -1078,6 +1147,22 @@ var validator =  function() {
             return { valid: true };
         }
         return { valid: false, message: "This input has no identifying name." };
+    };
+    
+    var testMinValue = function(obj) {
+        var minVal = obj.data("min");
+        if (parseInt(minVal) > parseInt(obj.val())) {
+            return { valid: false, message: "Minimum allowed value: " + minVal, width: 175 };
+        }
+        return { valid: true };
+    };
+
+    var testMaxValue = function(obj) {
+        var maxVal = obj.data("max");
+        if (parseInt(maxVal) < parseInt(obj.val())) {
+            return { valid: false, message: "Maximum allowed value: " + maxVal, width: 175 };
+        }
+        return { valid: true };
     };
     
     var requiredGroup = function(obj) {
