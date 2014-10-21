@@ -661,18 +661,19 @@ var validator =  function() {
         var offset = getElemOffset(element);
         var messageWidth = messageDiv.width();
         var height = messageDiv.height();
+        var displayedElem = getOtherElem(element);
         switch (location)
         {
             case "right": 
-                return [position.left + element.width() + offsetWidth + offset.left + 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
+                return [position.left + displayedElem.width() + offsetWidth + offset.left + 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
             case "left":
                 return [position.left - messageWidth - offsetWidth - offset.left - 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
             case "top":
                 return [position.left + offset.left - $(window).scrollLeft(), position.top - $(window).scrollTop() - 5 - height - offsetHeight - offset.top];
             case "bottom":
-                return [position.left + offset.left - $(window).scrollLeft(), position.top - $(window).scrollTop() + element[0].clientHeight + 8 + offsetHeight + offset.top];
+                return [position.left + offset.left - $(window).scrollLeft(), position.top - $(window).scrollTop() + displayedElem[0].clientHeight + 8 + offsetHeight + offset.top];
             default:
-                return [position.left + element.width() + offsetWidth + offset.left + 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
+                return [position.left + displayedElem.width() + offsetWidth + offset.left + 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
         }
     };
 
