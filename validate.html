@@ -160,11 +160,11 @@
 			<br>
 			<div style="width:800px; margin-left:auto; margin-right:auto;">
 				<span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
-				<label for="top">Top: </label><input type="text" id="top" data-location="top" data-offsetwidth="100" data-offsetheight="50" data-type="phone" data-validateon="change" class="inputValidate"/>
+				<label for="top">Top: </label><input type="text" id="top" data-min="23" data-location="top" data-offsetwidth="100" data-offsetheight="50" data-type="phone" data-validateon="change" class="inputValidate"/>
 				<br/><br/>
 				<input type="text" id="left" data-location="right" data-required data-customrules="custom,notMark" data-validateon="input" class="inputValidate"/><label for="left">Left: </label>
 				<br/><br/>
-				<label for="right">Right: </label><input type="text" id="right" data-offsetwidth="100" data-offsetheight="50" data-type="name,phone" class="inputValidate"/>
+				<label for="right">Right: </label><input type="text" id="right" data-max="200" data-offsetwidth="100" data-offsetheight="50" data-type="name,phone" class="inputValidate"/>
 				<br/><br/>
 				<label for="bottom">Bottom: </label><input type="text" id="bottom" data-location="bottom" data-inputaction="validInput" data-offsetwidth="-100" data-offsetheight="50" data-type="phone" data-validateon="input" class="inputValidate"/>
 			</div>
@@ -201,8 +201,10 @@
 			</br>
 			<label for="website">Website: </label><input type="text" id="website" data-required data-type="url"/>
 			</br>
-			<label for="radio">Radio Buttons: </label><input type="radio" name="sex" value="male" id="sexRadio" data-required>Male
-			<input type="radio" name="sex" value="female">Female
+			<span class="displayhere">
+				<label for="radio">Radio Buttons: </label><input type="radio" name="sex" value="male" id="sexRadio" data-required data-displayon=".displayhere,up"/>Male
+				<input type="radio" name="sex" value="female"/>Female
+			</span>
 			<br><br>
 			<label for="car">My car is:</label>
 			<br>
