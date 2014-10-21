@@ -238,7 +238,7 @@ var validator =  function() {
         var inputArray = [];
         var elem = $(input);
 
-        if (elem.attr("data-requiredfield") !== undefined) {    //Build out the inputArray with validation rules: required, type, and custom.
+        if (elem.attr("data-required") !== undefined) {    //Build out the inputArray with validation rules: required, type, and custom.
             inputObj = {
                 input: $(input),
                 rule: "required",
@@ -311,7 +311,7 @@ var validator =  function() {
             for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray for each input with the required/type/custom rules and their status.
                 var inputObj;
                 var elem = $(inputs[j]);
-                if (elem.attr("data-requiredfield") !== undefined) {
+                if (elem.attr("data-required") !== undefined) {
                     inputObj = {
                         input: $(inputs[j]),
                         rule: "required",
@@ -357,7 +357,7 @@ var validator =  function() {
         var failedRequired = false; //Determines whether it should continue validation after testing the required functionality.
         var typeRules = elem.data("type");  //The predefined rules that are part of this library.
         var customRules = elem.data('customrules'); //User defined validation rules.
-        var isRequired = elem.attr("data-requiredfield");
+        var isRequired = elem.attr("data-required");
         var rules;
 
         elem.data("vts", options.time);
@@ -369,13 +369,13 @@ var validator =  function() {
             toDisplay.removeClass("alignInput");
         }
 
-        if (isRequiredField !== undefined || isRequiredGroup !== undefined) {
+        if (isRequired !== undefined) {
             var tested;
-            if (isRequiredField !== undefined) {
-                tested = requiredInput(elem);
+            if (elem[0].type === "radio") {
+                tested = requiredGroup(elem);
             }
             else {
-                tested = requiredGroup(elem);
+                tested = requiredInput(elem);
             }
             if (!tested.valid) {
                 failedRequired = true;
