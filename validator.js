@@ -369,8 +369,14 @@ var validator =  function() {
             toDisplay.removeClass("alignInput");
         }
 
-        if (isRequired !== undefined) {
-            var tested = required(elem);
+        if (isRequiredField !== undefined || isRequiredGroup !== undefined) {
+            var tested;
+            if (isRequiredField !== undefined) {
+                tested = requiredInput(elem);
+            }
+            else {
+                tested = requiredGroup(elem);
+            }
             if (!tested.valid) {
                 failedRequired = true;
                 createErrorMessage(elem, tested, options, "required", 0, 0);
@@ -1059,6 +1065,18 @@ var validator =  function() {
             return { valid: false, message: "Required field.", width: 100 };
         }
         return { valid: true }
+    };
+    
+    var requiredGroup = function(obj) {
+        if (obj.attr("name")) {
+            var grpName = obj.attr("name");
+            var selected = $("input[name=" + grpName + "]:checked").val();
+            if (selected === undefined) {
+                return { valid: false, message: "You must selected at least one option." };
+            }
+            return { valid: true };
+        }
+        return { valid: false, message: "This input has no identifying name." };
     };
     
     var requiredGroup = function(obj) {
