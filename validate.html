@@ -46,7 +46,7 @@
 
 		function closeModal() {
 			$("#modalValidate").remove();
-			validator().removeErrors("modal");	//remove any validation errors inside the JQ modal before close.
+			validator().removeErrors("modal");
 		    $("#modal").dialog("close");
 		}
 
@@ -102,21 +102,22 @@
 				}}, 3000);
 		}
 
-
 		function preventPaste(e){
 		   e.preventDefault();
 		   return false;
 		}
-	
+
 		function testHook() {
 			validator().validate("fieldValidate4");
 		}
-	
+
 		$(document).on("validated", function(e, eventData) {
 			if (eventData.element === "fieldValidate3") {
 				alert(eventData.element + " finished validation." + 
 					"\nPassed: " + eventData.passed + 
 					"\nNumber of failed inputs: " + eventData.count +
+					"\nNumber of validation rules tested: " + eventData.testedRules +
+					"\nTotal number of rules: " + eventData.totalRules +
 					"\nTime: " + eventData.time);
 				validator().validate("fieldValidate5");
 			}
@@ -200,6 +201,15 @@
 			</br>
 			<label for="website">Website: </label><input type="text" id="website" data-requiredfield data-type="url"/>
 			</br>
+			<label for="radio">Radio Buttons: </label><input type="radio" name="sex" value="male" id="sexRadio" data-requiredgroup>Male
+			<input type="radio" name="sex" value="female">Female
+			<br><br>
+			<label for="car">My car is:</label>
+			<br>
+			<input type="checkbox" name="car" value="2door" id="carCheckbox" data-requiredgroup>2 Doors<br>
+ 			<input type="checkbox" name="car" value="3door">3 Doors<br>
+ 			<input type="checkbox" name="car" value="4door">4 Doors<br>
+ 			<input type="checkbox" name="car" value="5door">5 Doors<br><br>
 			<input type="submit" id="groupSubmit" value="Submit" data-form="groupValidate"/>
 		</div>
 
