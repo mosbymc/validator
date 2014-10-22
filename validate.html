@@ -127,21 +127,6 @@
 	</head>
 	<body onload="things()" style="height:1500px;">
 		<div>
-			<h2>Validation by field</h2>
-			<span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
-			<label for="name">Name: </label><input type="text" id="name" data-type="name" data-inputaction="showElement" data-validateon="input" class="inputValidate"/>
-			<br/>
-			<input type="textarea" id="text"/>
-			<br>
-			<label for="numbers">Number: </label><input type="text" id="numbers"/>
-			<br/>
-			<label for="selector">Select something: </label><select id="selector">
-				<option value="1">Good Choice</option>
-				<option value="2">Acceptable Choice</option>
-				<option value="3">Bad Choice</option>
-			</select>
-			<br/>
-			<input type="submit" id="submit" value="Submit"/>
 			<br/>
 			<br/>
 			<input type="button" id="openModal" value="Modal" onclick="openModal()"/>
@@ -216,7 +201,7 @@
 		</div>
 
 		<fieldset id="fieldValidate1" class="formValidate" data-formaction="submitThisForm">
-	    	<legend>Group Validation</legend>
+	    	<legend>Basic Form Validation - no additional display options used</legend>
 	      	<dl align='left'>
 	      		<dt><label for='fv1fName'>First Name: </label></dt>
 				<dd><input type='text' id='fv1fName' title="First Name" size='20' data-required data-type="phone" data-customrules="notMark,custom"/></dd>
@@ -255,7 +240,7 @@
 		</fieldset>
 
 		<fieldset id="fieldValidate2" class="formValidate hover inputValidate" data-formaction="submitThisForm" data-beforevalidate="testFirst" data-excludeinputs="fv2password1">
-	    	<legend>Group Validation</legend>
+	    	<legend>Baisc Form Validation - hover option and call before validation function used</legend>
 	      	<dl align='left'>
 	      		<dt><label for='fv2fName'>First Name: </label></dt>
 				<dd><input type='text' id='fv2fName' title="First Name" size='20' data-required data-type="name"/></dd>
@@ -294,7 +279,7 @@
 		</fieldset>
 
 		<fieldset id="fieldValidate3" class="formValidate highlightErrors" data-formaction="submitThisForm" data-grouperrors="showErrors">
-	    	<legend>Group Validation</legend>
+	    	<legend>Form Validation - Form level error message grouping</legend>
 	    	<div id="showErrors" class="hideGroupedErrors">
 	    		<h3 class='errorMsg'>There was a problem with your request.</h3>
 	    	</div>
@@ -336,7 +321,7 @@
 		</fieldset>
 
 		<fieldset id="fieldValidate4" class="formValidate groupByInput" data-formaction="submitThisForm" data-excludeinputs="fv4password">
-	    	<legend>Group Validation</legend>
+	    	<legend>Form Validation - Error messages grouped by input.</legend>
 	      	<dl align='left'>
 	      		<dt><label for='fv4fName'>First Name: </label></dt>
 				<dd><input type='text' id='fv4fName' data-errorprefix="First Name" size='20' data-required data-type="phone" data-customrules="custom,notMark"/></dd>
@@ -373,7 +358,7 @@
 		</fieldset>
 
 		<fieldset id="fieldValidate5" class="formValidate inputValidate" data-formaction="submitThisForm" data-excludeinputs="fv5password,fv5lName,fv5homephone,fv5date,fv5website">
-	    	<legend>Group Validation</legend>
+	    	<legend>Form Validation - also has inidiviual inputs validated on input event, but excludes several fields from input event validation.</legend>
 	      	<dl align='left'>
 	      		<dt><label for='fv5fName'>First Name: </label></dt>
 				<dd><input type='text' id='fv5fName' class="groupByInput" data-errorprefix="First Name" size='20' data-required data-type="phone" data-location="left" data-customrules="custom,notMark"/></dd>
