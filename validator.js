@@ -465,6 +465,9 @@ var validator =  function() {
                 tested = requiredInput(elem);
             }
             postValidation(tested, elem, options, "required", inputsArray);
+            if (!tested.valid) {
+                failedRequired = true;
+            }
         }
 
         //If the input passed the required validation or didn't need it, then continue to the other rules.
