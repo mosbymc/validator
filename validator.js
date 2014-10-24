@@ -51,7 +51,7 @@ var validator =  function() {
                 }
             }
             else if ($(target).prop("type").toUpperCase() === "SUBMIT" && target.form !== null) {
-                var form = target.form;   //make sure this will return a JQ object of the form element
+                var form = target.form;
                 var classes = [];
                 for (var i = 0; i < form.classList.length; i++) {
                     classes.push(form.classList[i]);
@@ -65,7 +65,7 @@ var validator =  function() {
                     var time = new Date().getTime();
 
                     var formOptions = {
-                        form: form.id,    //make sure this is correct syntax to get the form's id
+                        form: form.id,
                         display: classes.indexOf("hover") === -1 ? false : "hover",
                         success: null,
                         modalId: null,
