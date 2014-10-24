@@ -446,6 +446,7 @@ var validator =  function() {
         var maxVal = elem.data("max");
         var match = elem.data("matchfield");
         var rules;
+        var tested;
 
         elem.data("vts", options.time);
 
@@ -456,105 +457,40 @@ var validator =  function() {
             toDisplay.removeClass("alignInput");
         }
 
-        if (isRequired !== undefined || typeRules !== undefined || customRules !== undefined) { //remove any previous error div from the previous validation attempt.
-            removeErrorText(elem);
-            var toDisplay = getOtherElem(elem);
-            toDisplay.removeClass("invalid");
-            toDisplay.removeClass("alignInput");
-        }
-
         if (isRequired !== undefined) {
-            var tested;
             if (elem[0].type === "radio") {
                 tested = requiredGroup(elem);
             }
             else {
                 tested = requiredInput(elem);
             }
-            if (!tested.valid) {
-                failedRequired = true;
-                createErrorMessage(elem, tested, options, "required", 0, 0);
-                groupByForm(options, elem, "required");
-                groupByInput(options, elem, "required");
-            }
-            for (var i = 0; i < inputsArray.length; i++) {
-                if (elem[0] === inputsArray[i].input[0] && "required" === inputsArray[i].rule) {
-                    inputsArray[i].valid = tested.valid;
-                }
-            }
-        }
-        
-        if (!failedRequired) {
-            if (minVal !== undefined) {
-                var tested = testMinValue(elem);
-                if (!tested.valid) {
-                    var errorOffsets = getMessageOffset(elem);
-                    createErrorMessage(elem, tested, options, "min", errorOffsets.width, errorOffsets.height);
-                    groupByForm(options, elem, "min");
-                    groupByInput(options, elem, "min"); //See if these can be moved to the createErrorMessage function
-                }
-                for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
-                    if (elem[0] === inputsArray[i].input[0] && "min" === inputsArray[i].rule) {
-                        inputsArray[i].valid = tested.valid;
-                    }
-                }
-            }
-            if (maxVal !== undefined) {
-                var tested = testMaxValue(elem);
-                if (!tested.valid) {
-                    var errorOffsets = getMessageOffset(elem);
-                    createErrorMessage(elem, tested, options, "max", errorOffsets.width, errorOffsets.height);
-                    groupByForm(options, elem, "max");
-                    groupByInput(options, elem, "max"); //See if these can be moved to the createErrorMessage function
-                }
-                for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
-                    if (elem[0] === inputsArray[i].input[0] && "max" === inputsArray[i].rule) {
-                        inputsArray[i].valid = tested.valid;
-                    }
-                }
-            }
-        }
-        
-        if (!failedRequired) {
-            if (match !== undefined) {
-                var tested = verifyMatch(elem);
-                if (!tested.valid) {
-                    var errorOffsets = getMessageOffset(elem);
-                    createErrorMessage(elem, tested, options, "match", errorOffsets.width, errorOffsets.height);
-                    groupByForm(options, elem, "match");
-                    groupByInput(options, elem, "match"); //See if these can be moved to the createErrorMessage function
-                }
-                for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
-                    if (elem[0] === inputsArray[i].input[0] && "match" === inputsArray[i].rule) {
-                        inputsArray[i].valid = tested.valid;
-                    }
-                }
-            }
+            postValidation(tested, elem, options, "required", inputsArray);
         }
 
-        //If the input passed the required validation or didn't need it, then continue to "type rules" and custom rules.
+        //If the input passed the required validation or didn't need it, then continue to the other rules.
         if (!failedRequired) {
+            if (minVal !== undefined) {
+                tested = testMinValue(elem);
+                postValidation(tested, elem, options, "min", inputsArray);
+            }
+            if (maxVal !== undefined) {
+                tested = testMaxValue(elem);
+                postValidation(tested, elem, options, "max", inputsArray);
+            }
+            if (match !== undefined) {
+                tested = verifyMatch(elem);
+                postValidation(tested, elem, options, "match", inputsArray);
+            }
             if (typeRules !== undefined) {
                 rules = typeRules.split(',');
                 $.each(rules, function(index, value) {
                     var fn = dataTypeRules[value];
                     if (typeof fn === "function") {
-                        var tested = fn.call(this, elem);
-                        if (!tested.valid) {    //If validation fail, create the error message element
-                            var errorOffsets = getMessageOffset(elem);
-                            createErrorMessage(elem, tested, options, value, errorOffsets.width, errorOffsets.height);
-                            groupByForm(options, elem, value);
-                            groupByInput(options, elem, value); //See if these can be moved to the createErrorMessage function
-                        }
-                        for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
-                            if (elem[0] === inputsArray[i].input[0] && value === inputsArray[i].rule) {
-                                inputsArray[i].valid = tested.valid;
-                            }
-                        }
+                        tested = fn.call(this, elem);
+                        postValidation(tested, elem, options, value, inputsArray);
                     }
                 });
             }
-            
             if (customRules !== undefined) {
                 rules = customRules.split(',');
                 $.each(rules, function(index, value) {
@@ -592,6 +528,20 @@ var validator =  function() {
                 if (elem[0] === inputsArray[k].input[0] && inputsArray[k].rule !== "required") {
                     inputsArray[k].valid = null;
                 }
+            }
+        }
+    };
+
+    var postValidation = function(tested, elem, options, rule, inputsArray) {
+        if (!tested.valid) {
+            var errorOffsets = getMessageOffset(elem);
+            createErrorMessage(elem, tested, options, rule, errorOffsets.width, errorOffsets.height);
+            groupByForm(options, elem, rule);
+            groupByInput(options, elem, rule); //See if these can be moved to the createErrorMessage function
+        }
+        for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
+            if (elem[0] === inputsArray[i].input[0] && rule === inputsArray[i].rule) {
+                inputsArray[i].valid = tested.valid;
             }
         }
     };
