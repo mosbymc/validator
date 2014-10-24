@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 //The starting point of valdation
 var validator =  function() {
     this.init = function (events) {
-        $(document).on("click", "input", function (event) {  //Bind form event listener and create "options" object when an input with the "formValidate" class is clicked.
+        $(document).on("click", "input, button", function(event) {  //Bind form event listener and create "options" object when an input with the "formValidate" class is clicked.
             var target = event.currentTarget;
             if ($(target).data("form") !== undefined) {
                 var form = $("#" + $(target).data("form"));
@@ -41,32 +41,54 @@ var validator =  function() {
                         callBefore: form.data("beforevalidate") || false,
                         group: form.hasClass("groupByInput"),
                         button: $(target),
-                        time: time
+                        time: time,
+                        isForm: false,
+                        event: event
                     };
                     Object.freeze(formOptions);
                     $(target).prop("disabled", true);
                     callBeforeValidate(form, formOptions);
                 }
             }
-        });
+            else if ($(target).prop("type").toUpperCase() === "SUBMIT" && target.form !== null) {
+                var form = target.form;   //make sure this will return a JQ object of the form element
+                var classes = [];
+                for (var i = 0; i < form.classList.length; i++) {
+                    classes.push(form.classList[i]);
+                }
+                if (classes.indexOf("formValidate") !== -1) {
+                    var attrs = [];
+                    for (i = 0; i < form.attributes.length; i++) {
+                        attrs.push(form.attributes[i]);
+                    }
 
-        $(document).on("click", "button", function(event) {  //Bind form event listener and create "options" object when button with the "formValidate" class is clicked.
-            var target = event.currentTarget;
-            if ($(target).data("form") !== undefined) {
-                var form = $("#" + $(target).data("form"));
-                if (form.hasClass("formValidate")) {
                     var time = new Date().getTime();
+
                     var formOptions = {
-                        form: $(target).data("form"),
-                        display: form.hasClass("hover") === false ? false : "hover",
-                        success: form.data("formaction") || null,
-                        modalId: form.data("modalid") || null,
-                        groupErrors: form.data("grouperrors") || null,
-                        callBefore: form.data("beforevalidate") || false,
-                        group: form.hasClass("groupByInput"),
+                        form: form.id,    //make sure this is correct syntax to get the form's id
+                        display: classes.indexOf("hover") === -1 ? false : "hover",
+                        success: null,
+                        modalId: null,
+                        groupErrors: null,
+                        callBefore: false,
+                        group: classes.indexOf("groupByInput") !== -1,
                         button: $(target),
-                        time: time
+                        time: time,
+                        isForm: true,
+                        event: event
                     };
+
+                    for (i = 0; i < form.attributes.length; i++) {
+                        if (form.attributes[i].name === "data-grouperrors") {
+                            formOptions.groupErrors = form.attributes[i].value;
+                        }
+                        if (form.attributes[i].name === "modalid") {
+                            formOptions.modalId = attrs[i].value;
+                        }
+                        if (form.attributes[i].name === "beforeValidate") {
+                            formOptions.callBefore = form.attributes[i].value;
+                        }
+                    }
                     Object.freeze(formOptions);
                     $(target).prop("disabled", true);
                     callBeforeValidate(form, formOptions);
@@ -89,7 +111,9 @@ var validator =  function() {
                             success: $(target).data("inputaction") || null,
                             modalId: $(target).data("modalid") || null,
                             group: $(target).hasClass("groupByInput") === false ? $(target).parents(".formValidate:first").hasClass("groupByInput") : $(target).hasClass("groupByInput"),
-                            time: time
+                            time: time,
+                            isForm: false,
+                            event: event
                         };
                         Object.freeze(inputOptions);
                         validateInput($(target), inputOptions);
@@ -104,7 +128,9 @@ var validator =  function() {
                     success: $(target).data("inputaction") || null,
                     modalId: $(target).data("modalid") || null,
                     group: $(target).hasClass("groupByInput") === false ? $(target).parents(".formValidate:first").hasClass("groupByInput") : $(target).hasClass("groupByInput"),
-                    time: time
+                    time: time,
+                    isForm: false,
+                    event: event
                 };
                 Object.freeze(inputOptions);
                 validateInput($(target), inputOptions);
@@ -226,7 +252,9 @@ var validator =  function() {
                 callBefore: form.data("beforevalidate") || false,
                 group: form.hasClass("groupByInput"),
                 button: button,
-                time: time
+                time: time,
+                isForm: false,
+                event: null
             };
             button.prop("disabled", true);
             callBeforeValidate(form, formOptions);
@@ -246,7 +274,6 @@ var validator =  function() {
             }
             inputArray.push(inputObj);
         }
-
         var typeRules = elem.data("type");
         var rules;
         if (typeRules !== undefined && typeRules.split(",").length > 0) {
@@ -260,7 +287,6 @@ var validator =  function() {
                 inputArray.push(inputObj);
             }
         }
-
         var customRules = elem.data('customrules');
         if (customRules !== undefined && customRules.split(",").length > 0) {
             rules = customRules.split(",");
@@ -273,7 +299,6 @@ var validator =  function() {
                 inputArray.push(inputObj);
             }
         }
-        
         var min = elem.data('min');
         if (min !== undefined && min !== "" && parseInt(min) !== NaN) {
             inputObj = {
@@ -283,12 +308,20 @@ var validator =  function() {
             }
             inputArray.push(inputObj);
         }
-
         var max = elem.data("max");
         if (max !== undefined && max !== "" && parseInt(max) !== NaN) {
             inputObj = {
                 input: $(input),
                 rule: max,
+                valid: "waiting"
+            }
+            inputArray.push(inputObj);
+        }
+        var match = elem.data("matchfield");
+        if (match !== undefined) {
+            inputObj = {
+                input: $(input),
+                rule: "match",
                 valid: "waiting"
             }
             inputArray.push(inputObj);
@@ -367,7 +400,7 @@ var validator =  function() {
                 if (min !== undefined && min !== "" && parseInt(min) !== NaN) {
                     inputObj = {
                         input: $(inputs[j]),
-                        rule: min,
+                        rule: "min",
                         valid: "waiting"
                     }
                     inputArray.push(inputObj);
@@ -376,7 +409,16 @@ var validator =  function() {
                 if (max !== undefined && max !== "" && parseInt(max) !== NaN) {
                     inputObj = {
                         input: $(inputs[j]),
-                        rule: max,
+                        rule: "max",
+                        valid: "waiting"
+                    }
+                    inputArray.push(inputObj);
+                }
+                var match = elem.data("matchfield");
+                if (match !== undefined) {
+                    inputObj = {
+                        input: $(inputs[j]),
+                        rule: "match",
                         valid: "waiting"
                     }
                     inputArray.push(inputObj);
@@ -396,9 +438,19 @@ var validator =  function() {
         var typeRules = elem.data("type");  //The predefined rules that are part of this library.
         var customRules = elem.data('customrules'); //User defined validation rules.
         var isRequired = elem.attr("data-required");
+        var minVal = elem.data("min");
+        var maxVal = elem.data("max");
+        var match = elem.data("matchfield");
         var rules;
 
         elem.data("vts", options.time);
+
+        if (isRequired !== undefined || typeRules !== undefined || customRules !== undefined) { //remove any previous error div from the previous validation attempt.
+            removeErrorText(elem);
+            var toDisplay = getOtherElem(elem);
+            toDisplay.removeClass("invalid");
+            toDisplay.removeClass("alignInput");
+        }
 
         if (isRequired !== undefined || typeRules !== undefined || customRules !== undefined) { //remove any previous error div from the previous validation attempt.
             removeErrorText(elem);
@@ -453,6 +505,23 @@ var validator =  function() {
                 }
                 for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
                     if (elem[0] === inputsArray[i].input[0] && "max" === inputsArray[i].rule) {
+                        inputsArray[i].valid = tested.valid;
+                    }
+                }
+            }
+        }
+        
+        if (!failedRequired) {
+            if (match !== undefined) {
+                var tested = verifyMatch(elem);
+                if (!tested.valid) {
+                    var errorOffsets = getMessageOffset(elem);
+                    createErrorMessage(elem, tested, options, "match", errorOffsets.width, errorOffsets.height);
+                    groupByForm(options, elem, "match");
+                    groupByInput(options, elem, "match"); //See if these can be moved to the createErrorMessage function
+                }
+                for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
+                    if (elem[0] === inputsArray[i].input[0] && "match" === inputsArray[i].rule) {
                         inputsArray[i].valid = tested.valid;
                     }
                 }
@@ -585,10 +654,13 @@ var validator =  function() {
             element: options.form !== undefined ? options.form : options.input,
             passed: numFailed === 0,
             count: numFailed,
-            time: new Date()
+            totalRules: inputArray.length,
+            testedRules: rulesTestedCount,
+            time: new Date(),
+            event: options.event
         }]);
 
-        if (numFailed === 0) {       //If the form passed validation, call the success function if one was supplied.
+        if (numFailed === 0 && options.isForm !== true) {       //If the form passed validation, call the success function if one was supplied.
             var fn = window[options.success];
             if (typeof fn === "function") {
                 try {
@@ -599,6 +671,10 @@ var validator =  function() {
                     console.log(ex);
                 }
             }
+        }
+
+        if (numFailed !== 0 && options.isForm === true) {
+            options.event.preventDefault();
         }
     };
 
@@ -913,15 +989,21 @@ var validator =  function() {
             //becomes more likely the further it steps up in parents.
             var place = other[1] === "up" ? ":last" : ":first";
             var otherElem = move === "up" ? element.prevAll(ident + ":first") : element.nextAll(ident + ":first");
-            if (otherElem.length === 0) {
+            if (otherElem.length === 0) {   //if no immediate ancestor was found, look through the DOM till we find it
                 var stepOut = element.parent();
                 while (stepOut.length !== 0) {
+                    if (stepOut.hasClass(ident.substring(1,ident.length))) {
+                        return stepOut;     //return parent
+                    }
                     var sibling = move === "up" ? stepOut.prev() : stepOut.next();
                     while (sibling.length !== 0) {
+                        if (sibling.hasClass(ident.substring(1,ident.length))) {
+                            return sibling;     //return uncle
+                        }
                         var otherElement = sibling.find(ident + place);
                         if (otherElement.length !== 0) {
-                            return otherElement;
-                            }
+                            return otherElement;    //return cousin
+                        }
                         sibling = move === "up" ? sibling.prev() : sibling.next();
                     }
                     stepOut = stepOut.parent();
@@ -1130,13 +1212,13 @@ var validator =  function() {
     */
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-    var required = function(obj) {
+    var requiredInput = function(obj) {
         if (obj.val().length < 1) {
             return { valid: false, message: "Required field.", width: 100 };
         }
-        return { valid: true }
+    return { valid: true }
     };
-    
+
     var requiredGroup = function(obj) {
         if (obj.attr("name")) {
             var grpName = obj.attr("name");
@@ -1148,7 +1230,7 @@ var validator =  function() {
         }
         return { valid: false, message: "This input has no identifying name." };
     };
-    
+
     var testMinValue = function(obj) {
         var minVal = obj.data("min");
         if (parseInt(minVal) > parseInt(obj.val())) {
@@ -1164,17 +1246,13 @@ var validator =  function() {
         }
         return { valid: true };
     };
-    
-    var requiredGroup = function(obj) {
-        if (obj.attr("name")) {
-            var grpName = obj.attr("name");
-            var selected = $("input[name=" + grpName + "]:checked").val();
-            if (selected < 1) {
-                return { valid: false, message: "You must selected at least one option." };
-            }
+
+    var verifyMatch = function(obj) {
+        var toMatch = $("#" + obj.data("matchfield"));
+        if (obj.val() === toMatch.val()) {
             return { valid: true };
         }
-        return { valid: false, message: "This input has no identifying name." };
+        return { valid: false, message: "Passwords must match.", width: 175 };
     };
 
     var dataTypeRules = {
