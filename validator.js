@@ -208,7 +208,9 @@ var validator =  function() {
                                         success: $(target).data("inputaction") || null,
                                         modalId: $(target).data("modalid") || null,
                                         group: $(target).parents(".formValidate:first").hasClass("groupByInput"),
-                                        time: time
+                                        time: time,
+                                        isForm: false,
+                                        event: event
                                     };
                                     Object.freeze(inputOptions);
                                     validateInput($(target), inputOptions);
@@ -223,7 +225,9 @@ var validator =  function() {
                                 success: $(target).data("inputaction") || null,
                                 modalId: $(target).data("modalid") || null,
                                 group: $(target).parents(".formValidate:first").hasClass("groupByInput"),
-                                time: time
+                                time: time,
+                                isForm: false,
+                                event: event
                             };
                             Object.freeze(inputOptions);
                             validateInput($(target), inputOptions);
