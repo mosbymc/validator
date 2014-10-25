@@ -269,6 +269,12 @@ var validator =  function() {
         var inputObj;
         var inputArray = [];
         var elem = $(input);
+        var rules;
+        var vRules = elem.data("validationrules");
+        var customRules = elem.data('customrules');
+        var min = elem.data('min');
+        var max = elem.data("max");
+        var match = elem.data("matchfield");
 
         if (elem.attr("data-required") !== undefined) {    //Build out the inputArray with validation rules: required, type, and custom.
             inputObj = {
@@ -278,8 +284,6 @@ var validator =  function() {
             };
             inputArray.push(inputObj);
         }
-        var vRules = elem.data("validationrules");
-        var rules;
         if (vRules !== undefined && vRules.split(",").length > 0) {
             rules = vRules.split(",");
             for (var l = 0; l < rules.length; l++) {
@@ -291,7 +295,6 @@ var validator =  function() {
                 inputArray.push(inputObj);
             }
         }
-        var customRules = elem.data('customrules');
         if (customRules !== undefined && customRules.split(",").length > 0) {
             rules = customRules.split(",");
             for (var k = 0; k < rules.length; k++) {
@@ -303,25 +306,22 @@ var validator =  function() {
                 inputArray.push(inputObj);
             }
         }
-        var min = elem.data('min');
         if (min !== undefined && min !== "" && parseInt(min) !== NaN) {
             inputObj = {
                 input: $(input),
-                rule: min,
+                rule: "min",
                 valid: "waiting"
             };
             inputArray.push(inputObj);
         }
-        var max = elem.data("max");
         if (max !== undefined && max !== "" && parseInt(max) !== NaN) {
             inputObj = {
                 input: $(input),
-                rule: max,
+                rule: "max",
                 valid: "waiting"
             };
             inputArray.push(inputObj);
         }
-        var match = elem.data("matchfield");
         if (match !== undefined) {
             inputObj = {
                 input: $(input),
@@ -367,7 +367,13 @@ var validator =  function() {
             var rules;
             for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray for each input with the required/type/custom rules and their status.
                 var inputObj;
+                var vRules = elem.data("validationrules");
+                var customRules = elem.data('customrules');
+                var min = elem.data('min');
+                var max = elem.data("max");
+                var match = elem.data("matchfield");
                 var elem = $(inputs[j]);
+
                 if (elem.attr("data-required") !== undefined) {
                     inputObj = {
                         input: $(inputs[j]),
@@ -376,7 +382,6 @@ var validator =  function() {
                     };
                     inputArray.push(inputObj);
                 }
-                var vRules = elem.data("validationrules");
                 if (vRules !== undefined && vRules.split(",").length > 0) {
                     rules = vRules.split(",");
                     for (var l = 0; l < rules.length; l++) {
@@ -388,7 +393,6 @@ var validator =  function() {
                         inputArray.push(inputObj);
                     }
                 }
-                var customRules = elem.data('customrules');
                 if (customRules !== undefined && customRules.split(",").length > 0) {
                     rules = customRules.split(",");
                     for (var k = 0; k < rules.length; k++) {
@@ -400,7 +404,6 @@ var validator =  function() {
                         inputArray.push(inputObj);
                     }
                 }
-                var min = elem.data('min');
                 if (min !== undefined && min !== "" && parseInt(min) !== NaN) {
                     inputObj = {
                         input: $(inputs[j]),
@@ -409,7 +412,6 @@ var validator =  function() {
                     };
                     inputArray.push(inputObj);
                 }
-                var max = elem.data("max");
                 if (max !== undefined && max !== "" && parseInt(max) !== NaN) {
                     inputObj = {
                         input: $(inputs[j]),
@@ -418,8 +420,7 @@ var validator =  function() {
                     };
                     inputArray.push(inputObj);
                 }
-                var match = elem.data("matchfield");
-                if (match !== undefined) {
+                if (match !== undefined && match !== "") {
                     inputObj = {
                         input: $(inputs[j]),
                         rule: "match",
