@@ -278,10 +278,10 @@ var validator =  function() {
             };
             inputArray.push(inputObj);
         }
-        var typeRules = elem.data("type");
+        var vRules = elem.data("validationrules");
         var rules;
-        if (typeRules !== undefined && typeRules.split(",").length > 0) {
-            rules = typeRules.split(",");
+        if (vRules !== undefined && vRules.split(",").length > 0) {
+            rules = vRules.split(",");
             for (var l = 0; l < rules.length; l++) {
                 inputObj = {
                     input: $(input),
@@ -376,9 +376,9 @@ var validator =  function() {
                     };
                     inputArray.push(inputObj);
                 }
-                var typeRules = elem.data("type");
-                if (typeRules !== undefined && typeRules.split(",").length > 0) {
-                    rules = typeRules.split(",");
+                var vRules = elem.data("validationrules");
+                if (vRules !== undefined && vRules.split(",").length > 0) {
+                    rules = vRules.split(",");
                     for (var l = 0; l < rules.length; l++) {
                         inputObj = {
                             input: $(inputs[j]),
@@ -439,7 +439,7 @@ var validator =  function() {
     var validateElement = function(element, options, inputsArray) {      //Starting point for single input validation - reached by both forms and inputs.
         var elem = $(element);
         var failedRequired = false; //Determines whether it should continue validation after testing the required functionality.
-        var typeRules = elem.data("type");  //The predefined rules that are part of this library.
+        var vRules = elem.data("validationrules");  //The predefined rules that are part of this library.
         var customRules = elem.data('customrules'); //User defined validation rules.
         var isRequired = elem.attr("data-required");
         var minVal = elem.data("min");
@@ -450,7 +450,7 @@ var validator =  function() {
 
         elem.data("vts", options.time);
 
-        if (isRequired !== undefined || typeRules !== undefined || customRules !== undefined) { //remove any previous error div from the previous validation attempt.
+        if (isRequired !== undefined || vRules !== undefined || customRules !== undefined) { //remove any previous error div from the previous validation attempt.
             removeErrorText(elem);
             var toDisplay = getOtherElem(elem);
             toDisplay.removeClass("invalid");
@@ -484,10 +484,10 @@ var validator =  function() {
                 tested = verifyMatch(elem);
                 postValidation(tested, elem, options, "match", inputsArray);
             }
-            if (typeRules !== undefined) {
-                rules = typeRules.split(',');
+            if (vRules !== undefined) {
+                rules = vRules.split(',');
                 $.each(rules, function(index, value) {
-                    var fn = dataTypeRules[value];
+                    var fn = validationRules[value];
                     if (typeof fn === "function") {
                         tested = fn.call(this, elem);
                         postValidation(tested, elem, options, value, inputsArray);
@@ -1212,7 +1212,7 @@ var validator =  function() {
         return { valid: false, message: "Passwords must match.", width: 175 };
     };
 
-    var dataTypeRules = {
+    var validationRules = {
         email: function(obj) {
             var re = new RegExp("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$");
             var isEmail = re.test(obj.val());
