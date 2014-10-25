@@ -143,7 +143,7 @@ var validator =  function() {
                 var restrictOptions = {
                     input: target,
                     type: $(target).data("inputtype")
-                }
+                };
                 var valid = monitorChars($(target), restrictOptions, event);
                 if (!valid) {
                     event.preventDefault();
@@ -275,7 +275,7 @@ var validator =  function() {
                 input: $(input),
                 rule: "required",
                 valid: "waiting"
-            }
+            };
             inputArray.push(inputObj);
         }
         var typeRules = elem.data("type");
@@ -287,7 +287,7 @@ var validator =  function() {
                     input: $(input),
                     rule: rules[l],
                     valid: "waiting"
-                }
+                };
                 inputArray.push(inputObj);
             }
         }
@@ -299,7 +299,7 @@ var validator =  function() {
                     input: $(input),
                     rule: rules[k],
                     valid: "waiting"
-                }
+                };
                 inputArray.push(inputObj);
             }
         }
@@ -309,7 +309,7 @@ var validator =  function() {
                 input: $(input),
                 rule: min,
                 valid: "waiting"
-            }
+            };
             inputArray.push(inputObj);
         }
         var max = elem.data("max");
@@ -318,7 +318,7 @@ var validator =  function() {
                 input: $(input),
                 rule: max,
                 valid: "waiting"
-            }
+            };
             inputArray.push(inputObj);
         }
         var match = elem.data("matchfield");
@@ -327,7 +327,7 @@ var validator =  function() {
                 input: $(input),
                 rule: "match",
                 valid: "waiting"
-            }
+            };
             inputArray.push(inputObj);
         }
         
@@ -373,7 +373,7 @@ var validator =  function() {
                         input: $(inputs[j]),
                         rule: "required",
                         valid: "waiting"
-                    }
+                    };
                     inputArray.push(inputObj);
                 }
                 var typeRules = elem.data("type");
@@ -384,7 +384,7 @@ var validator =  function() {
                             input: $(inputs[j]),
                             rule: rules[l],
                             valid: "waiting"
-                        }
+                        };
                         inputArray.push(inputObj);
                     }
                 }
@@ -396,7 +396,7 @@ var validator =  function() {
                             input: $(inputs[j]),
                             rule: rules[k],
                             valid: "waiting"
-                        }
+                        };
                         inputArray.push(inputObj);
                     }
                 }
@@ -406,7 +406,7 @@ var validator =  function() {
                         input: $(inputs[j]),
                         rule: "min",
                         valid: "waiting"
-                    }
+                    };
                     inputArray.push(inputObj);
                 }
                 var max = elem.data("max");
@@ -415,7 +415,7 @@ var validator =  function() {
                         input: $(inputs[j]),
                         rule: "max",
                         valid: "waiting"
-                    }
+                    };
                     inputArray.push(inputObj);
                 }
                 var match = elem.data("matchfield");
@@ -424,7 +424,7 @@ var validator =  function() {
                         input: $(inputs[j]),
                         rule: "match",
                         valid: "waiting"
-                    }
+                    };
                     inputArray.push(inputObj);
                 }
             }
