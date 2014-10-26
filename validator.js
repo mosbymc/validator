@@ -462,10 +462,10 @@ var validator =  function() {
 
         if (isRequired !== undefined) {
             if (elem[0].type === "radio") {
-                tested = requiredGroup(elem);
+                tested = validationRules.requiredGroup(elem);
             }
             else {
-                tested = requiredInput(elem);
+                tested = validationRules.requiredInput(elem);
             }
             postValidation(tested, elem, options, "required", inputsArray);
             if (!tested.valid) {
@@ -476,15 +476,15 @@ var validator =  function() {
         //If the input passed the required validation or didn't need it, then continue to the other rules.
         if (!failedRequired) {
             if (minVal !== undefined) {
-                tested = testMinValue(elem);
+                tested = validationRules.testMinValue(elem);
                 postValidation(tested, elem, options, "min", inputsArray);
             }
             if (maxVal !== undefined) {
-                tested = testMaxValue(elem);
+                tested = validationRules.testMaxValue(elem);
                 postValidation(tested, elem, options, "max", inputsArray);
             }
             if (match !== undefined) {
-                tested = verifyMatch(elem);
+                tested = validationRules.verifyMatch(elem);
                 postValidation(tested, elem, options, "match", inputsArray);
             }
             if (vRules !== undefined) {
@@ -1171,51 +1171,45 @@ var validator =  function() {
         Predefined validation rules.
     */
     ////////////////////////////////////////////////////////////////////////////////////////////
-
-    var requiredInput = function(obj) {
-        if (obj.val().length < 1) {
-            return { valid: false, message: "Required field.", width: 100 };
-        }
-    return { valid: true };
-    };
-
-    var requiredGroup = function(obj) {
-        if (obj.attr("name")) {
-            var grpName = obj.attr("name");
-            var selected = $("input[name=" + grpName + "]:checked").val();
-            if (selected === undefined) {
-                return { valid: false, message: "You must selected at least one option." };
+    var validationRules = {
+        requiredInput: function(obj) {
+            if (obj.val().length < 1) {
+               return { valid: false, message: "Required field.", width: 100 };
             }
             return { valid: true };
-        }
-        return { valid: false, message: "This input has no identifying name." };
-    };
-
-    var testMinValue = function(obj) {
-        var minVal = obj.data("min");
-        if (parseInt(minVal) > parseInt(obj.val())) {
-            return { valid: false, message: "Minimum allowed value: " + minVal, width: 175 };
-        }
-        return { valid: true };
-    };
-
-    var testMaxValue = function(obj) {
-        var maxVal = obj.data("max");
-        if (parseInt(maxVal) < parseInt(obj.val())) {
-            return { valid: false, message: "Maximum allowed value: " + maxVal, width: 175 };
-        }
-        return { valid: true };
-    };
-
-    var verifyMatch = function(obj) {
-        var toMatch = $("#" + obj.data("matchfield"));
-        if (obj.val() === toMatch.val()) {
+        },
+        requiredGroup: function(obj) {
+            if (obj.attr("name")) {
+                var grpName = obj.attr("name");
+                var selected = $("input[name=" + grpName + "]:checked").val();
+                if (selected === undefined) {
+                    return { valid: false, message: "You must selected at least one option." };
+                }
+                return { valid: true };
+            }
+            return { valid: false, message: "This input has no identifying name." };
+        },
+        testMinValue: function(obj) {
+            var minVal = obj.data("min");
+            if (parseInt(minVal) > parseInt(obj.val())) {
+                return { valid: false, message: "Minimum allowed value: " + minVal, width: 175 };
+            }
             return { valid: true };
-        }
-        return { valid: false, message: "Passwords must match.", width: 175 };
-    };
-
-    var validationRules = {
+        },
+        testMaxValue: function(obj) {
+            var maxVal = obj.data("max");
+            if (parseInt(maxVal) < parseInt(obj.val())) {
+                return { valid: false, message: "Maximum allowed value: " + maxVal, width: 175 };
+            }
+            return { valid: true };
+        },
+        verifyMatch: function(obj) {
+            var toMatch = $("#" + obj.data("matchfield"));
+            if (obj.val() === toMatch.val()) {
+                return { valid: true };
+            }
+            return { valid: false, message: "Passwords must match.", width: 175 };
+        },
         email: function(obj) {
             var re = new RegExp("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$");
             var isEmail = re.test(obj.val());
