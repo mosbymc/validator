@@ -357,9 +357,10 @@ var validator =  function() {
     this.validateForm = function(continueValidation, form, options) {    //Used as both a callback and internally if no call before function is supplied.
         if (continueValidation) {   //Only continue validating if given the go ahead from the "call before" function.
             if (options.groupErrors !== null) {     //Remove previous grouped validation errors before validating a new input.
-                $("#" + options.groupErrors).empty();
-                $("#" + options.groupErrors).removeClass("showGroupedErrors");
-                $("#" + options.groupErrors).addClass("hideGroupedErrors");
+                var groupDiv = $("#" + options.groupErrors);
+                groupDiv.empty();
+                groupDiv.removeClass("showGroupedErrors");
+                groupDiv.addClass("hideGroupedErrors");
             }
 
             var inputs = $(form).find(":input").filter(":input");
@@ -367,6 +368,7 @@ var validator =  function() {
             var rules;
             for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray for each input with the required/type/custom rules and their status.
                 var inputObj;
+                var elem = $(inputs[j]);
                 var vRules = elem.data("validationrules");
                 var customRules = elem.data('customrules');
                 var min = elem.data('min');
