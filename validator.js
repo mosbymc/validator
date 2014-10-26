@@ -491,7 +491,8 @@ var validator =  function() {
 
         elem.data("vts", options.time);
 
-        if (isRequired !== undefined || vRules !== undefined || customRules !== undefined) { //remove any previous error div from the previous validation attempt.
+        if (isRequired !== undefined || vRules !== undefined || customRules !== undefined || minVal !== undefined || 
+            maxVal !== undefined || match !== undefined || maxChecked !== undefined || minChecked !== undefined) { //remove any previous error div from the previous validation attempt.
             removeErrorText(elem);
             var toDisplay = getOtherElem(elem);
             toDisplay.removeClass("invalid");
