@@ -276,6 +276,7 @@ var validator =  function() {
         var max = elem.data("max");
         var match = elem.data("matchfield");
         var maxChecked = elem.data("maxchecked");
+        var minChecked = elem.data("minchecked");
 
         if (elem.attr("data-required") !== undefined) {    //Build out the inputArray with validation rules: required, type, and custom.
             inputObj = {
@@ -331,10 +332,18 @@ var validator =  function() {
             };
             inputArray.push(inputObj);
         }
-        if (maxChecked !== undefined) {
+        if (maxChecked !== undefined && parseInt(maxChecked) !== NaN) {
             inputObj = {
                 input: $(input),
                 rule: "maxchecked",
+                valid: "waiting"
+            };
+            inputArray.push(inputObj);
+        }
+        if (minChecked !== undefined && parseInt(minChecked) !== NaN) {
+            inputObj = {
+                input: $(input),
+                rule: "minchecked",
                 valid: "waiting"
             };
             inputArray.push(inputObj);
@@ -384,6 +393,7 @@ var validator =  function() {
                 var max = elem.data("max");
                 var match = elem.data("matchfield");
                 var maxChecked = elem.data("maxchecked");
+                var minChecked = elem.data("minchecked");
                 var elem = $(inputs[j]);
 
                 if (elem.attr("data-required") !== undefined) {
@@ -448,6 +458,14 @@ var validator =  function() {
                     };
                     inputArray.push(inputObj);
                 }
+                if (minChecked !== undefined && parseInt(minChecked) !== NaN) {
+                    inputObj = {
+                        input: $(inputs[j]),
+                        rule: "minchecked",
+                        valid: "waiting"
+                    };
+                    inputArray.push(inputObj);
+                }
             }
 
             for (var i = 0; i < inputs.length; i++) {
@@ -467,6 +485,7 @@ var validator =  function() {
         var maxVal = elem.data("max");
         var match = elem.data("matchfield");
         var maxChecked = elem.data("maxchecked");
+        var minChecked = elem.data("minchecked");
         var rules;
         var tested;
 
@@ -509,6 +528,10 @@ var validator =  function() {
             if (maxChecked !== undefined) {
                 tested = validationRules.maxChecked(elem);
                 postValidation(tested, elem, options, "maxchecked", inputsArray);
+            }
+            if (minChecked !== undefined) {
+                tested = validationRules.minChecked(elem);
+                postValidation(tested, elem, options, "minchecked", inputsArray);
             }
             if (vRules !== undefined) {
                 rules = vRules.split(',');
@@ -1233,6 +1256,18 @@ var validator =  function() {
                 var selected = $("input[name=" + grpName + "]:checked");
                 if (selected.length > maxNum) {
                     return { valid: false, message: "You cannot select more than " + maxNum + " options.", width: 250 };
+                }
+                return { valid: true };
+            }
+            return { valid: true };
+        },
+        minChecked: function(obj) {
+            var minNum = obj.data("maxchecked");
+            if (obj.attr("name")) {
+                var grpName = obj.attr("name");
+                var selected = $("input[name=" + grpName + "]:checked");
+                if (selected.length < minNum) {
+                    return { valid: false, message: "You must select at least " + minNum + " options.", width: 250 };
                 }
                 return { valid: true };
             }
