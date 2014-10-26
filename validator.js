@@ -620,7 +620,7 @@ var validator =  function() {
             event: options.event
         }]);
 
-        if (numFailed === 0 && options.isForm !== true) {       //If the form passed validation, call the success function if one was supplied.
+        if (numFailed === 0 && options.isForm !== true) {       //If the "form" passed validation and doesn't have an action attribute, call the success function if one was supplied.
             var fn = window[options.success];
             if (typeof fn === "function") {
                 try {
@@ -633,7 +633,7 @@ var validator =  function() {
             }
         }
 
-        if (numFailed !== 0 && options.isForm === true) {
+        if (numFailed !== 0 && options.isForm === true) {   //If the form passed validation and has an action attribute, call the success function if one was supplied.
             options.event.preventDefault();
         }
     };
