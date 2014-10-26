@@ -1262,7 +1262,7 @@ var validator =  function() {
             return { valid: true };
         },
         minChecked: function(obj) {
-            var minNum = obj.data("maxchecked");
+            var minNum = obj.data("minchecked");
             if (obj.attr("name")) {
                 var grpName = obj.attr("name");
                 var selected = $("input[name=" + grpName + "]:checked");
