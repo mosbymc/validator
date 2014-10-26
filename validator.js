@@ -741,7 +741,7 @@ var validator =  function() {
                 if (inputIndex < inputs.length - 1) {
                     for (var i = inputIndex + 1; i < inputs.length; i++) {
                         var siblingSpan = $("#" + options.groupErrors).children("[data-parentinput='" + inputs[i].id + "']");
-                        if ($("#" + options.groupErrors).children("[data-parentinput='" + inputs[i].id + "']").length > 0) {
+                        if (siblingSpan.length > 0) {
                             $(span).insertBefore(siblingSpan);
                             var thisSpan = $("#formGrp" + inputId + rule);
                             $("</br>").insertAfter(thisSpan);
