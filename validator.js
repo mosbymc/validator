@@ -1176,7 +1176,7 @@ var validator =  function() {
         if (obj.val().length < 1) {
             return { valid: false, message: "Required field.", width: 100 };
         }
-    return { valid: true }
+    return { valid: true };
     };
 
     var requiredGroup = function(obj) {
