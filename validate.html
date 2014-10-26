@@ -22,6 +22,8 @@
 		        },
 		        open: function (event, ui) {
 		            $(".ui-dialog-titlebar").hide();
+		            //$(".ui-dialog-titlebar").css("visibility", "hidden");
+
 		            var html = '<div id="modalValidate" class="formValidate" data-formaction="sumbitAndClose" data-modalid="modal">' + 
 								'<h2>Group Validated</h2><label for="fName">Name: </label><input type="text" id="modalfName" data-required data-validationrules="name"/>' +
 								'<br/><label for="homeNum">Home Phone: </label><input type="text" id="modalhomeNum" data-required data-validationrules="phone"/>' +
@@ -34,6 +36,7 @@
 					$("#modal").append(html);
 		        }
 		    });
+
 		    validator().init(["change"]);
 		}
 
@@ -168,7 +171,7 @@
 			<br>
 			<label for="zip">Zip: </label><input type="text" id="zip" data-required data-validationrules='zip' />
 			<br/>
-			<label for="email">Email: </label><input type="text" id="email" data-required data-validationrules='email,custom'/>
+			<label for="email">Email: </label><input type="text" id="email" data-required data-validationrules='email'/>
 			<br/>
 			<label for="selector">Select something: </label><select id="choose" data-required>
 				<option value="0">Select</option>
@@ -179,7 +182,7 @@
 			</br>
 			<label for="password">Password: </label><input type="text" id="password" data-required data-validationrules="password" class="inputValidate hover" data-validateon="input"/>
 			</br>
-			<label for="date">Date: </label><input type="text" id="date" data-required data-validationrules=",date"/>
+			<label for="date">Date: </label><input type="text" id="date" data-required data-validationrules="date"/>
 			</br>
 			<label for="website">Website: </label><input type="text" id="website" data-required data-validationrules="url"/>
 			</br>
@@ -190,10 +193,13 @@
 			<br><br>
 			<label for="car">My car is:</label>
 			<br>
-			<input type="checkbox" name="car" value="2door" id="carCheckbox">2 Doors<br>
- 			<input type="checkbox" name="car" value="3door">3 Doors<br>
- 			<input type="checkbox" name="car" value="4door">4 Doors<br>
- 			<input type="checkbox" name="car" value="5door">5 Doors<br><br>
+			<span class="checkboxDisplay">
+				<input type="checkbox" name="car" value="2door" id="carCheckbox" data-maxchecked="1" data-displayon=".checkboxDisplay,up">2 Doors
+	 			<input type="checkbox" name="car" value="3door">3 Doors
+	 			<input type="checkbox" name="car" value="4door">4 Doors
+	 			<input type="checkbox" name="car" value="5door">5 Doors
+ 			</span>
+ 			<br><br>
 			<input type="submit" id="groupSubmit" value="Submit" data-form="groupValidate"/>
 		</div>
 
