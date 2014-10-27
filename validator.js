@@ -1249,7 +1249,7 @@ var validator =  function() {
                 var grpName = obj.attr("name");
                 var selected = $("input[name=" + grpName + "]:checked");
                 if (selected.length > maxNum) {
-                    return { valid: false, message: "You cannot select more than " + maxNum + " options.", width: 250 };
+                    return { valid: false, message: "You cannot select more than " + maxNum + " option(s).", width: 250 };
                 }
                 return { valid: true };
             }
@@ -1261,7 +1261,7 @@ var validator =  function() {
                 var grpName = obj.attr("name");
                 var selected = $("input[name=" + grpName + "]:checked");
                 if (selected.length < minNum) {
-                    return { valid: false, message: "You must select at least " + minNum + " options.", width: 250 };
+                    return { valid: false, message: "You must select at least " + minNum + " option(s).", width: 250 };
                 }
                 return { valid: true };
             }
