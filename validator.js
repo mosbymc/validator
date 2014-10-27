@@ -254,6 +254,7 @@ var validator =  function() {
                 isForm: false,
                 event: null
             };
+            Object.freeze(formOptions);
             button.prop("disabled", true);
             callBeforeValidate(form, formOptions);
         }
