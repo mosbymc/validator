@@ -1165,15 +1165,15 @@ var validator =  function() {
         },
         alphaNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if ((unicode > 47 || unicode < 58) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) { //if alpha-numeric
+            if ((unicode > 47 && unicode < 58) || (unicode > 64 && unicode < 91) || (unicode > 96 && unicode < 123)) { //if alpha-numeric
                 return true; //disable key press
             }
             return false;
         },
         nonAlphaNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if ((unicode > 47 || unicode < 58) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122)) { //if alpha-numeric
-                return false;
+            if ((unicode > 47 && unicode < 58) || (unicode > 64 && unicode < 91) || (unicode > 96 && unicode < 123)) { //if alpha-numeric
+                return false; //disable key press
             }
             return true;
         },
