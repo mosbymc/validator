@@ -361,6 +361,9 @@ var validator =  function() {
                     validateForm(true, form, options);
                 }
             }
+            else {
+              console.log("The supplie 'call before' function: " + options.callBefore + "could not be found.");
+            }
         }
         else {
             validateForm(true, form, options);
@@ -370,10 +373,7 @@ var validator =  function() {
     this.validateForm = function(continueValidation, form, options) {    //Used as both a callback and internally if no call before function is supplied.
         if (continueValidation) {   //Only continue validating if given the go ahead from the "call before" function.
             if (options.groupErrors !== null) {     //Remove previous grouped validation errors before validating a new input.
-                var groupDiv = $("#" + options.groupErrors);
-                groupDiv.empty();
-                groupDiv.removeClass("showGroupedErrors");
-                groupDiv.addClass("hideGroupedErrors");
+                $("#" + options.groupErrors).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");
             }
 
             var inputs = $(form).find(":input").filter(":input");
@@ -489,9 +489,7 @@ var validator =  function() {
         if (isRequired !== undefined || vRules !== undefined || customRules !== undefined || minVal !== undefined || 
             maxVal !== undefined || match !== undefined || maxChecked !== undefined || minChecked !== undefined) { //remove any previous error div from the previous validation attempt.
             removeErrorText(elem);
-            var toDisplay = getOtherElem(elem);
-            toDisplay.removeClass("invalid");
-            toDisplay.removeClass("alignInput");
+            getOtherElem(elem).removeClass("invalid").removeClass("alignInput");
         }
 
         if (isRequired !== undefined) {
@@ -720,8 +718,7 @@ var validator =  function() {
             });
             var grpContainer = $("#" + options.groupErrors);
             if (!grpContainer.hasClass("showGroupedErrors")) {
-                grpContainer.removeClass("hideGroupedErrors");
-                grpContainer.addClass("showGroupedErrors");
+                grpContainer.removeClass("hideGroupedErrors").addClass("showGroupedErrors");
             }
         }
     };
@@ -755,15 +752,13 @@ var validator =  function() {
                         }
                     }
                     if (!foundSibling) {
-                        $("#" + options.groupErrors).append(span);
-                        $("#" + options.groupErrors).append("</br>");
+                        $("#" + options.groupErrors).append(span).append("</br>");
                     }
                 }
             }
         }
         else {
-            $("#" + options.groupErrors).append(span);
-            $("#" + options.groupErrors).append("</br>");
+            $("#" + options.groupErrors).append(span).append("</br>");
         }
     };
 
@@ -799,16 +794,13 @@ var validator =  function() {
             var popup = $("#" + popupId);
             popup.addClass("errorMessage");
             var errorMessage = errorData.message === undefined ? "Validation Error" : errorData.message;
-            popup.html(errorMessage);
-            popup.css('width', errorData.width === undefined ? "" : errorData.width);
+            popup.html(errorMessage).css('width', errorData.width === undefined ? "" : errorData.width);
             setErrorPos(element, offsetWidth, offsetHeight, popup);
             if (options.display === "hover") {
-                popup.addClass("hideMessage");
-                popup.removeClass("showMessage");
+                popup.addClass("hideMessage").removeClass("showMessage");
             }
             else {
-                popup.addClass("showMessage");
-                popup.removeClass("hideMessage");
+                popup.addClass("showMessage").removeClass("hideMessage");
             }
         }
     };
@@ -850,10 +842,7 @@ var validator =  function() {
     var setErrorPos = function(element, offsetWidth, offsetHeight, messageDiv) {
         var position = getOtherElem(element).offset();
         var placement = determinePlacement(position, element, offsetWidth, offsetHeight, messageDiv);
-        messageDiv.addClass("showMessage");
-        messageDiv.removeClass("hideMessage");
-        messageDiv.css('top', placement[1]);
-        messageDiv.css('left', placement[0]);
+        messageDiv.addClass("showMessage").removeClass("hideMessage").css('top', placement[1]).css('left', placement[0]);
 
         return placement;
     };
@@ -872,8 +861,7 @@ var validator =  function() {
         });
 
         toDisplay.bind("mouseout", function () {
-            messageDiv.addClass("hideMessage");
-            messageDiv.removeClass("showMessage");
+            messageDiv.addClass("hideMessage").removeClass("showMessage");
         });
     };
 
@@ -905,31 +893,26 @@ var validator =  function() {
 
     var scrollModalListener = function(options, element, offsetWidth, offsetHeight, messageDiv) {
         if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
-            messageDiv.addClass("hideMessage");
-            messageDiv.removeClass("showMessage");
+            messageDiv.addClass("hideMessage").removeClass("showMessage");
         }
 
         $("#" + options.modalId).on("scroll", function() {
             if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
-                messageDiv.addClass("hideMessage");
-                messageDiv.removeClass("showMessage");
+                messageDiv.addClass("hideMessage").removeClass("showMessage");
             }
             else {
                 setErrorPos(element, offsetWidth, offsetHeight, messageDiv);
-                messageDiv.removeClass("hideMessage");
-                messageDiv.addClass("showMessage");
+                messageDiv.removeClass("hideMessage").addClass("showMessage");
             }
         });
 
         $(window).scroll(function() {
             if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
-                messageDiv.addClass("hideMessage");
-                messageDiv.removeClass("showMessage");
+                messageDiv.addClass("hideMessage").removeClass("showMessage");
             }
             else {
                 setErrorPos(element, offsetWidth, offsetHeight, messageDiv);
-                messageDiv.removeClass("hideMessage");
-                messageDiv.addClass("showMessage");
+                messageDiv.removeClass("hideMessage").addClass("showMessage");
             }
 
         });
@@ -937,8 +920,7 @@ var validator =  function() {
 
     var helpTextScrollModalListener = function(options, element, offsetWidth, offsetHeight, messageDiv) {
         if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
-            messageDiv.addClass("hideMessage");
-            messageDiv.removeClass("showMessage");
+            messageDiv.addClass("hideMessage").removeClass("showMessage");
         }
 
         $("#" + options.modalId).on("scroll", hideShowDiv);
@@ -948,13 +930,11 @@ var validator =  function() {
         function hideShowDiv() {
             if (element.data("displayhelptext") !== undefined && element.data("displayhelptext") !== "false") {
                 if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
-                    messageDiv.addClass("hideMessage");
-                    messageDiv.removeClass("showMessage");
+                    messageDiv.addClass("hideMessage").removeClass("showMessage");
                 }
                 else {
                     setErrorPos(element, offsetWidth, offsetHeight, messageDiv);
-                    messageDiv.removeClass("hideMessage");
-                    messageDiv.addClass("showMessage");
+                    messageDiv.removeClass("hideMessage").addClass("showMessage");
                 }
             }
         }
