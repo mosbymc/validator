@@ -1091,11 +1091,9 @@ var validator =  function() {
         var helpText = elem.prevUntil(":input").filter(".helptext:first");
         var position = getOtherElem(elem).offset();
         var errorOffsets = getMessageOffset(elem);
-        helpText.addClass("showMessage");
-        helpText.removeClass("hideMessage");
+        helpText.addClass("showMessage").removeClass("hideMessage");
         var placement = determinePlacement(position, elem, 0, 0, helpText);
-        helpText.css('top', placement[1]);
-        helpText.css('left', placement[0]);
+        helpText.css('top', placement[1]).css('left', placement[0]);
 
         elem.data("displayhelptext", "true");
 
@@ -1105,8 +1103,7 @@ var validator =  function() {
         else {
             $(window).on("scroll", function() {
                 placement = determinePlacement(position, elem, errorOffsets.width, errorOffsets.height, helpText);
-                helpText.css('top', placement[1]);
-                helpText.css('left', placement[0]);
+                helpText.css('top', placement[1]).css('left', placement[0]);
             });
         }
     };
