@@ -983,6 +983,9 @@ var validator =  function() {
             other = displayOther.split(",");
             ident = other[0];
             move = other[1];
+            if ($(ident).length === 1) {
+              return $(ident);
+            }
             //If "prev" was specified, and the first filtered sibling doesn't match, search through the dom
             //starting with the first parent's children, and moving up and back until the match is found or there
             //are no more parents. Does the reverse for "next".
