@@ -890,7 +890,7 @@ var validator =  function() {
             return false;
         }
         return true;
-    }
+    };
 
     var scrollModalListener = function(options, element, offsetWidth, offsetHeight, messageDiv) {
         if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
@@ -959,7 +959,7 @@ var validator =  function() {
             });
         }
         return {width: width, height: height};
-    }
+    };
 
     var getElemOffset = function(element) {     //gets the user-defined offset for the error messages from the element they are being displayed for.
         var offsetWidth = 0;
