@@ -380,7 +380,7 @@ var validator =  function() {
             var inputArray = [];
             var rules;
             for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray for each input with the required/type/custom rules and their status.
-                var inputObj;
+                var inputObj, l;
                 var elem = $(inputs[j]);
                 var vRules = elem.data("validationrules");
                 var customRules = elem.data('customrules');
@@ -401,7 +401,7 @@ var validator =  function() {
                 }
                 if (vRules !== undefined && vRules.split(",").length > 0) {
                     rules = vRules.split(",");
-                    for (var l = 0; l < rules.length; l++) {
+                    for (l = 0; l < rules.length; l++) {
                         inputObj = {
                             input: $(inputs[j]),
                             rule: rules[l],
@@ -412,10 +412,10 @@ var validator =  function() {
                 }
                 if (customRules !== undefined && customRules.split(",").length > 0) {
                     rules = customRules.split(",");
-                    for (var k = 0; k < rules.length; k++) {
+                    for (l = 0; l < rules.length; l++) {
                         inputObj = {
                             input: $(inputs[j]),
-                            rule: rules[k],
+                            rule: rules[l],
                             valid: "waiting"
                         };
                         inputArray.push(inputObj);
