@@ -93,11 +93,11 @@ var validator =  function() {
         $(document).on("input", "input", function(event) {      //Bind input event listener on input event. The input itself or its parent must have the "inputValidate" class.
             var target = event.currentTarget;
             var time, inputOptions;
-            if (!$(target).hasClass("inputValidate") && ($(target).data("validateon") === "input" || $(target).data("validateon") === undefined)) {
+            if (!$(target).hasClass("inputValidate") && ($(target).data("validateon") === undefined || $(target).data("validateon") === "input")) {
                 var parent = $(target).parents(".inputValidate:first");
                 if (parent !== undefined) {
                     var exclude = parent.data("excludeinputs");
-                    if (exclude !== undefined && exclude.indexOf(target.id) === -1) {
+                    if (exclude !== undefined && exclude.indexOf(target.id) === -1) {   //if the parent form has excluded this input from validation, we stop here.
                         time = new Date().getTime();
                         inputOptions = {
                             input: target,
@@ -114,7 +114,7 @@ var validator =  function() {
                     }
                 }
             }
-            else if ($(target).hasClass("inputValidate") && ($(target).data("validateon") === "input" || $(target).data("validateon") === undefined)) {
+            else if ($(target).hasClass("inputValidate") && ($(target).data("validateon") === undefined || $(target).data("validateon") === "input")) {
                 time = new Date().getTime();
                 inputOptions = {
                     input: target,
