@@ -1104,8 +1104,13 @@ var validator =  function() {
         $.each(rules, function(index, value) {
             var fn = inputTypes[value];
             if (typeof fn === "function") {
-                valid = fn.call(this, elem, event);
-                testedArray.push(valid);
+              try {
+                  valid = fn.call(this, elem, event);
+                  testedArray.push(valid);
+              }
+              catch(ex) {
+                console.log("Could not find function for input type " + value);
+              }
             }
         });
 
@@ -1117,7 +1122,10 @@ var validator =  function() {
             }
             return true;
         }
-        return testedArray[0];
+        else if (testedArray.length === 1) {
+          return testedArray[0];
+        }
+        return true;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////
