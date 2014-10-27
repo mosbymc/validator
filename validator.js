@@ -568,6 +568,16 @@ var validator =  function() {
                             }
                         }
                     }
+                    else {  //if the provided function name cannot be found, or isn't a function, then "ignore" as a rule we need to validate against.
+                        for (var k = 0; k < inputsArray.length; k++) {
+                            for (var l = 0; l < rules.length; l++) {
+                                if (elem[0] === inputsArray[k].input[0] && rules[l] === inputsArray[k].rule) {
+                                    inputsArray[k].valid = null;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 });
             }
         }
