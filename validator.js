@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 //The starting point of valdation
 var validator =  function() {
     this.init = function (events) {
-        $(document).on("click", "input, button", function(event) {  //Bind form event listener and create "options" object when an input with the "formValidate" class is clicked.
+        $(document).on("click", "input, button", function(event) {  //Bind form event listener and create "options" object when an input or button with the "formValidate" class is clicked.
             var target = event.currentTarget;
             if ($(target).data("form") !== undefined) {
                 var form = $("#" + $(target).data("form"));
@@ -50,20 +50,14 @@ var validator =  function() {
                     callBeforeValidate(form, formOptions);
                 }
             }
-            else if ($(target).prop("type").toUpperCase() === "SUBMIT" && target.form !== null) {
-                var form = target.form;
+            else if ($(target).prop("type").toUpperCase() === "SUBMIT" && target.form !== null) {   //creates the same object as above, but works for "submit" buttons.
+                var form = target.form;   //this is set up differently from above because JQ doesn't play nice with forms evidently.
                 var classes = [];
                 for (var i = 0; i < form.classList.length; i++) {
                     classes.push(form.classList[i]);
                 }
                 if (classes.indexOf("formValidate") !== -1) {
-                    var attrs = [];
-                    for (i = 0; i < form.attributes.length; i++) {
-                        attrs.push(form.attributes[i]);
-                    }
-
                     var time = new Date().getTime();
-
                     var formOptions = {
                         form: form.id,
                         display: classes.indexOf("hover") === -1 ? false : "hover",
@@ -83,7 +77,7 @@ var validator =  function() {
                             formOptions.groupErrors = form.attributes[i].value;
                         }
                         if (form.attributes[i].name === "modalid") {
-                            formOptions.modalId = attrs[i].value;
+                            formOptions.modalId = form.attributes[i].value;
                         }
                         if (form.attributes[i].name === "beforeValidate") {
                             formOptions.callBefore = form.attributes[i].value;
