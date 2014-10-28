@@ -228,7 +228,7 @@
 				<dt><label for="fv1displayTest3">Cell Error Here: </label></dt>
 				<dd><input type="text" id="fv1displayTest3" class="displaytest"/></dd>
 				<dt><label for="fv1cellNum2">Cell Phone: </label></dt>
-				<dd><input type="text" id="fv1cellNum2" title="Cell Phone" data-validationrules="phone" data-displayon=".displaytest,up"/></dd>
+				<dd><input type="text" id="fv1cellNum2" title="Cell Phone" data-validationrules="phone" data-displayon=".displaytest,up" data-customrules="asdas"/></dd>
 
 				<dt><label for="fv1zip">Zip: </label></dt>
 				<dd><input type="text" id="fv1zip1" title="Zip Code" data-required data-validationrules='zip' /></dd>
@@ -416,6 +416,36 @@
 				<dd><input type="text" id="fv5website" data-errorprefix="Website" data-required data-validationrules="url"/></dd>
 				<dt><input type="submit" id="fv5groupSubmit" value="Submit" data-form="fieldValidate5"/></dt>
 			</dl>
+		</fieldset>
+
+		<fieldset id="formValidate">
+			<form action="alert('validated');" id="testForm" class="formValidate hover">
+		    	<legend>Basic Form Validation - uses an actual form and lets the form's action fire on successful validation</legend>
+		      	<dl align='left'>
+		      		<dt><label for='fv1fName'>First Name: </label></dt>
+					<dd><input type='text' id='fv1fName' title="First Name" size='20' data-required data-type="phone"/></dd>
+					<dt><label for='fv1lName'>Last Name: </label></dt>
+					<dd><input type='text' id='fv1lName' size='20' title="Last Name" data-required data-type="name"/></dd>
+					<dt><label for="fv1homephone">Home Phone: </label></dt>
+					<dd><input type="text" id="fv1homephone" title="Home Phone" data-required data-type="phone"/></dd>
+					<dt><label for="fv1cellNum2">Cell Phone: </label></dt>
+					<dd><input type="text" id="fv1cellNum2" title="Cell Phone" data-type="phone"/></dd>
+
+					<dt><label for="fv1zip">Zip: </label></dt>
+					<dd><input type="text" id="fv1zip1" title="Zip Code" data-required data-type='zip' /></dd>
+					<dt><label for="fv1email">Email: </label></dt>
+					<dd><input type="text" id="fv1email1" title="Email" data-required data-type='email'/></dd>
+
+					<dt><label for="fv1password">Password: </label></dt>
+					<dd><span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
+						<input type="text" id="fv1password1" title="Password" data-required data-type="password" class="inputValidate" data-validateon="input"/></dd>
+					<dt><label for="fv1date">Date: </label></dt>
+					<dd><input type="text" id="fv1date1" title="Date" data-required data-type="date"/></dd>
+					<dt><label for="fv1website">Website: </label></dt>
+					<dd><input type="text" id="fv1website1" title="Website" data-required data-type="url"/></dd>
+					<dt><input type="submit" id="fv1groupSubmit" value="Submit"/></dt>
+				</dl>
+			</form>
 		</fieldset>
 	</body>
 </html>
