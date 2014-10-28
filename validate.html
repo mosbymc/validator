@@ -6,7 +6,7 @@
  		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
 		<script LANGUAGE="javascript" SRC="validator3.js"></script>
 		<script type="text/javascript">
-		function things() {
+		function createModal() {
 			$("#modal").dialog({
 		        autoOpen: false,
 		        modal: true,
@@ -22,8 +22,6 @@
 		        },
 		        open: function (event, ui) {
 		            $(".ui-dialog-titlebar").hide();
-		            //$(".ui-dialog-titlebar").css("visibility", "hidden");
-
 		            var html = '<div id="modalValidate" class="formValidate" data-formaction="sumbitAndClose" data-modalid="modal">' + 
 								'<h2>Group Validated</h2><label for="fName">Name: </label><input type="text" id="modalfName" data-required data-validationrules="name"/>' +
 								'<br/><label for="homeNum">Home Phone: </label><input type="text" id="modalhomeNum" data-required data-validationrules="phone"/>' +
@@ -125,7 +123,7 @@
 
 		</script>
 	</head>
-	<body onload="things()" style="height:1500px;">
+	<body onload="createModal()" style="height:1500px;">
 		<div>
 			<br/>
 			<br/>
