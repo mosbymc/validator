@@ -175,12 +175,31 @@ var validator =  function() {
         });
 
         $(document).on("blur", "input", function(event) {   //Remove help text on blur.
-            var target = event.currentTarget;
-            if ($(target).prevUntil(":input").filter(".helptext:first").length > 0) {
-                var helptext = $(target).prevUntil(":input").filter(".helptext:first");
-                $(target).data("displayhelptext", "false");
-                helptext.addClass("hideMessage");
-                helptext.removeClass("showMessage");
+            var target = $(event.currentTarget);
+            var helpText = target.prevUntil(":input").filter(".helptext:first");
+            var modal;
+            if (target.data("modalid") === undefined) {
+                if (target.parents(".formValidate:first").length > 0) {
+                      modal = target.parents(".formValidate:first").data("modalId") || null;
+                  }
+                  else if (target.parents(".inputValidate:first").length > 0) {
+                      modal = target.parents(".inputValidate:first").data("modalId") || null;
+                  }
+                  else {
+                      modal = null;
+                  }
+            }
+            else {
+                modal = target.data("modalid");
+            }
+
+            helpText.addClass("hideMessage").removeClass("showMessage");
+            if (modal !== null) {
+                $(document).off("helpTextModalScroll" + target[0].id);
+                $(document).off("helpTextScroll" + target[0].id);
+            }
+            else {
+               $(document).off("helpTextScroll" + target[0].id);
             }
         });
 
@@ -628,12 +647,17 @@ var validator =  function() {
 
     var finalizeValidation = function(inputArray, options) {
         var numFailed = 0;
+        var rulesTestedCount = 0;
         for (var i = 0; i < inputArray.length; i++) {
             if (inputArray[i].valid === "waiting") {
                 return;
             }
             else if (inputArray[i].valid === false) {
                 numFailed++;
+                rulesTestedCount++;
+            }
+            else if (inputArray[i].valid === true) {
+                rulesTestedCount++;
             }
         }
 
@@ -768,9 +792,7 @@ var validator =  function() {
 
         var messageDiv = $("#" + element[0].id + "error" + errorName);
         if ((element).prevUntil(":input").filter(".helptext:first").length > 0) {
-            var helptext = element.prevUntil(":input").filter(".helptext:first");
-            helptext.addClass("hideMessage");
-            helptext.removeClass("showMessage");
+            element.prevUntil(":input").filter(".helptext:first").addClass("hideMessage").removeClass("showMessage");
         }
         if (options.display === "hover") {
             displayErrorTextOnHover(options, element, messageDiv, offsetWidth, offsetHeight);
@@ -918,28 +940,6 @@ var validator =  function() {
         });
     };
 
-    var helpTextScrollModalListener = function(options, element, offsetWidth, offsetHeight, messageDiv) {
-        if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
-            messageDiv.addClass("hideMessage").removeClass("showMessage");
-        }
-
-        $("#" + options.modalId).on("scroll", hideShowDiv);
-
-        $(window).on("scroll", hideShowDiv);
-        
-        function hideShowDiv() {
-            if (element.data("displayhelptext") !== undefined && element.data("displayhelptext") !== "false") {
-                if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
-                    messageDiv.addClass("hideMessage").removeClass("showMessage");
-                }
-                else {
-                    setErrorPos(element, offsetWidth, offsetHeight, messageDiv);
-                    messageDiv.removeClass("hideMessage").addClass("showMessage");
-                }
-            }
-        }
-    };
-
     var getMessageOffset = function(element) {
         var width = 0;
         var height = 0;
@@ -974,8 +974,8 @@ var validator =  function() {
             other = displayOther.split(",");
             ident = other[0];
             move = other[1];
-            if ($(ident).length === 1) {
-              return $(ident);
+            if ($(ident).length === 1) {  //If the "identity" of the other element is an id, or only one class exists in the DOM, then there's no
+              return $(ident);            //need to step through everything, we'll just return it here.
             }
             //If "prev" was specified, and the first filtered sibling doesn't match, search through the dom
             //starting with the first parent's children, and moving up and back until the match is found or there
@@ -1065,6 +1065,16 @@ var validator =  function() {
             });
         }
     }
+    
+    var helpTextScrollModalListener = function(options, element, offsetWidth, offsetHeight, messageDiv) {
+        if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
+            messageDiv.addClass("hideMessage").removeClass("showMessage");
+        }
+        else {
+            messageDiv.addClass("showMessage").removeClass("hideMessage");
+            setErrorPos(element, offsetWidth, offsetHeight, messageDiv);
+        }
+    };
 
     var displayHelpText = function(helpOptions) {
         var elem = $(helpOptions.input);
@@ -1075,17 +1085,23 @@ var validator =  function() {
         var placement = determinePlacement(position, elem, 0, 0, helpText);
         helpText.css('top', placement[1]).css('left', placement[0]);
 
-        elem.data("displayhelptext", "true");
-
         if (helpOptions.modalId !== null) {
-            helpTextScrollModalListener(helpOptions, elem, errorOffsets.width, errorOffsets.height, helpText);
-        }
-        else {
-            $(window).on("scroll", function() {
-                placement = determinePlacement(position, elem, errorOffsets.width, errorOffsets.height, helpText);
-                helpText.css('top', placement[1]).css('left', placement[0]);
+            $("#" + helpOptions.modalId).on("scroll", function() {
+                $(document).trigger("helpTextModalScroll" + elem[0].id, [{}]);
+            });
+            $(document).on("helpTextModalScroll" + elem[0].id, function() {
+                helpTextScrollModalListener(helpOptions, elem, errorOffsets.width, errorOffsets.height, helpText);
             });
         }
+
+        $(window).on("scroll", function() {
+            $(document).trigger("helpTextScroll" + elem[0].id, [{}]);
+        });
+        
+        $(document).on("helpTextScroll" + elem[0].id, function() {
+            var placement = determinePlacement(position, elem, errorOffsets.width, errorOffsets.height, helpText);
+            helpText.css('top', placement[1]).css('left', placement[0]);
+        });
     };
 
     var monitorChars = function(elem, options, event) {
@@ -1223,7 +1239,7 @@ var validator =  function() {
                 var grpName = obj.attr("name");
                 var selected = $("input[name=" + grpName + "]:checked").val();
                 if (selected === undefined) {
-                    return { valid: false, message: "You must selected at least one option.", width: 175 };
+                    return { valid: false, message: "You must select an option.", width: 175 };
                 }
                 return { valid: true };
             }
