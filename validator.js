@@ -169,7 +169,6 @@ var validator =  function() {
                     modalId: modal,
                     helpText: helptext
                 };
-                Object.freeze(helpOptions);
                 displayHelpText(helpOptions);
             }
         });
@@ -194,7 +193,7 @@ var validator =  function() {
             }
 
             helpText.addClass("hideMessage").removeClass("showMessage");
-            if (modal !== null) {
+            if (modal !== null) {   //unbind event listeners for the help test spans
                 $(document).off("helpTextModalScroll" + target[0].id);
                 $(document).off("helpTextScroll" + target[0].id);
             }
@@ -292,7 +291,7 @@ var validator =  function() {
         var maxChecked = elem.data("maxchecked");
         var minChecked = elem.data("minchecked");
 
-        if (elem.attr("data-required") !== undefined) {    //Build out the inputArray with validation rules: required, type, and custom.
+        if (elem.attr("data-required") !== undefined) {    //Build out the inputArray with the various validation rules
             inputObj = {
                 input: $(input),
                 rule: "required",
@@ -381,7 +380,7 @@ var validator =  function() {
                 }
             }
             else {
-              console.log("The supplie 'call before' function: " + options.callBefore + "could not be found.");
+              console.log("The supplied 'call before' function: " + options.callBefore + "could not be found.");
             }
         }
         else {
@@ -398,7 +397,7 @@ var validator =  function() {
             var inputs = $(form).find(":input").filter(":input");
             var inputArray = [];
             var rules;
-            for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray for each input with the required/type/custom rules and their status.
+            for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray with the various validation rules
                 var inputObj, l;
                 var elem = $(inputs[j]);
                 var vRules = elem.data("validationrules");
@@ -612,9 +611,9 @@ var validator =  function() {
             var errorOffsets = getMessageOffset(elem);
             createErrorMessage(elem, tested, options, rule, errorOffsets.width, errorOffsets.height);
             groupByForm(options, elem, rule);
-            groupByInput(options, elem, rule); //See if these can be moved to the createErrorMessage function
+            groupByInput(options, elem, rule);
         }
-        for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
+        for (var i = 0; i < inputsArray.length; i++) {
             if (elem[0] === inputsArray[i].input[0] && rule === inputsArray[i].rule) {
                 inputsArray[i].valid = tested.valid;
             }
@@ -661,7 +660,7 @@ var validator =  function() {
             }
         }
 
-        if (options.groupErrors !== undefined && options.groupErrors !== null) {
+        if (options.groupErrors !== undefined && options.groupErrors !== null) {    //set up "highlight" bindings for each grouped error
             var form = $("#" + options.form);
             if (form.hasClass("highlightErrors")) {
                 form.find(":input").each(function(idx, input) {
@@ -679,7 +678,7 @@ var validator =  function() {
             }
         }
 
-        if (options.button !== undefined) {
+        if (options.button !== undefined) {     //re-enable the submit button
             options.button.prop("disabled", false);
         }
 
@@ -833,7 +832,7 @@ var validator =  function() {
         var messageWidth = messageDiv.width();
         var height = messageDiv.height();
         var displayedElem = getOtherElem(element);
-        switch (location)
+        switch (location)   //add all the offsets for a given element to calculate the error message placement
         {
             case "right": 
                 return [position.left + displayedElem.width() + offsetWidth + offset.left + 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
@@ -893,7 +892,7 @@ var validator =  function() {
         });
     };
 
-    var isContainerVisible = function(options, element, offsetWidth, offsetHeight, messageDiv) {
+    var isContainerVisible = function(options, element, offsetWidth, offsetHeight, messageDiv) {    //used to removing help text spans if they scroll outside of the modal
         var position = getOtherElem(element).offset();
         var placement = determinePlacement(position, element, offsetWidth, offsetHeight, messageDiv);
         var modal = $("#" + options.modalId);
@@ -1011,7 +1010,7 @@ var validator =  function() {
         return element;
     };
 
-    this.removeErrors = function(elem) {
+    this.removeErrors = function(elem) {    //public function to remove error messages
         if (elem !== undefined) {
             var element = $("#" + elem);
             var inputs = $("#" + elem).find(":input").filter(":input");
@@ -1076,7 +1075,7 @@ var validator =  function() {
         }
     };
 
-    var displayHelpText = function(helpOptions) {
+    var displayHelpText = function(helpOptions) {       //sets up event listeners for help text when the window/modal is scrolled
         var elem = $(helpOptions.input);
         var helpText = elem.prevUntil(":input").filter(".helptext:first");
         var position = getOtherElem(elem).offset();
@@ -1104,7 +1103,7 @@ var validator =  function() {
         });
     };
 
-    var monitorChars = function(elem, options, event) {
+    var monitorChars = function(elem, options, event) {     //tests input characters before allowing event to continue
         var testedArray = [];
         var valid = false;
         var rules = options.type.split(',');
