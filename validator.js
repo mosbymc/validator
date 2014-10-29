@@ -283,80 +283,57 @@ var validator =  function() {
         var inputArray = [];
         var elem = $(input);
         var rules;
-        var vRules = elem.data("validationrules");
-        var customRules = elem.data('customrules');
-        var min = elem.data('min');
-        var max = elem.data("max");
-        var match = elem.data("matchfield");
-        var maxChecked = elem.data("maxchecked");
-        var minChecked = elem.data("minchecked");
+        var vRules = elem.data("validationrules") || "";
+        var customRules = elem.data('customrules') || "";
+        var min = elem.data('min') || "";
+        var max = elem.data("max") || "";
+        var match = elem.data("matchfield") || "";
+        var maxChecked = elem.data("maxchecked") || "";
+        var minChecked = elem.data("minchecked") || "";
+        var rulesArray = [];
 
-        if (elem.attr("data-required") !== undefined) {    //Build out the inputArray with the various validation rules
-            inputObj = {
-                input: $(input),
-                rule: "required",
-                valid: "waiting"
-            };
-            inputArray.push(inputObj);
+        if (elem.attr("data-required") !== undefined) {
+            rulesArray.push("required");
         }
-        if (vRules !== undefined && vRules.split(",").length > 0) {
-            rules = vRules.split(",");
-            for (var l = 0; l < rules.length; l++) {
-                inputObj = {
-                    input: $(input),
-                    rule: rules[l],
-                    valid: "waiting"
-                };
-                inputArray.push(inputObj);
+
+        var rules = vRules.split(",");
+        if (rules.length > 0 && rules[0] !== "") {
+            for (var i = 0; i < rules.length; i++) {
+                rulesArray.push(rules[i]);
             }
         }
-        if (customRules !== undefined && customRules.split(",").length > 0) {
-            rules = customRules.split(",");
-            for (var k = 0; k < rules.length; k++) {
-                inputObj = {
-                    input: $(input),
-                    rule: rules[k],
-                    valid: "waiting"
-                };
-                inputArray.push(inputObj);
+
+        rules = customRules.split(",");
+        if (rules.length > 0 && rules[0] !== "") {
+            for (i = 0; i < rules.length; i++) {
+                rulesArray.push(rules[i]);
             }
         }
-        if (min !== undefined && min !== "" && parseInt(min) !== NaN) {
-            inputObj = {
-                input: $(input),
-                rule: "min",
-                valid: "waiting"
-            };
-            inputArray.push(inputObj);
+
+        if (min.length > 0) {
+            rulesArray.push("min");
         }
-        if (max !== undefined && max !== "" && parseInt(max) !== NaN) {
-            inputObj = {
-                input: $(input),
-                rule: "max",
-                valid: "waiting"
-            };
-            inputArray.push(inputObj);
+
+        if (max.length > 0) {
+            rulesArray.push("max");
         }
-        if (match !== undefined) {
-            inputObj = {
-                input: $(input),
-                rule: "match",
-                valid: "waiting"
-            };
-            inputArray.push(inputObj);
+
+        if (match.length > 0) {
+            rulesArray.push("match");
         }
-        if (maxChecked !== undefined && parseInt(maxChecked) !== NaN) {
-            inputObj = {
-                input: $(input),
-                rule: "maxchecked",
-                valid: "waiting"
-            };
-            inputArray.push(inputObj);
+
+        if (maxChecked.length > 0) {
+            rulesArray.push("maxchecked");
         }
-        if (minChecked !== undefined && parseInt(minChecked) !== NaN) {
+
+        if (minChecked.length > 0) {
+            rulesArray.push("minchecked");
+        }
+
+        for (var i = 0; i < rulesArray.length; i++) {
             inputObj = {
                 input: $(input),
-                rule: "minchecked",
+                rule: rulesArray[i],
                 valid: "waiting"
             };
             inputArray.push(inputObj);
@@ -391,90 +368,66 @@ var validator =  function() {
     this.validateForm = function(continueValidation, form, options) {    //Used as both a callback and internally if no call before function is supplied.
         if (continueValidation) {   //Only continue validating if given the go ahead from the "call before" function.
             if (options.groupErrors !== null) {     //Remove previous grouped validation errors before validating a new input.
-                $("#" + options.groupErrors).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");
+                $("#" + options.groupErrors).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");  //BeerHere
             }
 
             var inputs = $(form).find(":input").filter(":input");
             var inputArray = [];
             var rules;
             for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray with the various validation rules
-                var inputObj, l;
+                var inputObj;
                 var elem = $(inputs[j]);
-                var vRules = elem.data("validationrules");
-                var customRules = elem.data('customrules');
-                var min = elem.data('min');
-                var max = elem.data("max");
-                var match = elem.data("matchfield");
-                var maxChecked = elem.data("maxchecked");
-                var minChecked = elem.data("minchecked");
-                var elem = $(inputs[j]);
+                var vRules = elem.data("validationrules") || "";
+                var customRules = elem.data('customrules') || "";
+                var min = elem.data('min') || "";
+                var max = elem.data("max") || "";
+                var match = elem.data("matchfield") || "";
+                var maxChecked = elem.data("maxchecked") || "";
+                var minChecked = elem.data("minchecked") || "";
+                var rulesArray = [];
 
                 if (elem.attr("data-required") !== undefined) {
-                    inputObj = {
-                        input: $(inputs[j]),
-                        rule: "required",
-                        valid: "waiting"
-                    };
-                    inputArray.push(inputObj);
+                    rulesArray.push("required");
                 }
-                if (vRules !== undefined && vRules.split(",").length > 0) {
-                    rules = vRules.split(",");
-                    for (l = 0; l < rules.length; l++) {
-                        inputObj = {
-                            input: $(inputs[j]),
-                            rule: rules[l],
-                            valid: "waiting"
-                        };
-                        inputArray.push(inputObj);
+
+                var rules = vRules.split(",");
+                if (rules.length > 0 && rules[0] !== "") {
+                    for (var i = 0; i < rules.length; i++) {
+                        rulesArray.push(rules[i]);
                     }
                 }
-                if (customRules !== undefined && customRules.split(",").length > 0) {
-                    rules = customRules.split(",");
-                    for (l = 0; l < rules.length; l++) {
-                        inputObj = {
-                            input: $(inputs[j]),
-                            rule: rules[l],
-                            valid: "waiting"
-                        };
-                        inputArray.push(inputObj);
+
+                rules = customRules.split(",");
+                if (rules.length > 0 && rules[0] !== "") {
+                    for (i = 0; i < rules.length; i++) {
+                        rulesArray.push(rules[i]);
                     }
                 }
-                if (min !== undefined && min !== "" && parseInt(min) !== NaN) {
-                    inputObj = {
-                        input: $(inputs[j]),
-                        rule: "min",
-                        valid: "waiting"
-                    };
-                    inputArray.push(inputObj);
+
+                if (min.length > 0) {
+                    rulesArray.push("min");
                 }
-                if (max !== undefined && max !== "" && parseInt(max) !== NaN) {
-                    inputObj = {
-                        input: $(inputs[j]),
-                        rule: "max",
-                        valid: "waiting"
-                    };
-                    inputArray.push(inputObj);
+
+                if (max.length > 0) {
+                    rulesArray.push("max");
                 }
-                if (match !== undefined && match !== "") {
-                    inputObj = {
-                        input: $(inputs[j]),
-                        rule: "match",
-                        valid: "waiting"
-                    };
-                    inputArray.push(inputObj);
+
+                if (match.length > 0) {
+                    rulesArray.push("match");
                 }
-                if (maxChecked !== undefined && parseInt(maxChecked) !== NaN) {
-                    inputObj = {
-                        input: $(inputs[j]),
-                        rule: "maxchecked",
-                        valid: "waiting"
-                    };
-                    inputArray.push(inputObj);
+
+                if (maxChecked.length > 0) {
+                    rulesArray.push("maxchecked");
                 }
-                if (minChecked !== undefined && parseInt(minChecked) !== NaN) {
+
+                if (minChecked.length > 0) {
+                    rulesArray.push("minchecked");
+                }
+
+                for (var i = 0; i < rulesArray.length; i++) {
                     inputObj = {
                         input: $(inputs[j]),
-                        rule: "minchecked",
+                        rule: rulesArray[i],
                         valid: "waiting"
                     };
                     inputArray.push(inputObj);
