@@ -278,11 +278,59 @@ var validator =  function() {
         }
     }
 
+    var callBeforeValidate = function(form, options) {
+        if (options.callBefore !== false) {     //Run the "call before" function if it's supplied, and continue validation if true.
+            var fn = window[options.callBefore];
+            if (typeof fn === "function") {
+                try {
+                    fn.call(this, form, options, validateForm);
+                }
+                catch (ex) {
+                    console.log("'Call before' function: '" + options.callBefore + "'' failed to execute");
+                    console.log(ex);
+                    validateForm(true, form, options);
+                }
+            }
+            else {
+              console.log("The supplied 'call before' function: " + options.callBefore + "could not be found."); //BeerHere
+            }
+        }
+        else {
+            validateForm(true, form, options);
+        }
+    };
+
     var validateInput = function(input, options) {  //Where inputs go to be validated and the success function called if supplied.
+        var inputArray = buildInputArray($(input));
+        validateElement(input, options, inputArray);    //Main function where validation is done.
+        finalizeValidation(inputArray, options);        //Checks when the validation is complete if it should call the succes function, sends event, etc.
+    };
+
+    this.validateForm = function(continueValidation, form, options) {    //Used as both a callback and internally if no call before function is supplied.
+        if (continueValidation) {   //Only continue validating if given the go ahead from the "call before" function.
+            if (options.groupErrors !== null) {     //Remove previous grouped validation errors before validating a new input.
+                $("#" + options.groupErrors).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");  //BeerHere
+            }
+
+            var inputs = $(form).find(":input").filter(":input");
+            var formArray = [];
+            var rules;
+            for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray with the various validation rules
+                var inputArray = buildInputArray($(inputs[j]));
+                for (var i = 0; i < inputArray.length; i++) {
+                    formArray.push(inputArray[i]);
+                }
+            }
+
+            for (var i = 0; i < inputs.length; i++) {
+                validateElement(inputs[i], options, formArray);    //Validate each input element in the form.
+            }
+            finalizeValidation(formArray, options);
+        }
+    }
+
+    var buildInputArray = function(elem) {
         var inputObj;
-        var inputArray = [];
-        var elem = $(input);
-        var rules;
         var vRules = elem.data("validationrules") || "";
         var customRules = elem.data('customrules') || "";
         var min = elem.data('min') || "";
@@ -291,6 +339,7 @@ var validator =  function() {
         var maxChecked = elem.data("maxchecked") || "";
         var minChecked = elem.data("minchecked") || "";
         var rulesArray = [];
+        var inputArray = [];
 
         if (elem.attr("data-required") !== undefined) {
             rulesArray.push("required");
@@ -332,114 +381,15 @@ var validator =  function() {
 
         for (var i = 0; i < rulesArray.length; i++) {
             inputObj = {
-                input: $(input),
+                input: elem,
                 rule: rulesArray[i],
                 valid: "waiting"
             };
             inputArray.push(inputObj);
         }
-        
-        validateElement(input, options, inputArray);    //Main function where validation is done.
-        finalizeValidation(inputArray, options);        //Checks when the validation is complete if it should call the succes function, sends event, etc.
+
+        return inputArray;
     };
-
-    var callBeforeValidate = function(form, options) {
-        if (options.callBefore !== false) {     //Run the "call before" function if it's supplied, and continue validation if true.
-            var fn = window[options.callBefore];
-            if (typeof fn === "function") {
-                try {
-                    fn.call(this, form, options, validateForm);
-                }
-                catch (ex) {
-                    console.log("'Call before' function: '" + options.callBefore + "'' failed to execute");
-                    console.log(ex);
-                    validateForm(true, form, options);
-                }
-            }
-            else {
-              console.log("The supplied 'call before' function: " + options.callBefore + "could not be found.");
-            }
-        }
-        else {
-            validateForm(true, form, options);
-        }
-    };
-
-    this.validateForm = function(continueValidation, form, options) {    //Used as both a callback and internally if no call before function is supplied.
-        if (continueValidation) {   //Only continue validating if given the go ahead from the "call before" function.
-            if (options.groupErrors !== null) {     //Remove previous grouped validation errors before validating a new input.
-                $("#" + options.groupErrors).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");  //BeerHere
-            }
-
-            var inputs = $(form).find(":input").filter(":input");
-            var inputArray = [];
-            var rules;
-            for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray with the various validation rules
-                var inputObj;
-                var elem = $(inputs[j]);
-                var vRules = elem.data("validationrules") || "";
-                var customRules = elem.data('customrules') || "";
-                var min = elem.data('min') || "";
-                var max = elem.data("max") || "";
-                var match = elem.data("matchfield") || "";
-                var maxChecked = elem.data("maxchecked") || "";
-                var minChecked = elem.data("minchecked") || "";
-                var rulesArray = [];
-
-                if (elem.attr("data-required") !== undefined) {
-                    rulesArray.push("required");
-                }
-
-                var rules = vRules.split(",");
-                if (rules.length > 0 && rules[0] !== "") {
-                    for (var i = 0; i < rules.length; i++) {
-                        rulesArray.push(rules[i]);
-                    }
-                }
-
-                rules = customRules.split(",");
-                if (rules.length > 0 && rules[0] !== "") {
-                    for (i = 0; i < rules.length; i++) {
-                        rulesArray.push(rules[i]);
-                    }
-                }
-
-                if (min.length > 0) {
-                    rulesArray.push("min");
-                }
-
-                if (max.length > 0) {
-                    rulesArray.push("max");
-                }
-
-                if (match.length > 0) {
-                    rulesArray.push("match");
-                }
-
-                if (maxChecked.length > 0) {
-                    rulesArray.push("maxchecked");
-                }
-
-                if (minChecked.length > 0) {
-                    rulesArray.push("minchecked");
-                }
-
-                for (var i = 0; i < rulesArray.length; i++) {
-                    inputObj = {
-                        input: $(inputs[j]),
-                        rule: rulesArray[i],
-                        valid: "waiting"
-                    };
-                    inputArray.push(inputObj);
-                }
-            }
-
-            for (var i = 0; i < inputs.length; i++) {
-                validateElement(inputs[i], options, inputArray);    //Validate each input element in the form.
-            }
-            finalizeValidation(inputArray, options);
-        }
-    }
 
     var validateElement = function(element, options, inputsArray) {      //Starting point for single input validation - reached by both forms and inputs.
         var elem = $(element);
