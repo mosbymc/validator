@@ -25,15 +25,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 //The starting point of valdation
 var validator =  function() {
-    this.init = function (events) {
+    this.init = function(events) {
         $(document).on("click", "input, button", function(event) {  //Bind form event listener and create "options" object when an input or button with the "formValidate" class is clicked.
             var target = event.currentTarget;
-            if ($(target).data("form") !== undefined) {
-                var form = $("#" + $(target).data("form"));
+            var form = $(target).parents(".formValidate:first");
+            if (form.length > 0 && form[0].tagName.toLowerCase() !== "form" && $(target).hasClass("validate")) {
                 if (form.hasClass("formValidate")) {
                     var time = new Date().getTime();
                     var formOptions = {
-                        form: $(target).data("form"),
+                        form: form,
                         display: form.hasClass("hover") === false ? false : "hover",
                         success: form.data("formaction") || null,
                         modalId: form.data("modalid") || null,
@@ -50,16 +50,15 @@ var validator =  function() {
                     callBeforeValidate(form, formOptions);
                 }
             }
-            else if ($(target).prop("type").toUpperCase() === "SUBMIT" && target.form !== null) {   //creates the same object as above, but works for "submit" buttons.
-                var form = target.form;   //this is set up differently from above because JQ doesn't play nice with forms evidently.
-                var classes = [];
-                for (var i = 0; i < form.classList.length; i++) {
-                    classes.push(form.classList[i]);
+            else if ($(target).prop("type").toUpperCase() === "SUBMIT" && target.form !== null && $(target).hasClass("validate")) {   //creates the same object as above, but works for "submit" buttons.
+                var classes = [];   //this is set up differently from above because JQ doesn't play nice with forms evidently.
+                for (var i = 0; i < form[0].classList.length; i++) {
+                    classes.push(form[0].classList[i]);
                 }
                 if (classes.indexOf("formValidate") !== -1) {
                     var time = new Date().getTime();
                     var formOptions = {
-                        form: form.id,
+                        form: form,
                         display: classes.indexOf("hover") === -1 ? false : "hover",
                         success: null,
                         modalId: null,
@@ -72,15 +71,15 @@ var validator =  function() {
                         event: event
                     };
 
-                    for (i = 0; i < form.attributes.length; i++) {
-                        if (form.attributes[i].name === "data-grouperrors") {
-                            formOptions.groupErrors = form.attributes[i].value;
+                    for (i = 0; i < form[0].attributes.length; i++) {
+                        if (form[0].attributes[i].name === "data-grouperrors") {
+                            formOptions.groupErrors = form[0].attributes[i].value;
                         }
-                        if (form.attributes[i].name === "modalid") {
-                            formOptions.modalId = form.attributes[i].value;
+                        if (form[0].attributes[i].name === "modalid") {
+                            formOptions.modalId = form[0].attributes[i].value;
                         }
-                        if (form.attributes[i].name === "beforeValidate") {
-                            formOptions.callBefore = form.attributes[i].value;
+                        if (form[0].attributes[i].name === "beforeValidate") {
+                            formOptions.callBefore = form[0].attributes[i].value;
                         }
                     }
                     Object.freeze(formOptions);
@@ -412,6 +411,7 @@ var validator =  function() {
             removeErrorText(elem);
             getOtherElem(elem).removeClass("invalid").removeClass("alignInput");
         }
+        elem.data("vid", new Date().getTime());
 
         if (isRequired !== undefined) {
             if (elem[0].type === "radio") {
@@ -526,7 +526,7 @@ var validator =  function() {
     this.customRulesCallback = function(tested, inputState) {
         try {
             var timeStamp = inputState.element.data("vts");
-            if (!tested.valid && timeStamp === inputState.option.time) {    //If validation fail, create the error message element
+            if (!tested.valid && timeStamp === inputState.option.time) {    //If validation fails, create the error message element
                 var errorOffsets = getMessageOffset(inputState.element);
 
                 createErrorMessage(inputState.element, tested, inputState.option, inputState.rule, errorOffsets.width, errorOffsets.height);
@@ -563,17 +563,17 @@ var validator =  function() {
             }
         }
 
-        if (options.groupErrors !== undefined && options.groupErrors !== null) {    //set up "highlight" bindings for each grouped error
-            var form = $("#" + options.form);
+        if (options.groupErrors !== undefined && options.groupErrors !== null) {  //set up "highlight" bindings for each grouped error
+            var form = options.form;
             if (form.hasClass("highlightErrors")) {
                 form.find(":input").each(function(idx, input) {
                     $(input).on("focus", $(input), function() {
-                        $("[data-parentinput='" + input.id + "']").each(function(index, val) {
+                        $("[data-parentinput='" + $(input).data("vid") + "']").each(function(index, val) {
                             $(val).addClass("groupHighlight");
                         });
                     });
                     $(input).on("blur", $(input), function() {
-                        $("[data-parentinput='" + input.id + "']").each(function(index, val) {
+                        $("[data-parentinput='" + $(input).data("vid") + "']").each(function(index, val) {
                             $(val).removeClass("groupHighlight");
                         });
                     });
@@ -581,7 +581,7 @@ var validator =  function() {
             }
         }
 
-        if (options.button !== undefined) {     //re-enable the submit button
+        if (options.button !== undefined) {   //re-enable the submit button
             options.button.prop("disabled", false);
         }
 
@@ -617,29 +617,29 @@ var validator =  function() {
     var groupByInput = function(options, elem, rule) {
         if (options.group) {
             var toDisplay = getOtherElem(elem);
-            if ($("#" + elem[0].id + "InputGrp").length === 0) {
-                toDisplay.parent().append("<div id='" + elem[0].id + "InputGrp' data-parentinput='" + elem[0].id + "' class='inputGroup'></div>");
+            if ($("#" + elem.data("vid") + "InputGrp").length === 0) {
+                toDisplay.parent().append("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='inputGroup'></div>");
             }
             toDisplay.addClass("alignInput");
-            var errorToMove = $("#" + elem[0].id + "error" + rule);
+            var errorToMove = $("#" + elem.data("vid") + "error" + rule);
             var html = errorToMove.html();
             var span = "<span class='inputGrpErrorSpan'>" + html + "</span></br>";
-            $("#" + elem[0].id + "InputGrp").append(span);
+            $("#" + elem.data("vid") + "InputGrp").append(span);
             errorToMove.remove();
         }
     };
 
     var groupByForm = function(options, input, rule) {
         if (options.groupErrors !== undefined && options.groupErrors !== null) {    //If the errors should be grouped, grab all error divs for the current input and put them in the div.
-            $("#" + input[0].id + "error" + rule).each(function(index, val) {
+            $("#" + input.data("vid") + "error" + rule).each(function(index, val) {
                 var prefix = $(input).data("errorprefix");
                 if (prefix !== undefined) {
                     var text = $(val).html();
                     $(val).html(prefix + ": " + text);
                 }
                 var html = $(val).html();
-                var span = "<span class='errorSpan' id='formGrp" + input[0].id + rule + "' data-parentinput='" + input[0].id + "'>" + html + "</span>";
-                placeErrorSpan(options, input[0].id, span, rule);
+                var span = "<span class='errorSpan' id='formGrp" + input.data("vid") + rule + "' data-parentinput='" + input.data("vid") + "'>" + html + "</span>";
+                placeErrorSpan(options, input.data("vid"), span, rule);
                 $(val).remove();
             });
             var grpContainer = $("#" + options.groupErrors);
@@ -663,7 +663,7 @@ var validator =  function() {
                 }
             });
             if (!foundSibling) {
-                var inputs = $("#" + options.form).find(":input");
+                var inputs = options.form.find(":input");
                 var parentInput = $("#" + inputId);
                 var inputIndex = inputs.index(parentInput);
                 if (inputIndex < inputs.length - 1) {
@@ -692,7 +692,7 @@ var validator =  function() {
         //Can't pass messageDiv in here because it hasn't been created yet.
         displayErrorText(element, errorData, options, errorName, offsetWidth, offsetHeight);
 
-        var messageDiv = $("#" + element[0].id + "error" + errorName);
+        var messageDiv = $("#" + element.data("vid") + "error" + errorName);
         if ((element).prevUntil(":input").filter(".helptext:first").length > 0) {
             element.prevUntil(":input").filter(".helptext:first").addClass("hideMessage").removeClass("showMessage");
         }
@@ -711,9 +711,9 @@ var validator =  function() {
     var displayErrorText = function(element, errorData, options, errorName, offsetWidth, offsetHeight) {
         var toDisplay = getOtherElem(element);
         toDisplay.addClass("invalid");
-        var popupId = element[0].id + "error" + errorName;
+        var popupId = element.data("vid") + "error" + errorName;
         if ($("#" + popupId).length < 1) {
-            var popupDiv = "<div id='" + popupId + "' data-parentinput='" + element[0].id + "'></div>";
+            var popupDiv = "<div id='" + popupId + "' data-parentinput='" + element.data("vid") + "'></div>";
             toDisplay.parent().append(popupDiv);
             var popup = $("#" + popupId);
             popup.addClass("errorMessage");
@@ -751,14 +751,14 @@ var validator =  function() {
     };
 
     var removeErrorText = function(element) {
-        $("[id^='" + element[0].id + "error']").each(function(index, val) {
+        $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
             $(val).remove();
         });
         if ($("[id^='" + element[0].id + "error']").length < 1) {
             var toDisplay = getOtherElem(element);
             toDisplay.css("border", "");
         }
-        $("[id^='" + element[0].id + "InputGrp']").each(function(index, val) {
+        $("[id^='" + element.data("vid") + "InputGrp']").each(function(index, val) {
             $(val).remove();
         });
     };
@@ -795,7 +795,7 @@ var validator =  function() {
         });
     };
 
-    var isContainerVisible = function(options, element, offsetWidth, offsetHeight, messageDiv) {    //used to removing help text spans if they scroll outside of the modal
+    var isContainerVisible = function(options, element, offsetWidth, offsetHeight, messageDiv) {  //used to determine if help text spans should be removed if they scroll outside of the modal
         var position = getOtherElem(element).offset();
         var placement = determinePlacement(position, element, offsetWidth, offsetHeight, messageDiv);
         var modal = $("#" + options.modalId);
@@ -845,8 +845,8 @@ var validator =  function() {
     var getMessageOffset = function(element) {
         var width = 0;
         var height = 0;
-        if ($("[id^='" + element[0].id + "error']").length !== 0) {
-            $("[id^='" + element[0].id + "error']").each(function(index, val) {
+        if ($("[id^='" + element.data("vid") + "error']").length !== 0) {
+            $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
                 width += $(val).width() + 5;
                 height += $(val).height() + 5;
             });
@@ -913,24 +913,24 @@ var validator =  function() {
         return element;
     };
 
-    this.removeErrors = function(elem) {    //public function to remove error messages
+    this.removeErrors = function(elem) {  //public function to remove error messages
         if (elem !== undefined) {
             var element = $("#" + elem);
             var inputs = $("#" + elem).find(":input").filter(":input");
             for (var i = 0; i < inputs.length; i++) {
-                $("[id^='" + inputs[i].id + "error']").each(function(index, val) {
+                $("[id^='" + $(inputs[i]).data("vid") + "error']").each(function(index, val) {
                     $(val).remove();
                 });
-                $("[id^='" + inputs[i].id + "InputGrp']").each(function(index, val) {
+                $("[id^='" + $(inputs[i]).id + "InputGrp']").each(function(index, val) {
                     $(val).remove();
                 });
             }
             
-            $("[id^='" + element[0].id + "error']").each(function(index, val) {
+            $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
                 val.remove();
             });
 
-            $("[id^='" + element[0].id + "InputGrp']").each(function(index, val) {
+            $("[id^='" + element.data("vid") + "InputGrp']").each(function(index, val) {
                 val.remove();
             });
 
@@ -967,7 +967,7 @@ var validator =  function() {
             });
         }
     }
-    
+
     var helpTextScrollModalListener = function(options, element, offsetWidth, offsetHeight, messageDiv) {
         if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
             messageDiv.addClass("hideMessage").removeClass("showMessage");
@@ -978,7 +978,7 @@ var validator =  function() {
         }
     };
 
-    var displayHelpText = function(helpOptions) {       //sets up event listeners for help text when the window/modal is scrolled
+    var displayHelpText = function(helpOptions) {   //sets up event listeners for help text when the window/modal is scrolled
         var elem = $(helpOptions.input);
         var helpText = elem.prevUntil(":input").filter(".helptext:first");
         var position = getOtherElem(elem).offset();
@@ -1006,7 +1006,7 @@ var validator =  function() {
         });
     };
 
-    var monitorChars = function(elem, options, event) {     //tests input characters before allowing event to continue
+    var monitorChars = function(elem, options, event) {   //tests input characters before allowing event to continue
         var testedArray = [];
         var valid = false;
         var rules = options.type.split(',');
@@ -1042,7 +1042,6 @@ var validator =  function() {
         Character restriction tests
     */
     ////////////////////////////////////////////////////////////////////////////////////////////
-
     var inputTypes = {
         numeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
