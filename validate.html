@@ -30,7 +30,7 @@
 								'<br/><label for="email">Email: </label><input type="text" id="modalemail" data-required data-validationrules="email,custom"/>' +
 								'<br/><label for="selector">Select something: </label><select id="modalchoose" data-required>' +
 								'<option value="0">Select</option><option value="1">Good Choice</option><option value="2">Acceptable Choice</option><option value="3">Bad Choice</option></select>' +
-								'<br/><input type="submit" id="modalSubmit" style="width:800px;" value="Submit" data-form="modalValidate"/></div>';
+								'<br/><input type="submit" id="modalSubmit" style="width:800px;" value="Submit" data-form="modalValidate" class="validate"/></div>';
 					$("#modal").append(html);
 		        }
 		    });
@@ -157,42 +157,42 @@
 		<br><br>
 		<div id="groupValidate" class="formValidate hover" data-formaction='submitThisForm'>
 			<h2>Group Validated</h2>
-			<label for="fName">Name: </label><input type="text" id="Name" data-required data-validationrules='name' data-displayon=".displaytest,down"/>
+			<label for="fName">Name: </label><input type="text" data-required data-validationrules='name' data-displayon=".displaytest,down"/>
 			<br/>
-			<label for="displayTest">Display Name Error Here: </label><input type="text" id="displayTest" class="displaytest"/>
+			<label for="displayTest">Display Name Error Here: </label><input type="text" class="displaytest"/>
 			</br>
-			<label for="homeNum">Home Phone: </label><input type="text" id="homeNum" data-required data-validationrules='phone,email' data-offsetwidth="200"/>
+			<label for="homeNum">Home Phone: </label><input type="text" data-required data-validationrules='phone,email' data-offsetwidth="200"/>
 			<br/>
-			<label for="displayTests">Display Cell Error Here: </label><input type="text" id="displayTest2" class="displaytest"/>
+			<label for="displayTests">Display Cell Error Here: </label><input type="text" class="displaytest"/>
 			</br>
-			<label for="cellNum">Cell Phone: </label><input type="text" id="cellNum" data-validationrules="phone" data-displayon=".displaytest,up"/>
+			<label for="cellNum">Cell Phone: </label><input type="text" data-validationrules="phone" data-displayon=".displaytest,up"/>
 			<br>
-			<label for="zip">Zip: </label><input type="text" id="zip" data-required data-validationrules='zip' />
+			<label for="zip">Zip: </label><input type="text" data-required data-validationrules='zip' />
 			<br/>
-			<label for="email">Email: </label><input type="text" id="email" data-required data-validationrules='email'/>
+			<label for="email">Email: </label><input type="text" data-required data-validationrules='email'/>
 			<br/>
-			<label for="selector">Select something: </label><select id="choose" data-required>
-				<option value="">Select</option>
+			<label for="selector">Select something: </label><select data-required>
+				<option value="0">Select</option>
 				<option value="1">Good Choice</option>
 				<option value="2">Acceptable Choice</option>
 				<option value="3">Bad Choice</option>
 			</select>
 			</br>
-			<label for="password">Password: </label><input type="text" id="password" data-required data-validationrules="password" class="inputValidate hover" data-validateon="input"/>
+			<label for="password">Password: </label><input type="text" data-required data-validationrules="password" class="inputValidate hover" data-validateon="input"/>
 			</br>
-			<label for="date">Date: </label><input type="text" id="date" data-required data-validationrules="date"/>
+			<label for="date">Date: </label><input type="text" data-required data-validationrules="date"/>
 			</br>
-			<label for="website">Website: </label><input type="text" id="website" data-required data-validationrules="url"/>
+			<label for="website">Website: </label><input type="text" data-required data-validationrules="url"/>
 			</br>
 			<span class="displayhere">
-				<label for="radio">Radio Buttons: </label><input type="radio" name="sex" value="male" id="sexRadio" data-required data-displayon=".displayhere,up"/>Male
+				<label for="radio">Radio Buttons: </label><input type="radio" name="sex" value="male" data-required data-displayon=".displayhere,up"/>Male
 				<input type="radio" name="sex" value="female"/>Female
 			</span>
 			<br><br>
 			<label for="car">My car is:</label>
 			<br>
 			<span class="checkboxDisplay">
-				<input type="checkbox" name="car" value="2door" id="carCheckbox" data-maxchecked="1" data-displayon=".checkboxDisplay,up">2 Doors
+				<input type="checkbox" name="car" value="2door" data-maxchecked="1" data-displayon=".checkboxDisplay,up">2 Doors
 	 			<input type="checkbox" name="car" value="3door">3 Doors
 	 			<input type="checkbox" name="car" value="4door">4 Doors
 	 			<input type="checkbox" name="car" value="5door">5 Doors
@@ -201,7 +201,7 @@
  			<label for="car">Programming Languages:</label>
 			<br>
  			<span class="checkboxDisplay2">
-				<input type="checkbox" name="lang" value="js" id="langCheckbox" data-minchecked="3" data-displayon=".checkboxDisplay2,up">JavaScript
+				<input type="checkbox" name="lang" value="js" data-minchecked="3" data-displayon=".checkboxDisplay2,up">JavaScript
 	 			<input type="checkbox" name="lang" value="php">PHP
 	 			<input type="checkbox" name="lang" value="c#">C#
 	 			<input type="checkbox" name="lang" value="java">Java
@@ -211,31 +211,31 @@
 	 			<input type="checkbox" name="lang" value="ts">TypeScript
  			</span>
  			<br><br>
-			<input type="submit" id="groupSubmit" value="Submit" data-form="groupValidate"/>
+			<input type="submit" id="groupSubmit" value="Submit" data-form="groupValidate" class="validate"/>
 		</div>
 
 		<fieldset id="fieldValidate1" class="formValidate" data-formaction="submitThisForm">
 	    	<legend>Basic Form Validation - no additional display options used</legend>
 	      	<dl align='left'>
 	      		<dt><label for='fv1fName'>First Name: </label></dt>
-				<dd><input type='text' id='fv1fName' title="First Name" size='20' data-required data-validationrules="phone" data-customrules="notMark,custom"/></dd>
+				<dd><input type='text' title="First Name" size='20' data-required data-validationrules="phone" data-customrules="notMark,custom"/></dd>
 				<dt><label for='fv1lName'>Last Name: </label></dt>
-				<dd><input type='text' id='fv1lName' size='20' title="Last Name" data-required data-validationrules="name" data-customrules="notMark" data-displayon="#fv1displayTest4,down"/></dd>
+				<dd><input type='text' size='20' title="Last Name" data-required data-validationrules="name" data-customrules="notMark" data-displayon="#fv1displayTest4,down"/></dd>
 				<dt><label for="fv1displayTest4">Last Name Error Here: </label></dt>
 				<dd><input type="text" id="fv1displayTest4" class="displaytest"/></dd>
 				<dt><label for="fv1homephone">Home Phone: </label></dt>
-				<dd><input type="text" id="fv1homephone" title="Home Phone" data-required data-validationrules="phone"/></dd>
+				<dd><input type="text" title="Home Phone" data-required data-validationrules="phone"/></dd>
 				<dt><label for="fv1displayTest3">Cell Error Here: </label></dt>
-				<dd><input type="text" id="fv1displayTest3" class="displaytest"/></dd>
+				<dd><input type="text" class="displaytest"/></dd>
 				<dt><label for="fv1cellNum2">Cell Phone: </label></dt>
-				<dd><input type="text" id="fv1cellNum2" title="Cell Phone" data-validationrules="phone" data-displayon=".displaytest,up" data-customrules="asdas"/></dd>
+				<dd><input type="text" title="Cell Phone" data-validationrules="phone" data-displayon=".displaytest,up" data-customrules="asdas"/></dd>
 
 				<dt><label for="fv1zip">Zip: </label></dt>
-				<dd><input type="text" id="fv1zip1" title="Zip Code" data-required data-validationrules='zip' /></dd>
+				<dd><input type="text" title="Zip Code" data-required data-validationrules='zip' /></dd>
 				<dt><label for="fv1email">Email: </label></dt>
-				<dd><input type="text" id="fv1email1" title="Email" data-required data-validationrules='email'/></dd>
+				<dd><input type="text" title="Email" data-required data-validationrules='email'/></dd>
 				<dt><label for="fv1selector">Select something: </label></dt>
-				<dd><select id="fv1choose1" title="Selector" data-required style="width:155px;">
+				<dd><select title="Selector" data-required style="width:155px;">
 					<option value="">Select</option>
 					<option value="1">Good Choice</option>
 					<option value="2">Acceptable Choice</option>
@@ -246,12 +246,12 @@
 				<dd><span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
 					<input type="text" id="fv1password1" title="Password" data-required data-validationrules="password" data-validateon="input"/></dd>
 				<dt><label for="repass1">Re-enter password: </label></dt>
-				<dd><input type="text" id="repass1" data-errorprefix="Password" data-required data-matchfield="fv1password1"/></dd>
+				<dd><input type="text" data-errorprefix="Password" data-required data-matchfield="fv1password1"/></dd>
 				<dt><label for="fv1date">Date: </label></dt>
-				<dd><input type="text" id="fv1date1" title="Date" data-required data-validationrules="date"/></dd>
+				<dd><input type="text" title="Date" data-required data-validationrules="date"/></dd>
 				<dt><label for="fv1website">Website: </label></dt>
-				<dd><input type="text" id="fv1website1" title="Website" data-required data-validationrules="url"/></dd>
-				<dt><input type="submit" id="fv1groupSubmit" value="Submit" data-form="fieldValidate1"/></dt>
+				<dd><input type="text" title="Website" data-required data-validationrules="url"/></dd>
+				<dt><input type="submit" value="Submit" data-form="fieldValidate1" class="validate"/></dt>
 			</dl>
 		</fieldset>
 
@@ -259,24 +259,24 @@
 	    	<legend>Baisc Form Validation - hover option and call before validation function used</legend>
 	      	<dl align='left'>
 	      		<dt><label for='fv2fName'>First Name: </label></dt>
-				<dd><input type='text' id='fv2fName' title="First Name" size='20' data-required data-validationrules="name"/></dd>
+				<dd><input type='text' title="First Name" size='20' data-required data-validationrules="name"/></dd>
 				<dt><label for='fv2lName'>Last Name: </label></dt>
-				<dd><input type='text' id='fv2lName' size='20' data-errorprefix-"Last Name" title="Last Name" data-required data-validationrules="name" data-displayon=".displaytest,down"/></dd>
+				<dd><input type='text' size='20' data-errorprefix-"Last Name" title="Last Name" data-required data-validationrules="name" data-displayon=".displaytest,down"/></dd>
 				<dt><label for="fv2displayTest4">Last Name Error Here: </label></dt>
-				<dd><input type="text" id="fv2displayTest4" class="displaytest"/></dd>
+				<dd><input type="text" class="displaytest"/></dd>
 				<dt><label for="fv2homephone">Home Phone: </label></dt>
-				<dd><input type="text" id="fv2homephone" title="Home Phone" data-required data-validationrules="phone"/></dd>
+				<dd><input type="text" title="Home Phone" data-required data-validationrules="phone"/></dd>
 				<dt><label for="fv2displayTest3">Cell Error Here: </label></dt>
-				<dd><input type="text" id="fv2displayTest3" class="displaytest"/></dd>
+				<dd><input type="text" class="displaytest"/></dd>
 				<dt><label for="fv2cellNum2">Cell Phone: </label></dt>
-				<dd><input type="text" id="fv2cellNum2" title="Cell Phone" data-validationrules="phone" data-displayon=".displaytest,up"/></dd>
+				<dd><input type="text" title="Cell Phone" data-validationrules="phone" data-displayon=".displaytest,up"/></dd>
 
 				<dt><label for="fv2zip">Zip: </label></dt>
-				<dd><input type="text" id="fv2zip1" title="Zip Code" data-required data-validationrules='zip' /></dd>
+				<dd><input type="text" title="Zip Code" data-required data-validationrules='zip' /></dd>
 				<dt><label for="fv2email">Email: </label></dt>
-				<dd><input type="text" id="fv2email1" title="Email" data-required data-validationrules='email'/></dd>
+				<dd><input type="text" title="Email" data-required data-validationrules='email'/></dd>
 				<dt><label for="fv2selector">Select something: </label></dt>
-				<dd><select id="fv2choose1" title="Selector" data-required style="width:155px;">
+				<dd><select title="Selector" data-required style="width:155px;">
 					<option value="">Select</option>
 					<option value="1">Good Choice</option>
 					<option value="2">Acceptable Choice</option>
@@ -287,12 +287,12 @@
 				<dd><span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
 					<input type="text" id="fv2password1" title="Password" data-required data-validationrules="password" data-validateon="input"/></dd>
 				<dt><label for="repass2">Re-enter password: </label></dt>
-				<dd><input type="text" id="repass2" data-errorprefix="Password" data-required data-matchfield="fv2password1"/></dd>
+				<dd><input type="text" data-errorprefix="Password" data-required data-matchfield="fv2password1"/></dd>
 				<dt><label for="fv2date">Date: </label></dt>
-				<dd><input type="text" id="fv2date1" title="Date" data-required data-validationrules="date"/></dd>
+				<dd><input type="text" title="Date" data-required data-validationrules="date"/></dd>
 				<dt><label for="fv2website">Website: </label></dt>
-				<dd><input type="text" id="fv2website1" title="Website" data-required data-validationrules="url"/></dd>
-				<dt><button type="button" id="fv2groupSubmit" value="Submit" data-form="fieldValidate2">Submit</button></dt>
+				<dd><input type="text" title="Website" data-required data-validationrules="url"/></dd>
+				<dt><button type="button" value="Submit" class="validate">Submit</button></dt>
 			</dl>
 		</fieldset>
 
@@ -321,7 +321,7 @@
 				<dd><input type="text" id="fv3email1" data-errorprefix="Email" data-required data-validationrules='email'/></dd>
 				<dt><label for="fv3selector">Select something: </label></dt>
 				<dd><select id="fv3choose1" data-errorprefix="Selector" data-required style="width:155px;">
-					<option value="">Select</option>
+					<option value="0">Select</option>
 					<option value="1">Good Choice</option>
 					<option value="2">Acceptable Choice</option>
 					<option value="3">Bad Choice</option>
@@ -336,7 +336,7 @@
 				<dd><input type="text" id="fv3date1" data-errorprefix="Date" data-required data-validationrules="date"/></dd>
 				<dt><label for="fv3website">Website: </label></dt>
 				<dd><input type="text" id="fv3website1" data-errorprefix="Website" data-required data-validationrules="url"/></dd>
-				<dt><input type="submit" id="fv3groupSubmit" value="Submit" data-form="fieldValidate3"/></dt>
+				<dt><input type="submit" id="fv3groupSubmit" value="Submit" data-form="fieldValidate3" class="validate"/></dt>
 			</dl>
 		</fieldset>
 
@@ -360,7 +360,7 @@
 				<dd><input type="text" id="fv4email" data-errorprefix="Email" data-required data-validationrules='email' class="restrictInput" data-inputType="numeric"/></dd>
 				<dt><label for="fv4selector">Select something: </label></dt>
 				<dd><select id="fv4choose1" data-errorprefix="Selector" data-required style="width:155px;">
-					<option value="">Select</option>
+					<option value="0">Select</option>
 					<option value="1">Good Choice</option>
 					<option value="2">Acceptable Choice</option>
 					<option value="3">Bad Choice</option>
@@ -375,7 +375,7 @@
 				<dd><input type="text" id="fv4date" data-errorprefix="Date" data-required data-validationrules="date"/></dd>
 				<dt><label for="fv4website">Website: </label></dt>
 				<dd><input type="text" id="fv4website" data-errorprefix="Website" data-required data-validationrules="url"/></dd>
-				<dt><input type="submit" id="fv4groupSubmit" value="Submit" data-form="fieldValidate4"/></dt>
+				<dt><input type="submit" id="fv4groupSubmit" value="Submit" data-form="fieldValidate4" class="validate"/></dt>
 			</dl>
 		</fieldset>
 
@@ -399,7 +399,7 @@
 				<dd><input type="text" id="fv5email" data-errorprefix="Email" onpaste="preventPaste(event)" data-required data-validationrules='email' class="restrictInput" data-inputType="numeric,alphaNumeric,printable"/></dd>
 				<dt><label for="fv5selector">Select something: </label></dt>
 				<dd><select id="fv5choose1" data-errorprefix="Selector" data-required style="width:155px;">
-					<option value="">Select</option>
+					<option value="0">Select</option>
 					<option value="1">Good Choice</option>
 					<option value="2">Acceptable Choice</option>
 					<option value="3">Bad Choice</option>
@@ -414,7 +414,7 @@
 				<dd><input type="text" id="fv5date" data-errorprefix="Date" data-required data-validationrules="date"/></dd>
 				<dt><label for="fv5website">Website: </label></dt>
 				<dd><input type="text" id="fv5website" data-errorprefix="Website" data-required data-validationrules="url"/></dd>
-				<dt><input type="submit" id="fv5groupSubmit" value="Submit" data-form="fieldValidate5"/></dt>
+				<dt><input type="submit" id="fv5groupSubmit" value="Submit" data-form="fieldValidate5" class="validate"/></dt>
 			</dl>
 		</fieldset>
 
@@ -443,7 +443,7 @@
 					<dd><input type="text" id="fv1date1" title="Date" data-required data-type="date"/></dd>
 					<dt><label for="fv1website">Website: </label></dt>
 					<dd><input type="text" id="fv1website1" title="Website" data-required data-type="url"/></dd>
-					<dt><input type="submit" id="fv1groupSubmit" value="Submit"/></dt>
+					<dt><input type="submit" id="fv1groupSubmit" value="Submit" class="validate"/></dt>
 				</dl>
 			</form>
 		</fieldset>
