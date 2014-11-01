@@ -44,7 +44,7 @@
 
 		function closeModal() {
 			$("#modalValidate").remove();
-			validator().removeErrors("modal");
+			validator().removeErrors("#modal");
 		    $("#modal").dialog("close");
 		}
 
@@ -117,7 +117,8 @@
 					"\nNumber of validation rules tested: " + eventData.testedRules +
 					"\nTotal number of rules: " + eventData.totalRules +
 					"\nTime: " + eventData.time);
-				validator().validate("fieldValidate5");
+				validator().validate("#fieldValidate5");
+				validator().validate("#testForm");
 			}
 		});
 
@@ -211,7 +212,7 @@
 	 			<input type="checkbox" name="lang" value="ts">TypeScript
  			</span>
  			<br><br>
-			<input type="submit" id="groupSubmit" value="Submit" data-form="groupValidate" class="validate"/>
+			<input type="submit" id="groupSubmit" value="Submit" class="validate"/>
 		</div>
 
 		<fieldset id="fieldValidate1" class="formValidate" data-formaction="submitThisForm">
@@ -251,7 +252,7 @@
 				<dd><input type="text" title="Date" data-required data-validationrules="date"/></dd>
 				<dt><label for="fv1website">Website: </label></dt>
 				<dd><input type="text" title="Website" data-required data-validationrules="url"/></dd>
-				<dt><input type="submit" value="Submit" data-form="fieldValidate1" class="validate"/></dt>
+				<dt><input type="submit" value="Submit" class="validate"/></dt>
 			</dl>
 		</fieldset>
 
@@ -336,7 +337,7 @@
 				<dd><input type="text" id="fv3date1" data-errorprefix="Date" data-required data-validationrules="date"/></dd>
 				<dt><label for="fv3website">Website: </label></dt>
 				<dd><input type="text" id="fv3website1" data-errorprefix="Website" data-required data-validationrules="url"/></dd>
-				<dt><input type="submit" id="fv3groupSubmit" value="Submit" data-form="fieldValidate3" class="validate"/></dt>
+				<dt><input type="submit" id="fv3groupSubmit" value="Submit" class="validate"/></dt>
 			</dl>
 		</fieldset>
 
@@ -375,7 +376,7 @@
 				<dd><input type="text" id="fv4date" data-errorprefix="Date" data-required data-validationrules="date"/></dd>
 				<dt><label for="fv4website">Website: </label></dt>
 				<dd><input type="text" id="fv4website" data-errorprefix="Website" data-required data-validationrules="url"/></dd>
-				<dt><input type="submit" id="fv4groupSubmit" value="Submit" data-form="fieldValidate4" class="validate"/></dt>
+				<dt><input type="submit" id="fv4groupSubmit" value="Submit" class="validate"/></dt>
 			</dl>
 		</fieldset>
 
@@ -414,7 +415,7 @@
 				<dd><input type="text" id="fv5date" data-errorprefix="Date" data-required data-validationrules="date"/></dd>
 				<dt><label for="fv5website">Website: </label></dt>
 				<dd><input type="text" id="fv5website" data-errorprefix="Website" data-required data-validationrules="url"/></dd>
-				<dt><input type="submit" id="fv5groupSubmit" value="Submit" data-form="fieldValidate5" class="validate"/></dt>
+				<dt><input type="submit" id="fv5groupSubmit" value="Submit" class="validate"/></dt>
 			</dl>
 		</fieldset>
 
