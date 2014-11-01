@@ -253,13 +253,19 @@ var validator =  function() {
         }
     };
 
-    this.validate = function(formId) {    //Public function for starting off the validation process.
-        var form = $("#" + formId);
-        if (form !== undefined && form.hasClass("formValidate")) {
-            var button = form.find("[data-form='" + formId + "']");
+    this.validate = function(formElem) {    //Public function for starting off the validation process.
+        if (formElem !== undefined) {
+            var form;
+            if (typeof formElem === "string") {
+                form = $(formElem);
+            }
+            else if (typeof formElem === "object") {
+                form = formElem;
+            }
+            var button = form.find(".validate");
             var time = new Date().getTime();
             var formOptions = {
-                form: form[0].id,
+                form: form,
                 display: form.hasClass("hover") === false ? false : "hover",
                 success: form.data("formaction") || null,
                 modalId: form.data("modalid") || null,
@@ -514,9 +520,9 @@ var validator =  function() {
             var errorOffsets = getMessageOffset(elem);
             createErrorMessage(elem, tested, options, rule, errorOffsets.width, errorOffsets.height);
             groupByForm(options, elem, rule);
-            groupByInput(options, elem, rule);
+            groupByInput(options, elem, rule); //See if these can be moved to the createErrorMessage function
         }
-        for (var i = 0; i < inputsArray.length; i++) {
+        for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
             if (elem[0] === inputsArray[i].input[0] && rule === inputsArray[i].rule) {
                 inputsArray[i].valid = tested.valid;
             }
@@ -587,7 +593,7 @@ var validator =  function() {
 
         $(document).trigger("validated", [{
             type: "validation",
-            element: options.form !== undefined ? options.form : options.input,
+            element: options.form !== undefined ? options.form[0].id : options.input,
             passed: numFailed === 0,
             count: numFailed,
             totalRules: inputArray.length,
@@ -915,7 +921,13 @@ var validator =  function() {
 
     this.removeErrors = function(elem) {  //public function to remove error messages
         if (elem !== undefined) {
-            var element = $("#" + elem);
+            var element;
+            if (typeof elem === "string") {
+                form = $(elem);
+            }
+            else if (typeof elem === "object") {
+                form = elem;
+            }
             var inputs = $("#" + elem).find(":input").filter(":input");
             for (var i = 0; i < inputs.length; i++) {
                 $("[id^='" + $(inputs[i]).data("vid") + "error']").each(function(index, val) {
