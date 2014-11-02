@@ -431,8 +431,6 @@ var validator =  function() {
             if (customRules !== undefined) {
                 rules = customRules.split(',');
                 $.each(rules, function(index, value) {
-                    if (value === "required")
-                        return;
                     var fn = window[value];
                     if (typeof fn === "function") {
                         var inputState = {
