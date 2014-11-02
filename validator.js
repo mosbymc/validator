@@ -1227,6 +1227,14 @@ var validator =  function() {
             }
             return { valid: true };
         },
+        address: function(obj) {
+            var re = new RegExp("^\\d+\\s?\\w+\\s?\\w+\\s?\\w+$");
+            var isAddress = re.test(obj.val());
+            if (!isAddress) {
+                return { valid: false, message: "Not a valid street address.", width: 200 };
+            }
+            return { valid: true };
+        },
         numeric: function(obj) {
             var re = new RegExp("/[0-9]|\\./");
             var isInt = re.test(obj.val());
