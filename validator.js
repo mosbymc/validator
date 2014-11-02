@@ -624,7 +624,7 @@ var validator =  function() {
         if (options.group) {
             var toDisplay = getOtherElem(elem);
             if ($("#" + elem.data("vid") + "InputGrp").length === 0) {
-                toDisplay.parent().append("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='inputGroup'></div>");
+                placeGroupErrorDiv(toDisplay, options, elem);
             }
             toDisplay.addClass("alignInput");
             var errorToMove = $("#" + elem.data("vid") + "error" + rule);
@@ -632,6 +632,28 @@ var validator =  function() {
             var span = "<span class='inputGrpErrorSpan'>" + html + "</span></br>";
             $("#" + elem.data("vid") + "InputGrp").append(span);
             errorToMove.remove();
+        }
+    };
+
+    var placeGroupErrorDiv = function(toDisplay, options, elem) {
+        var loc = options.form.data("location");
+
+        switch (loc) {
+            case "right":
+                toDisplay.parent().append("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup'></div>");
+                return;
+            case "left":
+                toDisplay.parent().prepend("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup'></div>");
+                return;
+            case "top":
+                toDisplay.parent().prepend("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='vInputGroup'></div>");
+                return;
+            case "bottom":
+                toDisplay.parent().append("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='vInputGroup'></div>");
+                return;
+            default:
+                toDisplay.parent().append("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup'></div>");
+                return;
         }
     };
 
