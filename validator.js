@@ -95,7 +95,7 @@ var validator =  function() {
 
         $(document).on("keypress", "input", function(event) {   //Bind event listener for the keypress event on an input. Used for restricting character input.
             var target = event.currentTarget;
-            if ($(target).hasClass("restrictInput") && $(target).data("inputtype") !== undefined) {
+            if ($(target).data("inputtype") !== undefined) {
                 var restrictOptions = {
                     input: target,
                     type: $(target).data("inputtype")
