@@ -42,7 +42,7 @@ var validator =  function() {
                         group: form.hasClass("groupByInput"),
                         button: $(target),
                         time: time,
-                        isForm: $(target).prop("type").toUpperCase() === "SUBMIT",
+                        isForm: target.form !== null,
                         event: event
                     };
                     Object.freeze(formOptions);
