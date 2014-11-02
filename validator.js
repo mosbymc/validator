@@ -910,12 +910,12 @@ var validator =  function() {
         if (elem !== undefined) {
             var element;
             if (typeof elem === "string") {
-                form = $(elem);
+                element = $(elem);
             }
             else if (typeof elem === "object") {
-                form = elem;
+                element = elem;
             }
-            var inputs = $("#" + elem).find(":input").filter(":input");
+            var inputs = element.find(":input").filter(":input");
             for (var i = 0; i < inputs.length; i++) {
                 $("[id^='" + $(inputs[i]).data("vid") + "error']").each(function(index, val) {
                     $(val).remove();
