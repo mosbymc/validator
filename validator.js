@@ -260,7 +260,8 @@ var validator =  function() {
                 }
             }
             else {
-              console.log("The supplied 'call before' function: " + options.callBefore + "could not be found."); //BeerHere
+              console.log("The supplied 'call before' function: " + options.callBefore + "could not be found.");
+              validateForm(true, form, options);
             }
         }
         else {
@@ -277,7 +278,7 @@ var validator =  function() {
     this.validateForm = function(continueValidation, form, options) {    //Used as both a callback and internally if no call before function is supplied.
         if (continueValidation) {   //Only continue validating if given the go ahead from the "call before" function.
             if (options.groupErrors !== null) {     //Remove previous grouped validation errors before validating a new input.
-                $("#" + options.groupErrors).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");  //BeerHere
+                $("#" + options.groupErrors).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");
             }
 
             var inputs = $(form).find(":input").filter(":input");
