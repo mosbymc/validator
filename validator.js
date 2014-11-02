@@ -1129,7 +1129,9 @@ var validator =  function() {
     ////////////////////////////////////////////////////////////////////////////////////////////
     var validationRules = {
         requiredInput: function(obj) {
-            if (obj.val().length < 1) {
+            var re = new RegExp("^\\s*$");
+            var isBlank = re.test(obj.val());
+            if (obj.val().length < 1 || isBlank) {
                return { valid: false, message: "Required field.", width: 100 };
             }
             return { valid: true };
