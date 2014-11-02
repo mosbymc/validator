@@ -29,7 +29,7 @@ var validator =  function() {
         $(document).on("click", "input, button", function(event) {  //Bind form event listener and create "options" object when an input or button with the "formValidate" class is clicked.
             var target = event.currentTarget;
             var form = $(target).parents(".formValidate:first");
-            if (form.length > 0 && form[0].tagName.toLowerCase() !== "form" && $(target).hasClass("validate")) {
+            if (form.length > 0 && $(target).hasClass("validate")) {
                 if (form.hasClass("formValidate")) {
                     var time = new Date().getTime();
                     var formOptions = {
@@ -42,46 +42,9 @@ var validator =  function() {
                         group: form.hasClass("groupByInput"),
                         button: $(target),
                         time: time,
-                        isForm: false,
+                        isForm: $(target).prop("type").toUpperCase() === "SUBMIT",
                         event: event
                     };
-                    Object.freeze(formOptions);
-                    $(target).prop("disabled", true);
-                    callBeforeValidate(form, formOptions);
-                }
-            }
-            else if ($(target).prop("type").toUpperCase() === "SUBMIT" && target.form !== null && $(target).hasClass("validate")) {   //creates the same object as above, but works for "submit" buttons.
-                var classes = [];   //this is set up differently from above because JQ doesn't play nice with forms evidently.
-                for (var i = 0; i < form[0].classList.length; i++) {
-                    classes.push(form[0].classList[i]);
-                }
-                if (classes.indexOf("formValidate") !== -1) {
-                    var time = new Date().getTime();
-                    var formOptions = {
-                        form: form,
-                        display: classes.indexOf("hover") === -1 ? false : "hover",
-                        success: null,
-                        modalId: null,
-                        groupErrors: null,
-                        callBefore: false,
-                        group: classes.indexOf("groupByInput") !== -1,
-                        button: $(target),
-                        time: time,
-                        isForm: true,
-                        event: event
-                    };
-
-                    for (i = 0; i < form[0].attributes.length; i++) {
-                        if (form[0].attributes[i].name === "data-grouperrors") {
-                            formOptions.groupErrors = form[0].attributes[i].value;
-                        }
-                        if (form[0].attributes[i].name === "modalid") {
-                            formOptions.modalId = form[0].attributes[i].value;
-                        }
-                        if (form[0].attributes[i].name === "beforeValidate") {
-                            formOptions.callBefore = form[0].attributes[i].value;
-                        }
-                    }
                     Object.freeze(formOptions);
                     $(target).prop("disabled", true);
                     callBeforeValidate(form, formOptions);
