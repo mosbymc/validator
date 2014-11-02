@@ -93,11 +93,23 @@
 	color: #EE4040;
 }
 
-/*Put on the div surrounding the grouped errors at the input level*/
-.inputGroup {
+/*Put on the div surrounding the grouped errors at the input level for left/right grouping*/
+.hInputGroup {
 	display: inline-block;
 	width: 200px;
 	margin-left: 5px;
+	margin-right: 5px;
+	border: 1px solid red;
+	border-radius: 5px;
+	text-align: center;
+	font: normal 11px 'Lucida Grande', Verdana, sans-serif;
+}
+
+/*Put on the div surrounding the grouped errors at the input level for top/bottom grouping*/
+.vInputGroup {
+	width: 200px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 	border: 1px solid red;
 	border-radius: 5px;
 	text-align: center;
