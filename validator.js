@@ -1227,6 +1227,14 @@ var validator =  function() {
             }
             return { valid: true };
         },
+        uscurrency: function(obj) {
+            var re = new RegExp("^(\\$|)([1-9]\\d{0,2}(\\,\\d{3})*|([1-9]\\d*))(\\.\\d{2})?$");
+            var isCurrency = re.test(obj.val());
+            if (!isCurrency) {
+                return { valid: isCurrency, message: "Not a valid amount.", width: 200 };
+            }
+            return { valid: true };
+        },
         phone: function(obj) {
             var re = new RegExp("^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$");
             var isPhone = re.test(obj.val());
