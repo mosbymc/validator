@@ -1219,6 +1219,14 @@ var validator =  function() {
             }
             return { valid: true };
         },
+        ssn: function(obj) {
+            var re = new RegExp("^(?!000)([0-6]\\d{2}|7([0-6]\\d|7[012]))([ -]?)(?!00)\\d\\d\\3(?!0000)\\d{4}$");
+            var isSSN = re.test(obj.val());
+            if (!isSSN) {
+                return { valid: isSSN, message: "Not a valid social security number.", width: 200 };
+            }
+            return { valid: true };
+        },
         phone: function(obj) {
             var re = new RegExp("^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$");
             var isPhone = re.test(obj.val());
