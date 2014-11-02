@@ -450,6 +450,7 @@ var validator =  function() {
                                 for (var l = 0; l < rules.length; l++) {
                                     if (elem[0] === inputsArray[k].input[0] && rules[l] === inputsArray[k].rule) {
                                         inputsArray[k].valid = null;
+                                        break;
                                     }
                                 }
                             }
@@ -487,6 +488,7 @@ var validator =  function() {
         for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
             if (elem[0] === inputsArray[i].input[0] && rule === inputsArray[i].rule) {
                 inputsArray[i].valid = tested.valid;
+                break;
             }
         }
     };
@@ -504,6 +506,7 @@ var validator =  function() {
             for (var i = 0; i < inputState.inputArray.length; i++) {
                 if (inputState.element[0] === inputState.inputArray[i].input[0] && inputState.rule === inputState.inputArray[i].rule) {
                     inputState.inputArray[i].valid = tested.valid;
+                    break;
                 }
             }
             finalizeValidation(inputState.inputArray, inputState.option);
