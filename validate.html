@@ -126,6 +126,14 @@
 	</head>
 	<body onload="createModal()" style="height:1500px;">
 		<div>
+			<p>
+				<h1>validator.js</h1>
+				This is my test page for the validator's functionality. Currently all the functionality of the<br>
+				validator is in use here among the various forms. Note that the delay on some of the forms when the<br>
+				submit button is clicked, is not the validator but instead a timeout placed on the custom rules to<br>
+				simiulate an asynchronous function. Also, due to some of the validation rules used on various inputs,<br>
+				not all fields are able to be successfully validated.
+			</p><br><br>
 			<br/>
 			<br/>
 			<input type="button" id="openModal" value="Modal" onclick="openModal()"/>
@@ -154,7 +162,7 @@
 			</div>
 		</div>
 		<br><br><br>
-		<input type="submit" id="hookSbumit" value="Hook Tester" onclick="testHook()"/>
+		<input type="submit" id="hookSubmit" value="Public validation hook" onclick="testHook()"/>
 		<br><br>
 		<div id="groupValidate" class="formValidate hover" data-formaction='submitThisForm'>
 			<h2>Group Validated</h2>
