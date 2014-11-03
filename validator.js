@@ -1045,7 +1045,7 @@ var validator =  function() {
         numeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
             if ((unicode > 43 && unicode < 47) || (unicode > 47 && unicode < 58)) { //if a number, decimal, comma, or minus
-                return true; //disable key press
+                return true;
             }
             return false;
         },
@@ -1066,14 +1066,14 @@ var validator =  function() {
         nonNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
             if (unicode < 48 || unicode > 57) { //if a number
-                return true; //disable key press
+                return true;
             }
             return false;
         },
         alphaNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
             if ((unicode > 47 && unicode < 58) || (unicode > 64 && unicode < 91) || (unicode > 96 && unicode < 123)) { //if alpha-numeric
-                return true; //disable key press
+                return true;
             }
             return false;
         },
@@ -1086,15 +1086,15 @@ var validator =  function() {
         },
         printable: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode > 31 || unicode < 128) { //if not alpha-numeric
-                return true; //disable key press
+            if (unicode > 31 || unicode < 128) {
+                return true;
             }
             return false;
         },
         printableNonNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if ((unicode > 31 && unicode < 48) || (unicode > 57 && unicode < 128)) { //if not alpha-numeric
-                return true; //disable key press
+            if ((unicode > 31 && unicode < 48) || (unicode > 57 && unicode < 128)) {
+                return true;
             }
             return false;
         },
@@ -1104,7 +1104,6 @@ var validator =  function() {
                 return true;
             }
             return false;
-            //32, 40, 41, 45, 46, 48-57
         },
         shortDate: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
@@ -1275,7 +1274,7 @@ var validator =  function() {
             return { valid: true };
         },
         /*
-        Password matching expression. Password must be at least 8 characters, no more than 40 characters, and must include at least one upper case letter, one lower case letter, and one numeric digit.
+        Password matching expression. Password must be at least 8 characters, no more than 40 characters, and must include at least one upper case letter, one lower case letter, and one digit.
         */
         password: function(obj) {
             var re = new RegExp("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,40}$");
