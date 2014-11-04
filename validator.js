@@ -751,10 +751,6 @@ var validator =  function() {
         $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
             $(val).remove();
         });
-        if ($("[id^='" + element[0].id + "error']").length < 1) {
-            var toDisplay = getOtherElem(element);
-            toDisplay.css("border", "");
-        }
         $("[id^='" + element.data("vid") + "InputGrp']").each(function(index, val) {
             $(val).remove();
         });
