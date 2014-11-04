@@ -106,7 +106,7 @@
 		}
 
 		function testHook() {
-			validator().validate("fieldValidate4");
+			validator().validate($("#fieldValidate4"));
 		}
 
 		$(document).on("validated", function(e, eventData) {
@@ -121,6 +121,10 @@
 				validator().validate("#testForm");
 			}
 		});
+
+		function removeGroupedErrors() {
+			validator().removeErrors("#fieldValidate4");
+		}
 
 		</script>
 	</head>
@@ -162,7 +166,8 @@
 			</div>
 		</div>
 		<br><br><br>
-		<input type="submit" id="hookSubmit" value="Public validation hook" onclick="testHook()"/>
+		<input type="submit" id="hookSubmit" value="Public Validation Hook For Form 4" onclick="testHook()"/>
+		<input type="submit" id="removeGroup" value="Remove Grouped Errors From Form 4" onclick="removeGroupedErrors()"/>
 		<br><br>
 		<div id="groupValidate" class="formValidate hover" data-formaction='submitThisForm'>
 			<h2>Group Validated</h2>
