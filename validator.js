@@ -591,7 +591,6 @@ var validator =  function() {
             if ($("#" + elem.data("vid") + "InputGrp").length === 0) {
                 placeGroupErrorDiv(toDisplay, options, elem);
             }
-            toDisplay.addClass("alignInput");
             var errorToMove = $("#" + elem.data("vid") + "error" + rule);
             var html = errorToMove.html();
             var span = "<span class='inputGrpErrorSpan'>" + html + "</span></br>";
@@ -605,10 +604,10 @@ var validator =  function() {
 
         switch (loc) {
             case "right":
-                toDisplay.after("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup'></div>");
+                toDisplay.after("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup alignInput'></div>");
                 return;
             case "left":
-                toDisplay.before("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup'></div>");
+                toDisplay.before("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup alignInput'></div>");
                 return;
             case "top":
                 toDisplay.before("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='vInputGroup'></div>");
@@ -617,7 +616,7 @@ var validator =  function() {
                 toDisplay.after("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='vInputGroup'></div>");
                 return;
             default:
-                toDisplay.after("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup'></div>");
+                toDisplay.after("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup alignInput'></div>");
                 return;
         }
     };
