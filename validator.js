@@ -225,24 +225,29 @@ var validator =  function() {
             else if (typeof formElem === "object") {
                 form = formElem;
             }
-            var button = form.find(".validate");
-            var time = new Date().getTime();
-            var formOptions = {
-                form: form,
-                display: form.hasClass("hover") === false ? false : "hover",
-                success: form.data("formaction") || null,
-                modalId: form.data("modalid") || null,
-                groupErrors: form.data("grouperrors") || null,
-                callBefore: form.data("beforevalidate") || false,
-                group: form.hasClass("groupByInput"),
-                button: button,
-                time: time,
-                isForm: false,
-                event: null
-            };
-            Object.freeze(formOptions);
-            button.prop("disabled", true);
-            callBeforeValidate(form, formOptions);
+            try {
+                var button = form.find(".validate");
+                var time = new Date().getTime();
+                var formOptions = {
+                    form: form,
+                    display: form.hasClass("hover") === false ? false : "hover",
+                    success: form.data("formaction") || null,
+                    modalId: form.data("modalid") || null,
+                    groupErrors: form.data("grouperrors") || null,
+                    callBefore: form.data("beforevalidate") || false,
+                    group: form.hasClass("groupByInput"),
+                    button: button,
+                    time: time,
+                    isForm: false,
+                    event: null
+                };
+                Object.freeze(formOptions);
+                button.prop("disabled", true);
+                callBeforeValidate(form, formOptions);
+            }
+            catch (ex) {
+                console.log("Could not validate form: " + formElem);
+            }
         }
     }
 
@@ -919,7 +924,7 @@ var validator =  function() {
                 $("[id^='" + $(inputs[i]).data("vid") + "error']").each(function(index, val) {
                     $(val).remove();
                 });
-                $("[id^='" + $(inputs[i]).id + "InputGrp']").each(function(index, val) {
+                $("[id^='" + $(inputs[i]).data("vid") + "InputGrp']").each(function(index, val) {
                     $(val).remove();
                 });
             }
