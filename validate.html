@@ -170,13 +170,13 @@
 			<br/>
 			<label for="displayTest">Display Name Error Here: </label><input type="text" class="displaytest"/>
 			</br>
-			<label for="homeNum">Home Phone: </label><input type="text" data-required data-validationrules='phone,email' data-offsetwidth="200"/>
+			<label for="homeNum">Home Phone: </label><input type="text" data-required data-validationrules='phone,email' data-offsetwidth="200" data-inputformat="{{###}}-{{###}}-{{####}}"/>
 			<br/>
 			<label for="displayTests">Display Cell Error Here: </label><input type="text" class="displaytest"/>
 			</br>
-			<label for="cellNum">Cell Phone: </label><input type="text" data-validationrules="phone" data-displayon=".displaytest,up"/>
+			<label for="cellNum">Cell Phone: </label><input type="text" data-validationrules="phone" data-displayon=".displaytest,up" data-inputformat="{{###}}-{{###}}-{{####}}"/>
 			<br>
-			<label for="zip">Zip: </label><input type="text" data-required data-validationrules='zip' />
+			<label for="zip">Zip: </label><input type="text" data-required data-validationrules='zip' data-inputformat="{{#####}}"/>
 			<br/>
 			<label for="email">Email: </label><input type="text" data-required data-validationrules='email'/>
 			<br/>
@@ -189,9 +189,15 @@
 			</br>
 			<label for="password">Password: </label><input type="text" data-required data-validationrules="password" class="inputValidate hover" data-validateon="input"/>
 			</br>
-			<label for="date">Date: </label><input type="text" data-required data-validationrules="date"/>
+			<label for="date">Date: </label><input type="text" data-required data-validationrules="date" data-inputformat="{{##}}/{{##}}/{{####}}"/>
 			</br>
 			<label for="website">Website: </label><input type="text" data-required data-validationrules="url"/>
+			</br>
+			<label for="street">Street Address: </label><input type="text" data-required data-validationrules="address"/>
+			</br>
+			<label for="ssn">SSN: </label><input type="text" data-required data-validationrules="ssn" data-inputformat="{{###}}-{{##}}-{{####}}"/>
+			</br>
+			<label for="amount">Amount: </label><input type="text" data-required data-validationrules="uscurrency" data-inputformat="${{####}}.{{##}}"/>
 			</br>
 			<span class="displayhere">
 				<label for="radio">Radio Buttons: </label><input type="radio" name="sex" value="male" data-required data-displayon=".displayhere,up"/>Male
@@ -201,23 +207,23 @@
 			<label for="car">My car is:</label>
 			<br>
 			<span class="checkboxDisplay">
-				<input type="checkbox" name="car" value="2door" data-maxchecked="1" data-displayon=".checkboxDisplay,up">2 Doors
-	 			<input type="checkbox" name="car" value="3door">3 Doors
-	 			<input type="checkbox" name="car" value="4door">4 Doors
-	 			<input type="checkbox" name="car" value="5door">5 Doors
+				<input type="checkbox" data-checkboxgroup="car" value="2door" data-maxchecked="1" data-displayon=".checkboxDisplay,up">2 Doors
+	 			<input type="checkbox" data-checkboxgroup="car" value="3door">3 Doors
+	 			<input type="checkbox" data-checkboxgroup="car" value="4door">4 Doors
+	 			<input type="checkbox" data-checkboxgroup="car" value="5door">5 Doors
  			</span>
  			<br><br>
  			<label for="car">Programming Languages:</label>
 			<br>
  			<span class="checkboxDisplay2">
-				<input type="checkbox" name="lang" value="js" data-minchecked="3" data-displayon=".checkboxDisplay2,up">JavaScript
-	 			<input type="checkbox" name="lang" value="php">PHP
-	 			<input type="checkbox" name="lang" value="c#">C#
-	 			<input type="checkbox" name="lang" value="java">Java
-	 			<input type="checkbox" name="lang" value="python">Python
-	 			<input type="checkbox" name="lang" value="ruby">Ruby
-	 			<input type="checkbox" name="lang" value="vb">Visual Basic
-	 			<input type="checkbox" name="lang" value="ts">TypeScript
+				<input type="checkbox" data-checkboxgroup="lang" value="js" data-minchecked="3" data-displayon=".checkboxDisplay2,up">JavaScript
+	 			<input type="checkbox" data-checkboxgroup="lang" value="php">PHP
+	 			<input type="checkbox" data-checkboxgroup="lang" value="c#">C#
+	 			<input type="checkbox" data-checkboxgroup="lang" value="java">Java
+	 			<input type="checkbox" data-checkboxgroup="lang" value="python">Python
+	 			<input type="checkbox" data-checkboxgroup="lang" value="ruby">Ruby
+	 			<input type="checkbox" data-checkboxgroup="lang" value="vb">Visual Basic
+	 			<input type="checkbox" data-checkboxgroup="lang" value="ts">TypeScript
  			</span>
  			<br><br>
 			<input type="submit" id="groupSubmit" value="Submit" class="validate"/>
