@@ -919,36 +919,42 @@ var validator =  function() {
             else if (typeof elem === "object") {
                 element = elem;
             }
-            var inputs = element.find(":input").filter(":input");
-            for (var i = 0; i < inputs.length; i++) {
-                $("[id^='" + $(inputs[i]).data("vid") + "error']").each(function(index, val) {
-                    $(val).remove();
+            try {
+                var inputs = element.find(":input").filter(":input");
+                for (var i = 0; i < inputs.length; i++) {
+                    $("[id^='" + $(inputs[i]).data("vid") + "error']").each(function(index, val) {
+                        $(val).remove();
+                    });
+                    $("[id^='" + $(inputs[i]).data("vid") + "InputGrp']").each(function(index, val) {
+                        $(val).remove();
+                    });
+                }
+                
+                $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
+                    val.remove();
                 });
-                $("[id^='" + $(inputs[i]).data("vid") + "InputGrp']").each(function(index, val) {
-                    $(val).remove();
+
+                $("[id^='" + element.data("vid") + "InputGrp']").each(function(index, val) {
+                    val.remove();
+                });
+
+                element.find(".errorMessage").each(function(index, val) {
+                    val.remove();
+                });
+
+                element.find(".invalid").each(function(index, val) {
+                    $(val).removeClass("invalid");
+                });
+
+                element.find(".groupedErrors").each(function(index, val) {
+                    $(val).empty();
+                    $(val).css("display", "none");
                 });
             }
-            
-            $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
-                val.remove();
-            });
-
-            $("[id^='" + element.data("vid") + "InputGrp']").each(function(index, val) {
-                val.remove();
-            });
-
-            element.find(".errorMessage").each(function(index, val) {
-                val.remove();
-            });
-
-            element.find(".invalid").each(function(index, val) {
-                $(val).removeClass("invalid");
-            });
-
-            element.find(".groupedErrors").each(function(index, val) {
-                $(val).empty();
-                $(val).css("display", "none");
-            });
+            catch (ex) {
+                console.log("Could not remove errors from the supplied element: " + elem);
+                console.log(ex);
+            }
         }
         else {
             $("body").find(".errorMessage").each(function(index, val) {
