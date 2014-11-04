@@ -1162,9 +1162,9 @@ var validator =  function() {
         },
         maxChecked: function(obj) {
             var maxNum = obj.data("maxchecked");
-            if (obj.attr("name")) {
-                var grpName = obj.attr("name");
-                var selected = $("input[name=" + grpName + "]:checked");
+            if (obj.data("checkboxgroup")) {
+                var grpName = obj.data("checkboxgroup");
+                var selected = $("input[data-checkboxgroup=" + grpName + "]:checked");
                 if (selected.length > maxNum) {
                     return { valid: false, message: "You cannot select more than " + maxNum + " option(s).", width: 250 };
                 }
@@ -1174,9 +1174,9 @@ var validator =  function() {
         },
         minChecked: function(obj) {
             var minNum = obj.data("minchecked");
-            if (obj.attr("name")) {
-                var grpName = obj.attr("name");
-                var selected = $("input[name=" + grpName + "]:checked");
+            if (obj.data("checkboxgroup")) {
+                var grpName = obj.data("checkboxgroup");
+                var selected = $("input[data-checkboxgroup=" + grpName + "]:checked");
                 if (selected.length < minNum) {
                     return { valid: false, message: "You must select at least " + minNum + " option(s).", width: 250 };
                 }
