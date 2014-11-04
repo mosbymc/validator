@@ -993,21 +993,19 @@ var validator =  function() {
         helpText.css('top', placement[1]).css('left', placement[0]);
 
         if (helpOptions.modalId !== null) {
-            $("#" + helpOptions.modalId).on("scroll", function() {
-                $(document).trigger("helpTextModalScroll" + elem[0].id, [{}]);
-            });
             $(document).on("helpTextModalScroll" + elem[0].id, function() {
                 helpTextScrollModalListener(helpOptions, elem, errorOffsets.width, errorOffsets.height, helpText);
             });
+            $("#" + helpOptions.modalId).on("scroll", function() {
+                $(document).trigger("helpTextModalScroll" + elem[0].id, [{}]);
+            });
         }
-
-        $(window).on("scroll", function() {
-            $(document).trigger("helpTextScroll" + elem[0].id, [{}]);
-        });
-        
         $(document).on("helpTextScroll" + elem[0].id, function() {
             var placement = determinePlacement(position, elem, errorOffsets.width, errorOffsets.height, helpText);
             helpText.css('top', placement[1]).css('left', placement[0]);
+        });
+        $(window).on("scroll", function() {
+            $(document).trigger("helpTextScroll" + elem[0].id, [{}]);
         });
     };
 
