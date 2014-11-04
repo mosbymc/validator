@@ -1030,13 +1030,17 @@ var validator =  function() {
         $.each(rules, function(index, value) {
             var fn = inputTypes[value];
             if (typeof fn === "function") {
-              try {
-                  valid = fn.call(this, elem, event);
-                  testedArray.push(valid);
-              }
-              catch(ex) {
-                console.log("Could not find function for input type " + value);
-              }
+                try {
+                        valid = fn.call(this, elem, event);
+                        testedArray.push(valid);
+                }
+                catch(ex) {
+                    console.log("The supplied character restriction type: '" + value + "' could not be executed.");
+                    console.log(ex);
+                }
+            }
+            else {
+                console.log("The supplied character restriction type: '" + value + "' is not an acceptable type.");
             }
         });
 
