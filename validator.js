@@ -1169,12 +1169,18 @@ var validator =  function() {
             if (parseInt(minVal) > parseInt(obj.val())) {
                 return { valid: false, message: "Minimum allowed value: " + minVal, width: 175 };
             }
+            else if (!parseInt(obj.val())) {
+                return { valid: false, message: "The value entered is not a number.", width: 200 };
+            }
             return { valid: true };
         },
         testMaxValue: function(obj) {
             var maxVal = obj.data("max");
             if (parseInt(maxVal) < parseInt(obj.val())) {
                 return { valid: false, message: "Maximum allowed value: " + maxVal, width: 175 };
+            }
+            else if (!parseInt(obj.val())) {
+                return { valid: false, message: "The value entered is not a number.", width: 200 };
             }
             return { valid: true };
         },
