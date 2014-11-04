@@ -512,8 +512,7 @@ var validator =  function() {
 
     this.customRulesCallback = function(tested, inputState) {
         try {
-            var timeStamp = inputState.element.data("vts");
-            if (!tested.valid && timeStamp === inputState.option.time) {    //If validation fails, create the error message element
+            if (!tested.valid && inputState.element.data("vts") === inputState.option.time) {    //If validation fails, create the error message element
                 var errorOffsets = getMessageOffset(inputState.element);
 
                 createErrorMessage(inputState.element, tested, inputState.option, inputState.rule, errorOffsets.width, errorOffsets.height);
