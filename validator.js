@@ -594,6 +594,9 @@ var validator =  function() {
                     console.log(ex);
                 }
             }
+            else {
+                console.log("Could not find successful validation function: '" + options.success + "' for the current form.");
+            }
         }
 
         if (numFailed !== 0 && options.isForm === true) {   //If the form passed validation and has an action attribute, call the success function if one was supplied.
