@@ -249,6 +249,9 @@ var validator =  function() {
                 console.log("Could not validate form: " + formElem);
             }
         }
+        else {
+            console.log("Cannot validate a null form.");
+        }
     }
 
     var callBeforeValidate = function(form, options) {
