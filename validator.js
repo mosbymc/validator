@@ -601,8 +601,7 @@ var validator =  function() {
                 console.log("Could not find successful validation function: '" + options.success + "' for the current form.");
             }
         }
-
-        if (numFailed !== 0 && options.isForm === true) {   //If the form passed validation and has an action attribute, call the success function if one was supplied.
+        else if (numFailed !== 0 && options.isForm === true) {   //If the form failed validation and has an action attribute, prevent the default action of the form.
             options.event.preventDefault();
         }
     };
@@ -707,7 +706,7 @@ var validator =  function() {
         displayErrorText(element, errorData, options, errorName, offsetWidth, offsetHeight);
 
         var messageDiv = $("#" + element.data("vid") + "error" + errorName);
-        if ((element).prevUntil(":input").filter(".helptext:first").length > 0) {
+        if ((element).prevUntil(":input").filter(".helptext:first").length > 0) {   //Remove help text because there's an error being displayed now.
             element.prevUntil(":input").filter(".helptext:first").addClass("hideMessage").removeClass("showMessage");
         }
         if (options.display === "hover") {
@@ -716,8 +715,7 @@ var validator =  function() {
         else if (options.display !== "hover" && options.modalId === null) {
             adjustTextOnScroll(element, messageDiv, offsetWidth, offsetHeight);
         }
-
-        if (options.display !== "hover" && options.modalId !== null) {
+        else if (options.display !== "hover" && options.modalId !== null) {
             scrollModalListener(options, element, offsetWidth, offsetHeight, messageDiv);
         }
     };
