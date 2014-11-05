@@ -158,7 +158,7 @@ var validator =  function() {
             }
 
             helpText.addClass("hideMessage").removeClass("showMessage");
-            if (modal !== null) {   //unbind event listeners for the help test spans
+            if (modal !== null) {   //unbind event listeners for the help text spans
                 $(document).off("helpTextModalScroll" + target[0].id);
                 $(document).off("helpTextScroll" + target[0].id);
             }
