@@ -109,6 +109,9 @@ var validator =  function() {
 
         $(document).on("focus", "input", function(event) {  //Help text listener. Will display help text for a given input when focused.
             var target = event.currentTarget;
+            if ($(target).hasClass("invalid")) {    //if the input has error messages associated with it, we don't show help text.
+                return;
+            }
             if ($(target).prevUntil(":input").filter(".helptext:first").length > 0 && $("[id^='" + $(target)[0].id + "error']").length < 1 && $("#" + $(target)[0].id + "InputGrp").length < 1) {
                 var helptext = $(target).prevUntil(":input").filter(".helptext:first");
                 var modal = null;
