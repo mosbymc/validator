@@ -601,6 +601,10 @@ var validator =  function() {
         else if (numFailed !== 0 && options.isForm === true) {   //If the form failed validation and has an action attribute, prevent the default action of the form.
             options.event.preventDefault();
         }
+        else if (numFailed === 0 && options.isForm === true) {  //We need to programmatically submit the form here - async function will prevent to form action from firing.
+            options.event.preventDefault(); //prevent default form sumbit
+            options.form[0].submit();       //then call it programmatically.
+        }
     };
 
     var groupByInput = function(options, elem, rule) {
