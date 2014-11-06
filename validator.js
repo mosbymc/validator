@@ -438,15 +438,7 @@ var validator =  function() {
                         postValidation(tested, elem, options, value, inputsArray);
                     }
                     else {
-                        console.log("Could not find library function: " + value " for element: " + elem);
-                        for (var k = 0; k < inputsArray.length; k++) {
-                            for (var l = 0; l < rules.length; l++) {
-                                if (elem[0] === inputsArray[k].input[0] && rules[l] === inputsArray[k].rule) {
-                                    inputsArray[k].valid = null;
-                                    break;
-                                }
-                            }
-                        }
+                        setRuleToNull(elem, inputsArray, rules, value);
                     }
                 });
             }
@@ -479,15 +471,7 @@ var validator =  function() {
                         }
                     }
                     else {  //if the provided function name cannot be found, or isn't a function, then "ignore" as a rule we need to validate against.
-                    console.log("Could not find library function: " + value " for element: " + elem);
-                        for (var k = 0; k < inputsArray.length; k++) {
-                            for (var l = 0; l < rules.length; l++) {
-                                if (elem[0] === inputsArray[k].input[0] && rules[l] === inputsArray[k].rule) {
-                                    inputsArray[k].valid = null;
-                                    break;
-                                }
-                            }
-                        }
+                        setRuleToNull(elem, inputsArray, rules, value);
                     }
                 });
             }
@@ -511,6 +495,16 @@ var validator =  function() {
         for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
             if (elem[0] === inputsArray[i].input[0] && rule === inputsArray[i].rule) {
                 inputsArray[i].valid = tested.valid;
+                break;
+            }
+        }
+    };
+    
+    var setRuleToNull = function(elem, inputsArray, rules, value) {
+        console.log("Could not find library function: " + value + " for element: " + elem);
+        for (var k = 0; k < inputsArray.length; k++) {
+            if (elem[0] === inputsArray[k].input[0] && value === inputsArray[k].rule) {
+                inputsArray[k].valid = null;
                 break;
             }
         }
