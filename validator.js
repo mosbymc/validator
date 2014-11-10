@@ -993,6 +993,7 @@ var validator =  function() {
 
     var displayHelpText = function(helpOptions) {   //sets up event listeners for help text when the window/modal is scrolled
         var elem = $(helpOptions.input),
+        vid = elem.data("vid") || new Date().getTime(),
         helpText = elem.prevUntil(":input").filter(".helptext:first"),
         position = getOtherElem(elem).offset(),
         errorOffsets = getMessageOffset(elem);
@@ -1001,19 +1002,19 @@ var validator =  function() {
         helpText.css('top', placement[1]).css('left', placement[0]);
 
         if (helpOptions.modalId !== null) {
-            $(document).on("helpTextModalScroll" + elem[0].id, function() {
+            $(document).on("helpTextModalScroll" + vid, function() {
                 helpTextScrollModalListener(helpOptions, elem, errorOffsets.width, errorOffsets.height, helpText);
             });
             $("#" + helpOptions.modalId).on("scroll", function() {
-                $(document).trigger("helpTextModalScroll" + elem[0].id, [{}]);
+                $(document).trigger("helpTextModalScroll" + vid, [{}]);
             });
         }
-        $(document).on("helpTextScroll" + elem[0].id, function() {
+        $(document).on("helpTextScroll" + vid, function() {
             var placement = determinePlacement(position, elem, errorOffsets.width, errorOffsets.height, helpText);
             helpText.css('top', placement[1]).css('left', placement[0]);
         });
         $(window).on("scroll", function() {
-            $(document).trigger("helpTextScroll" + elem[0].id, [{}]);
+            $(document).trigger("helpTextScroll" + vid, [{}]);
         });
     };
 
