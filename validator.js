@@ -27,8 +27,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 var validator =  function() {
     this.init = function(events) {
         $(document).on("click", "input, button", function(event) {  //Bind form event listener and create "options" object when an input or button with the "formValidate" class is clicked.
-            var target = event.currentTarget;
-            var form = $(target).parents(".formValidate:first");
+            var target = event.currentTarget,
+            form = $(target).parents(".formValidate:first");
             if (form.length > 0 && $(target).hasClass("validate")) {
                 if (form.hasClass("formValidate")) {
                     var time = new Date().getTime();
@@ -53,8 +53,8 @@ var validator =  function() {
         });
 
         $(document).on("input", "input", function(event) {      //Bind input event listener on input event. The input itself or its parent must have the "inputValidate" class.
-            var target = event.currentTarget;
-            var time, inputOptions;
+            var target = event.currentTarget,
+            time, inputOptions;
             if (!$(target).hasClass("inputValidate") && ($(target).data("validateon") === undefined || $(target).data("validateon") === "input")) {
                 var parent = $(target).parents(".inputValidate:first");
                 if (parent !== undefined) {
@@ -113,8 +113,8 @@ var validator =  function() {
                 return;
             }
             if ($(target).prevUntil(":input").filter(".helptext:first").length > 0 && $("[id^='" + $(target)[0].id + "error']").length < 1 && $("#" + $(target)[0].id + "InputGrp").length < 1) {
-                var helptext = $(target).prevUntil(":input").filter(".helptext:first");
-                var modal = null;
+                var helptext = $(target).prevUntil(":input").filter(".helptext:first"),
+                modal = null;
                 if ($(target).data("modalid") === undefined) {
                     if ($(target).parents(".formValidate:first").length > 0) {
                         modal = $(target).parents(".formValidate:first").data("modalId") || null;
@@ -139,9 +139,9 @@ var validator =  function() {
         });
 
         $(document).on("blur", "input", function(event) {   //Remove help text on blur.
-            var target = $(event.currentTarget);
-            var helpText = target.prevUntil(":input").filter(".helptext:first");
-            var modal;
+            var target = $(event.currentTarget),
+            helpText = target.prevUntil(":input").filter(".helptext:first"),
+            modal;
             if (target.data("modalid") === undefined) {
                 if (target.parents(".formValidate:first").length > 0) {
                       modal = target.parents(".formValidate:first").data("modalId") || null;
@@ -171,8 +171,8 @@ var validator =  function() {
             $.each(events, function(index, val) {
                 try {
                     $(document).on(val, "input", function(event) {
-                        var target = event.currentTarget;
-                        var inputOptions, time;
+                        var target = event.currentTarget,
+                        inputOptions, time;
                         if (!$(target).hasClass("inputValidate") && $(target).data("validateon") === val) {
                             var parent = $(target).parents(".inputValidate:first");
                             if (parent !== undefined) {
