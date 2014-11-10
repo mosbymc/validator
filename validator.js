@@ -144,14 +144,14 @@ var validator =  function() {
             modal;
             if (target.data("modalid") === undefined) {
                 if (target.parents(".formValidate:first").length > 0) {
-                      modal = target.parents(".formValidate:first").data("modalId") || null;
-                  }
-                  else if (target.parents(".inputValidate:first").length > 0) {
-                      modal = target.parents(".inputValidate:first").data("modalId") || null;
-                  }
-                  else {
-                      modal = null;
-                  }
+                    modal = target.parents(".formValidate:first").data("modalId") || null;
+                }
+                else if (target.parents(".inputValidate:first").length > 0) {
+                    modal = target.parents(".inputValidate:first").data("modalId") || null;
+                }
+                else {
+                    modal = null;
+                }
             }
             else {
                 modal = target.data("modalid");
@@ -159,12 +159,9 @@ var validator =  function() {
 
             helpText.addClass("hideMessage").removeClass("showMessage");
             if (modal !== null) {   //unbind event listeners for the help text spans
-                $(document).off("helpTextModalScroll" + target[0].id);
-                $(document).off("helpTextScroll" + target[0].id);
+                $(document).off("helpTextModalScroll" + target.data("htid"));
             }
-            else {
-               $(document).off("helpTextScroll" + target[0].id);
-            }
+           $(document).off("helpTextScroll" + target.data("htid"));
         });
 
         if (events !== undefined) {     //Bind any passed in events for inputs to listen for.
@@ -993,7 +990,6 @@ var validator =  function() {
 
     var displayHelpText = function(helpOptions) {   //sets up event listeners for help text when the window/modal is scrolled
         var elem = $(helpOptions.input),
-        vid = elem.data("vid") || new Date().getTime(),
         helpText = elem.prevUntil(":input").filter(".helptext:first"),
         position = getOtherElem(elem).offset(),
         errorOffsets = getMessageOffset(elem);
@@ -1001,20 +997,22 @@ var validator =  function() {
         var placement = determinePlacement(position, elem, 0, 0, helpText);
         helpText.css('top', placement[1]).css('left', placement[0]);
 
+        elem.data("htid", new Date().getTime());
+
         if (helpOptions.modalId !== null) {
-            $(document).on("helpTextModalScroll" + vid, function() {
+            $(document).on("helpTextModalScroll" + elem.data("htid"), function() {
                 helpTextScrollModalListener(helpOptions, elem, errorOffsets.width, errorOffsets.height, helpText);
             });
             $("#" + helpOptions.modalId).on("scroll", function() {
-                $(document).trigger("helpTextModalScroll" + vid, [{}]);
+                $(document).trigger("helpTextModalScroll" + elem.data("htid"), [{}]);
             });
         }
-        $(document).on("helpTextScroll" + vid, function() {
+        $(document).on("helpTextScroll" + elem.data("htid"), function() {
             var placement = determinePlacement(position, elem, errorOffsets.width, errorOffsets.height, helpText);
             helpText.css('top', placement[1]).css('left', placement[0]);
         });
         $(window).on("scroll", function() {
-            $(document).trigger("helpTextScroll" + vid, [{}]);
+            $(document).trigger("helpTextScroll" + elem.data("htid"), [{}]);
         });
     };
 
