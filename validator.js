@@ -229,9 +229,9 @@ var validator =  function() {
                 form = formElem;
             }
             try {
-                var button = form.find(".validate");
-                var time = new Date().getTime();
-                var formOptions = {
+                var button = form.find(".validate"),
+                time = new Date().getTime(),
+                formOptions = {
                     form: form,
                     display: form.hasClass("hover") === false ? false : "hover",
                     success: form.data("formaction") || null,
@@ -292,9 +292,9 @@ var validator =  function() {
                 $("#" + options.groupErrors).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");
             }
 
-            var inputs = $(form).find(":input").filter(":input");
-            var formArray = [];
-            var rules;
+            var inputs = $(form).find(":input").filter(":input"),
+            formArray = [],
+            rules;
             for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray with the various validation rules
                 var inputArray = buildInputArray($(inputs[j]));
                 for (var i = 0; i < inputArray.length; i++) {
