@@ -607,9 +607,9 @@ var validator =  function() {
             if ($("#" + elem.data("vid") + "InputGrp").length === 0) {
                 placeGroupErrorDiv(toDisplay, options, elem);
             }
-            var errorToMove = $("#" + elem.data("vid") + "error" + rule);
-            var html = errorToMove.html();
-            var span = "<span class='inputGrpErrorSpan'>" + html + "</span></br>";
+            var errorToMove = $("#" + elem.data("vid") + "error" + rule),
+            html = errorToMove.html(),
+            span = "<span class='inputGrpErrorSpan'>" + html + "</span></br>";
             $("#" + elem.data("vid") + "InputGrp").append(span);
             errorToMove.remove();
         }
@@ -645,8 +645,8 @@ var validator =  function() {
                     var text = $(val).html();
                     $(val).html(prefix + ": " + text);
                 }
-                var html = $(val).html();
-                var span = "<span class='errorSpan' id='formGrp" + input.data("vid") + rule + "' data-parentinput='" + input.data("vid") + "'>" + html + "</span>";
+                var html = $(val).html(),
+                span = "<span class='errorSpan' id='formGrp" + input.data("vid") + rule + "' data-parentinput='" + input.data("vid") + "'>" + html + "</span>";
                 placeErrorSpan(options, input.data("vid"), span, rule);
                 $(val).remove();
             });
@@ -658,8 +658,8 @@ var validator =  function() {
     };
 
     var placeErrorSpan = function(options, inputId, span, rule) {
-        var errorSpans = $("#" + options.groupErrors).children(".errorSpan");
-        var foundSibling = false;
+        var errorSpans = $("#" + options.groupErrors).children(".errorSpan"),
+        foundSibling = false;
         if (errorSpans !== undefined && errorSpans.length > 0) {
             errorSpans.each(function(index, val) {
                 if ($(val).data("parentinput") === inputId) {
