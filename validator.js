@@ -310,16 +310,16 @@ var validator =  function() {
     }
 
     var buildInputArray = function(elem) {
-        var inputObj;
-        var vRules = elem.data("validationrules") || "";
-        var customRules = elem.data('customrules') || "";
-        var min = elem.data('min') || "";
-        var max = elem.data("max") || "";
-        var match = elem.data("matchfield") || "";
-        var maxChecked = elem.data("maxchecked") || "";
-        var minChecked = elem.data("minchecked") || "";
-        var rulesArray = [];
-        var inputArray = [];
+        var vRules = elem.data("validationrules") || "",
+        customRules = elem.data('customrules') || "",
+        min = elem.data('min') || "",
+        max = elem.data("max") || "",
+        match = elem.data("matchfield") || "",
+        maxChecked = elem.data("maxchecked") || "",
+        minChecked = elem.data("minchecked") || "",
+        rulesArray = [],
+        inputArray = [],
+        inputObj;
 
         if (elem.attr("data-required") !== undefined) {
             rulesArray.push("required");
@@ -372,18 +372,18 @@ var validator =  function() {
     };
 
     var validateElement = function(element, options, inputsArray) {      //Starting point for single input validation - reached by both forms and inputs.
-        var elem = $(element);
-        var failedRequired = false; //Determines whether it should continue validation after testing the required functionality.
-        var vRules = elem.data("validationrules");  //The predefined rules that are part of this library.
-        var customRules = elem.data('customrules'); //User defined validation rules.
-        var isRequired = elem.attr("data-required");
-        var minVal = elem.data("min");
-        var maxVal = elem.data("max");
-        var match = elem.data("matchfield");
-        var maxChecked = elem.data("maxchecked");
-        var minChecked = elem.data("minchecked");
-        var rules;
-        var tested;
+        var elem = $(element),
+        failedRequired = false, //Determines whether it should continue validation after testing the required functionality.
+        vRules = elem.data("validationrules"),  //The predefined rules that are part of this library.
+        customRules = elem.data('customrules'), //User defined validation rules.
+        isRequired = elem.attr("data-required"),
+        minVal = elem.data("min"),
+        maxVal = elem.data("max"),
+        match = elem.data("matchfield"),
+        maxChecked = elem.data("maxchecked"),
+        minChecked = elem.data("minchecked"),
+        rules,
+        tested;
 
         elem.data("vts", options.time);
 
