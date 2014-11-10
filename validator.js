@@ -485,9 +485,9 @@ var validator =  function() {
             var errorOffsets = getMessageOffset(elem);
             createErrorMessage(elem, tested, options, rule, errorOffsets.width, errorOffsets.height);
             groupByForm(options, elem, rule);
-            groupByInput(options, elem, rule); //See if these can be moved to the createErrorMessage function
+            groupByInput(options, elem, rule);
         }
-        for (var i = 0; i < inputsArray.length; i++) {  //See about moving this out a step
+        for (var i = 0; i < inputsArray.length; i++) {
             if (elem[0] === inputsArray[i].input[0] && rule === inputsArray[i].rule) {
                 inputsArray[i].valid = tested.valid;
                 break;
