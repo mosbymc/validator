@@ -846,8 +846,8 @@ var validator =  function() {
     };
 
     var getMessageOffset = function(element) {
-        var width = 0;
-        var height = 0;
+        var width = 0,
+        height = 0;
         if ($("[id^='" + element.data("vid") + "error']").length !== 0) {
             $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
                 width += $(val).width() + 5;
@@ -858,8 +858,8 @@ var validator =  function() {
     };
 
     var getElemOffset = function(element) {     //gets the user-defined offset for the error messages from the element they are being displayed for.
-        var offsetWidth = 0;
-        var offsetHeight = 0;
+        var offsetWidth = 0,
+        offsetHeight = 0;
         if (element.data("offsetwidth") !== undefined) {
             offsetWidth = element.data("offsetwidth");
         }
@@ -871,10 +871,8 @@ var validator =  function() {
 
     var getOtherElem = function(element) {
         //If the error text should be displayed on a different element, will search through the dom till it finds the specified element.
-        var displayOther = element.data("displayon") === undefined ? null : element.data("displayon");
-        var other = undefined;
-        var ident = undefined;
-        var move = undefined;
+        var displayOther = element.data("displayon") === undefined ? null : element.data("displayon"),
+        other, ident, move;
         if (displayOther !== null) {
             other = displayOther.split(",");
             ident = other[0];
@@ -994,10 +992,10 @@ var validator =  function() {
     };
 
     var displayHelpText = function(helpOptions) {   //sets up event listeners for help text when the window/modal is scrolled
-        var elem = $(helpOptions.input);
-        var helpText = elem.prevUntil(":input").filter(".helptext:first");
-        var position = getOtherElem(elem).offset();
-        var errorOffsets = getMessageOffset(elem);
+        var elem = $(helpOptions.input),
+        helpText = elem.prevUntil(":input").filter(".helptext:first"),
+        position = getOtherElem(elem).offset(),
+        errorOffsets = getMessageOffset(elem);
         helpText.addClass("showMessage").removeClass("hideMessage");
         var placement = determinePlacement(position, elem, 0, 0, helpText);
         helpText.css('top', placement[1]).css('left', placement[0]);
@@ -1020,9 +1018,9 @@ var validator =  function() {
     };
 
     var monitorChars = function(elem, options, event) {   //tests input characters before allowing event to continue
-        var testedArray = [];
-        var valid = false;
-        var rules = options.type.split(',');
+        var valid = false,
+        rules = options.type.split(','),
+        testedArray = [];
         $.each(rules, function(index, value) {
             var fn = inputTypes[value];
             if (typeof fn === "function") {
