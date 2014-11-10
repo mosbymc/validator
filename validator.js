@@ -671,9 +671,9 @@ var validator =  function() {
                 }
             });
             if (!foundSibling) {
-                var inputs = options.form.find(":input");
-                var parentInput = $("#" + inputId);
-                var inputIndex = inputs.index(parentInput);
+                var inputs = options.form.find(":input"),
+                parentInput = $("#" + inputId),
+                inputIndex = inputs.index(parentInput);
                 if (inputIndex < inputs.length - 1) {
                     for (var i = inputIndex + 1; i < inputs.length; i++) {
                         var siblingSpan = $("#" + options.groupErrors).children("[data-parentinput='" + inputs[i].id + "']");
@@ -737,11 +737,11 @@ var validator =  function() {
     };
 
     var determinePlacement = function(position, element, offsetWidth, offsetHeight, messageDiv) {
-        var location = element.data("location") === undefined ? "right" : element.data("location");
-        var offset = getElemOffset(element);
-        var messageWidth = messageDiv.width();
-        var height = messageDiv.height();
-        var displayedElem = getOtherElem(element);
+        var location = element.data("location") === undefined ? "right" : element.data("location"),
+        offset = getElemOffset(element),
+        messageWidth = messageDiv.width(),
+        height = messageDiv.height(),
+        displayedElem = getOtherElem(element);
         switch (location)   //add all the offsets for a given element to calculate the error message placement
         {
             case "right": 
