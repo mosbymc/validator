@@ -982,7 +982,7 @@ var validator =  function() {
     }
 
     var helpTextScrollModalListener = function(options, element, offsetWidth, offsetHeight, messageDiv) {
-        if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
+        if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv) || element.hasClass("invalid")) {
             messageDiv.addClass("hideMessage").removeClass("showMessage");
         }
         else {
