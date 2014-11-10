@@ -767,8 +767,8 @@ var validator =  function() {
     };
 
     var setErrorPos = function(element, offsetWidth, offsetHeight, messageDiv) {
-        var position = getOtherElem(element).offset();
-        var placement = determinePlacement(position, element, offsetWidth, offsetHeight, messageDiv);
+        var position = getOtherElem(element).offset(),
+        placement = determinePlacement(position, element, offsetWidth, offsetHeight, messageDiv);
         messageDiv.addClass("showMessage").removeClass("hideMessage").css('top', placement[1]).css('left', placement[0]);
 
         return placement;
@@ -799,14 +799,14 @@ var validator =  function() {
     };
 
     var isContainerVisible = function(options, element, offsetWidth, offsetHeight, messageDiv) {  //used to determine if help text spans should be removed if they scroll outside of the modal
-        var position = getOtherElem(element).offset();
-        var placement = determinePlacement(position, element, offsetWidth, offsetHeight, messageDiv);
-        var modal = $("#" + options.modalId);
-        var modaloffset = modal.offset();
-        var modalTop = modaloffset.top - $(window).scrollTop();
-        var modalBottom = modalTop + modal.height();
-        var modalLeft = modaloffset.left - $(window).scrollLeft();
-        var modalRight = modalLeft + modal.width();
+        var position = getOtherElem(element).offset(),
+        placement = determinePlacement(position, element, offsetWidth, offsetHeight, messageDiv),
+        modal = $("#" + options.modalId),
+        modaloffset = modal.offset(),
+        modalTop = modaloffset.top - $(window).scrollTop(),
+        modalBottom = modalTop + modal.height(),
+        modalLeft = modaloffset.left - $(window).scrollLeft(),
+        modalRight = modalLeft + modal.width();
 
         if ((modalTop > placement[1]) || (modalBottom < placement[1]) ) {
             return false;
