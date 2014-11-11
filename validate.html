@@ -97,6 +97,14 @@
 				callback(true, form, options);
 			}
 		};
+		
+		function nameSpace() {
+			this.innerFunction = function(form, options, callback) {
+				alert("Inner function is working!");
+				callback(true, form, options);
+			};
+			return this;
+		}
 
 		function notMark(obj, vState, callback) {
 			setTimeout(function() {
@@ -323,7 +331,7 @@
 			</dl>
 		</fieldset>
 
-		<fieldset id="fieldValidate3" class="formValidate highlightErrors" data-formaction="submitThisForm" data-grouperrors="showErrors">
+		<fieldset id="fieldValidate3" class="formValidate highlightErrors" data-formaction="submitThisForm" data-grouperrors="showErrors" data-beforevalidate="nameSpace.innerFunction">
 	    	<legend>Form Validation - Form level error message grouping</legend>
 	    	<div id="showErrors" class="hideGroupedErrors">
 	    		<h3 class='errorMsg'>There was a problem with your request.</h3>
