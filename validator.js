@@ -260,9 +260,7 @@ var validator =  function() {
                 if (typeof prev === "function") {
                     return prev()[curr];
                 }
-                else if (typeof prev === "object") {
-                    return prev[curr];
-                }
+                return prev[curr];
             });
             if (typeof fn === "function") {
                 try {
@@ -454,9 +452,7 @@ var validator =  function() {
                         if (typeof prev === "function") {
                             return prev()[curr];
                         }
-                        else if (typeof prev === "object") {
-                            return prev[curr];
-                        }
+                        return prev[curr];
                     });
                     if (typeof fn === "function") {
                         var inputState = {
@@ -593,9 +589,7 @@ var validator =  function() {
                 if (typeof prev === "function") {
                     return prev()[curr];
                 }
-                else if (typeof prev === "object") {
-                    return prev[curr];
-                }
+                return prev[curr];
             });
             if (typeof fn === "function") {
                 try {
