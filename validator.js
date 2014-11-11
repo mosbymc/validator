@@ -431,9 +431,7 @@ var validator =  function() {
             if (vRules !== undefined) {
                 rules = vRules.split(',');
                 $.each(rules, function(index, value) {
-                    var fn = [window].concat(value.split('.')).reduce(function (prev, curr) {
-                        return prev[curr];
-                    });
+                    var fn = validationRules[value];
                     if (typeof fn === "function") {
                         tested = fn.call(this, elem);
                         postValidation(tested, elem, options, value, inputsArray);
