@@ -220,7 +220,6 @@ var validator =  function() {
             }
             try {
                 var button = form.find(".validate"),
-                time = new Date().getTime(),
                 formOptions = {
                     form: form,
                     display: form.hasClass("hover") === false ? false : "hover",
@@ -230,7 +229,7 @@ var validator =  function() {
                     callBefore: form.data("beforevalidate") || false,
                     group: form.hasClass("groupByInput"),
                     button: button,
-                    time: time,
+                    time: new Date().getTime(),
                     isForm: false,
                     event: null
                 };
