@@ -522,8 +522,8 @@ var validator =  function() {
     }
 
     var finalizeValidation = function(inputArray, options) {
-        var numFailed = 0;
-        var rulesTestedCount = 0;
+        var numFailed = 0,
+        rulesTestedCount = 0;
         for (var i = 0; i < inputArray.length; i++) {
             if (inputArray[i].valid === "waiting") {
                 return;
