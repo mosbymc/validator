@@ -32,7 +32,7 @@ var validator =  function() {
             if (form.length > 0 && target.hasClass("validate")) {
                 var formOptions = {
                     form: form,
-                    display: form.hasClass("hover") === false ? false : "hover",
+                    display: form.hasClass("hover"),
                     success: form.data("formaction") || null,
                     modalId: form.data("modalid") || null,
                     groupErrors: form.data("grouperrors") || null,
@@ -59,7 +59,7 @@ var validator =  function() {
                     if (exclude !== undefined && exclude.indexOf(event.currentTarget.id) === -1) {   //if the parent form has excluded this input from validation, we stop here.
                         inputOptions = {
                             input: event.currentTarget,
-                            display: target.hasClass("hover") === false ? false : "hover",
+                            display: target.hasClass("hover"),
                             success: target.data("inputaction") || null,
                             modalId: target.data("modalid") || null,
                             group: target.hasClass("groupByInput") === false ? target.parents(".formValidate:first").hasClass("groupByInput") : target.hasClass("groupByInput"),
@@ -75,7 +75,7 @@ var validator =  function() {
             else if (target.hasClass("inputValidate") && (target.data("validateon") === undefined || target.data("validateon") === "input")) {
                 inputOptions = {
                     input: event.currentTarget,
-                    display: target.hasClass("hover") === false ? false : "hover",
+                    display: target.hasClass("hover"),
                     success: target.data("inputaction") || null,
                     modalId: target.data("modalid") || null,
                     group: target.hasClass("groupByInput") === false ? target.parents(".formValidate:first").hasClass("groupByInput") : target.hasClass("groupByInput"),
@@ -172,7 +172,7 @@ var validator =  function() {
                                 if (exclude !== undefined && exclude.indexOf(event.currentTarget.id) === -1) {
                                     inputOptions = {
                                         input: event.currentTarget,
-                                        display: target.hasClass("hover") === false ? false : "hover",
+                                        display: target.hasClass("hover"),
                                         success: target.data("inputaction") || null,
                                         modalId: target.data("modalid") || null,
                                         group: target.parents(".formValidate:first").hasClass("groupByInput"),
@@ -188,7 +188,7 @@ var validator =  function() {
                         else if (target.hasClass("inputValidate") && target.data("validateon") === val) {
                             inputOptions = {
                                 input: event.currentTarget,
-                                display: target.hasClass("hover") === false ? false : "hover",
+                                display: target.hasClass("hover"),
                                 success: target.data("inputaction") || null,
                                 modalId: target.data("modalid") || null,
                                 group: target.parents(".formValidate:first").hasClass("groupByInput"),
@@ -222,7 +222,7 @@ var validator =  function() {
                 var button = form.find(".validate"),
                 formOptions = {
                     form: form,
-                    display: form.hasClass("hover") === false ? false : "hover",
+                    display: form.hasClass("hover"),
                     success: form.data("formaction") || null,
                     modalId: form.data("modalid") || null,
                     groupErrors: form.data("grouperrors") || null,
@@ -699,13 +699,13 @@ var validator =  function() {
         if ((element).prevUntil(":input").filter(".helptext:first").length > 0) {   //Remove help text because there's an error being displayed now.
             element.prevUntil(":input").filter(".helptext:first").addClass("hideMessage").removeClass("showMessage");
         }
-        if (options.display === "hover") {
+        if (options.display) {
             displayErrorTextOnHover(options, element, messageDiv, offsetWidth, offsetHeight);
         }
-        else if (options.display !== "hover" && options.modalId === null) {
+        else if (!options.display && options.modalId === null) {
             adjustTextOnScroll(element, messageDiv, offsetWidth, offsetHeight);
         }
-        else if (options.display !== "hover" && options.modalId !== null) {
+        else if (!options.display && options.modalId !== null) {
             scrollModalListener(options, element, offsetWidth, offsetHeight, messageDiv);
         }
     };
@@ -722,7 +722,7 @@ var validator =  function() {
             var errorMessage = errorData.message === undefined ? "Validation Error" : errorData.message;
             popup.html(errorMessage).css('width', errorData.width === undefined ? "" : errorData.width);
             setErrorPos(element, offsetWidth, offsetHeight, popup);
-            if (options.display === "hover") {
+            if (options.display) {
                 popup.addClass("hideMessage").removeClass("showMessage");
             }
             else {
