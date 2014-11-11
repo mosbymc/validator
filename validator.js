@@ -30,44 +30,40 @@ var validator =  function() {
             var target = event.currentTarget,
             form = $(target).parents(".formValidate:first");
             if (form.length > 0 && $(target).hasClass("validate")) {
-                if (form.hasClass("formValidate")) {
-                    var time = new Date().getTime();
-                    var formOptions = {
-                        form: form,
-                        display: form.hasClass("hover") === false ? false : "hover",
-                        success: form.data("formaction") || null,
-                        modalId: form.data("modalid") || null,
-                        groupErrors: form.data("grouperrors") || null,
-                        callBefore: form.data("beforevalidate") || false,
-                        group: form.hasClass("groupByInput"),
-                        button: $(target),
-                        time: time,
-                        isForm: target.form !== null,
-                        event: event
-                    };
-                    Object.freeze(formOptions);
-                    $(target).prop("disabled", true);
-                    callBeforeValidate(form, formOptions);
-                }
+                var formOptions = {
+                    form: form,
+                    display: form.hasClass("hover") === false ? false : "hover",
+                    success: form.data("formaction") || null,
+                    modalId: form.data("modalid") || null,
+                    groupErrors: form.data("grouperrors") || null,
+                    callBefore: form.data("beforevalidate") || false,
+                    group: form.hasClass("groupByInput"),
+                    button: $(target),
+                    time: new Date().getTime(),
+                    isForm: target.form !== null,
+                    event: event
+                };
+                Object.freeze(formOptions);
+                $(target).prop("disabled", true);
+                callBeforeValidate(form, formOptions);
             }
         });
 
         $(document).on("input", "input", function(event) {      //Bind input event listener on input event. The input itself or its parent must have the "inputValidate" class.
             var target = event.currentTarget,
-            time, inputOptions;
+            inputOptions;
             if (!$(target).hasClass("inputValidate") && ($(target).data("validateon") === undefined || $(target).data("validateon") === "input")) {
                 var parent = $(target).parents(".inputValidate:first");
                 if (parent !== undefined) {
                     var exclude = parent.data("excludeinputs");
                     if (exclude !== undefined && exclude.indexOf(target.id) === -1) {   //if the parent form has excluded this input from validation, we stop here.
-                        time = new Date().getTime();
                         inputOptions = {
                             input: target,
                             display: $(target).hasClass("hover") === false ? false : "hover",
                             success: $(target).data("inputaction") || null,
                             modalId: $(target).data("modalid") || null,
                             group: $(target).hasClass("groupByInput") === false ? $(target).parents(".formValidate:first").hasClass("groupByInput") : $(target).hasClass("groupByInput"),
-                            time: time,
+                            time: new Date().getTime(),
                             isForm: false,
                             event: event
                         };
@@ -77,14 +73,13 @@ var validator =  function() {
                 }
             }
             else if ($(target).hasClass("inputValidate") && ($(target).data("validateon") === undefined || $(target).data("validateon") === "input")) {
-                time = new Date().getTime();
                 inputOptions = {
                     input: target,
                     display: $(target).hasClass("hover") === false ? false : "hover",
                     success: $(target).data("inputaction") || null,
                     modalId: $(target).data("modalid") || null,
                     group: $(target).hasClass("groupByInput") === false ? $(target).parents(".formValidate:first").hasClass("groupByInput") : $(target).hasClass("groupByInput"),
-                    time: time,
+                    time: new Date().getTime(),
                     isForm: false,
                     event: event
                 };
