@@ -574,7 +574,7 @@ var validator =  function() {
             event: options.event
         }]);
 
-        if (numFailed === 0 && options.isForm !== true) {       //If the "form" passed validation and doesn't have an action attribute, call the success function if one was supplied.
+        if (numFailed === 0 && options.success !== null) {       //If the "form" passed validation and doesn't have an action attribute, call the success function if one was supplied.
             var fn = window[options.success];
             if (typeof fn === "function") {
                 try {
@@ -589,12 +589,12 @@ var validator =  function() {
                 console.log("Could not find successful validation function: '" + options.success + "' for the current form.");
             }
         }
-        else if (numFailed !== 0 && options.isForm === true) {   //If the form failed validation and has an action attribute, prevent the default action of the form.
-            options.event.preventDefault();
-        }
         else if (numFailed === 0 && options.isForm === true) {  //We need to programmatically submit the form here - async function will prevent to form action from firing.
             options.event.preventDefault(); //prevent default form sumbit
             options.form[0].submit();       //then call it programmatically.
+        }
+        else if (numFailed !== 0 && options.isForm === true) {   //If the form failed validation and has an action attribute, prevent the default action of the form.
+            options.event.preventDefault();
         }
     };
 
