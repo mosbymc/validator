@@ -90,6 +90,13 @@
 				callback(true, form, options);
 			},2000);
 		}
+		
+		var object = {	//used to test namespaced functions
+			test : function(form, options, callback) {
+				alert("Namespaced function working!");
+				callback(true, form, options);
+			}
+		};
 
 		function notMark(obj, vState, callback) {
 			setTimeout(function() {
@@ -234,13 +241,13 @@
 			<input type="submit" id="groupSubmit" value="Submit" class="validate"/>
 		</div>
 
-		<fieldset id="fieldValidate1" class="formValidate" data-formaction="submitThisForm">
+		<fieldset id="fieldValidate1" class="formValidate" data-formaction="submitThisForm" data-beforevalidate="object.test">
 	    	<legend>Basic Form Validation - no additional display options used</legend>
 	      	<dl align='left'>
 	      		<dt><label for='fv1fName'>First Name: </label></dt>
-				<dd><input type='text' title="First Name" size='20' data-required data-validationrules="phone" data-customrules="notMark,custom"/></dd>
+				<dd><input type='text' title="First Name" size='20' data-required data-customrules="notMark"/></dd>
 				<dt><label for='fv1lName'>Last Name: </label></dt>
-				<dd><input type='text' size='20' title="Last Name" data-required data-validationrules="name" data-customrules="notMark" data-displayon="#fv1displayTest4,down"/></dd>
+				<dd><input type='text' size='20' title="Last Name" data-required data-validationrules="name" data-displayon="#fv1displayTest4,down"/></dd>
 				<dt><label for="fv1displayTest4">Last Name Error Here: </label></dt>
 				<dd><input type="text" id="fv1displayTest4" class="displaytest"/></dd>
 				<dt><label for="fv1homephone">Home Phone: </label></dt>
