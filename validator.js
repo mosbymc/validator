@@ -249,10 +249,7 @@ var validator =  function() {
     var callBeforeValidate = function(form, options) {
         if (options.callBefore !== false) {     //Run the "call before" function if it's supplied, and continue validation if true.
             var fn = [window].concat(options.callBefore.split('.')).reduce(function (prev, curr) {
-                if (typeof prev === "function") {
-                    return prev()[curr];
-                }
-                return prev[curr];
+                return (typeof prev === "function" ? prev()[curr] : prev[curr]);
             });
             if (typeof fn === "function") {
                 try {
@@ -441,10 +438,7 @@ var validator =  function() {
                 rules = customRules.split(',');
                 $.each(rules, function(index, value) {
                     var fn = [window].concat(value.split('.')).reduce(function (prev, curr) {
-                        if (typeof prev === "function") {
-                            return prev()[curr];
-                        }
-                        return prev[curr];
+                        return (typeof prev === "function" ? prev()[curr] : prev[curr]);
                     });
                     if (typeof fn === "function") {
                         var inputState = {
@@ -578,10 +572,7 @@ var validator =  function() {
 
         if (numFailed === 0 && options.success !== null) {       //If the "form" passed validation and doesn't have an action attribute, call the success function if one was supplied.
             var fn = [window].concat(options.success.split('.')).reduce(function (prev, curr) {
-                if (typeof prev === "function") {
-                    return prev()[curr];
-                }
-                return prev[curr];
+                return (typeof prev === "function" ? prev()[curr] : prev[curr]);
             });
             if (typeof fn === "function") {
                 try {
