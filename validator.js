@@ -256,7 +256,9 @@ var validator =  function() {
 
     var callBeforeValidate = function(form, options) {
         if (options.callBefore !== false) {     //Run the "call before" function if it's supplied, and continue validation if true.
-            var fn = window[options.callBefore];
+            var fn = [window].concat(options.callBefore.split('.')).reduce(function (prev, curr) {
+                return prev[curr];
+            });
             if (typeof fn === "function") {
                 try {
                     fn.call(this, form, options, validateForm);
@@ -268,8 +270,8 @@ var validator =  function() {
                 }
             }
             else {
-              console.log("The supplied 'call before' function: " + options.callBefore + " could not be found.");
-              validateForm(true, form, options);
+                console.log("The supplied 'call before' function: " + options.callBefore + " could not be found.");
+                validateForm(true, form, options);
             }
         }
         else {
@@ -429,7 +431,9 @@ var validator =  function() {
             if (vRules !== undefined) {
                 rules = vRules.split(',');
                 $.each(rules, function(index, value) {
-                    var fn = validationRules[value];
+                    var fn = [window].concat(value.split('.')).reduce(function (prev, curr) {
+                        return prev[curr];
+                    });
                     if (typeof fn === "function") {
                         tested = fn.call(this, elem);
                         postValidation(tested, elem, options, value, inputsArray);
@@ -575,7 +579,9 @@ var validator =  function() {
         }]);
 
         if (numFailed === 0 && options.success !== null) {       //If the "form" passed validation and doesn't have an action attribute, call the success function if one was supplied.
-            var fn = window[options.success];
+            var fn = [window].concat(options.success.split('.')).reduce(function (prev, curr) {
+                return prev[curr];
+            });
             if (typeof fn === "function") {
                 try {
                    fn.call(this); 
