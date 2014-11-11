@@ -27,9 +27,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 var validator =  function() {
     this.init = function(events) {
         $(document).on("click", "input, button", function(event) {  //Bind form event listener and create "options" object when an input or button with the "formValidate" class is clicked.
-            var target = event.currentTarget,
-            form = $(target).parents(".formValidate:first");
-            if (form.length > 0 && $(target).hasClass("validate")) {
+            var target = $(event.currentTarget),
+            form = target.parents(".formValidate:first");
+            if (form.length > 0 && target.hasClass("validate")) {
                 var formOptions = {
                     form: form,
                     display: form.hasClass("hover") === false ? false : "hover",
@@ -38,53 +38,53 @@ var validator =  function() {
                     groupErrors: form.data("grouperrors") || null,
                     callBefore: form.data("beforevalidate") || false,
                     group: form.hasClass("groupByInput"),
-                    button: $(target),
+                    button: target,
                     time: new Date().getTime(),
-                    isForm: target.form !== null,
+                    isForm: event.currentTarget.form !== null,
                     event: event
                 };
                 Object.freeze(formOptions);
-                $(target).prop("disabled", true);
+                target.prop("disabled", true);
                 callBeforeValidate(form, formOptions);
             }
         });
 
         $(document).on("input", "input", function(event) {      //Bind input event listener on input event. The input itself or its parent must have the "inputValidate" class.
-            var target = event.currentTarget,
+            var target = $(event.currentTarget),
             inputOptions;
-            if (!$(target).hasClass("inputValidate") && ($(target).data("validateon") === undefined || $(target).data("validateon") === "input")) {
-                var parent = $(target).parents(".inputValidate:first");
+            if (!target.hasClass("inputValidate") && (target.data("validateon") === undefined || target.data("validateon") === "input")) {
+                var parent = target.parents(".inputValidate:first");
                 if (parent !== undefined) {
                     var exclude = parent.data("excludeinputs");
-                    if (exclude !== undefined && exclude.indexOf(target.id) === -1) {   //if the parent form has excluded this input from validation, we stop here.
+                    if (exclude !== undefined && exclude.indexOf(event.currentTarget.id) === -1) {   //if the parent form has excluded this input from validation, we stop here.
                         inputOptions = {
-                            input: target,
-                            display: $(target).hasClass("hover") === false ? false : "hover",
-                            success: $(target).data("inputaction") || null,
-                            modalId: $(target).data("modalid") || null,
-                            group: $(target).hasClass("groupByInput") === false ? $(target).parents(".formValidate:first").hasClass("groupByInput") : $(target).hasClass("groupByInput"),
+                            input: event.currentTarget,
+                            display: target.hasClass("hover") === false ? false : "hover",
+                            success: target.data("inputaction") || null,
+                            modalId: target.data("modalid") || null,
+                            group: target.hasClass("groupByInput") === false ? target.parents(".formValidate:first").hasClass("groupByInput") : target.hasClass("groupByInput"),
                             time: new Date().getTime(),
                             isForm: false,
                             event: event
                         };
                         Object.freeze(inputOptions);
-                        validateInput($(target), inputOptions);
+                        validateInput(target, inputOptions);
                     }
                 }
             }
-            else if ($(target).hasClass("inputValidate") && ($(target).data("validateon") === undefined || $(target).data("validateon") === "input")) {
+            else if (target.hasClass("inputValidate") && (target.data("validateon") === undefined || target.data("validateon") === "input")) {
                 inputOptions = {
-                    input: target,
-                    display: $(target).hasClass("hover") === false ? false : "hover",
-                    success: $(target).data("inputaction") || null,
-                    modalId: $(target).data("modalid") || null,
-                    group: $(target).hasClass("groupByInput") === false ? $(target).parents(".formValidate:first").hasClass("groupByInput") : $(target).hasClass("groupByInput"),
+                    input: event.currentTarget,
+                    display: target.hasClass("hover") === false ? false : "hover",
+                    success: target.data("inputaction") || null,
+                    modalId: target.data("modalid") || null,
+                    group: target.hasClass("groupByInput") === false ? target.parents(".formValidate:first").hasClass("groupByInput") : target.hasClass("groupByInput"),
                     time: new Date().getTime(),
                     isForm: false,
                     event: event
                 };
                 Object.freeze(inputOptions);
-                validateInput($(target), inputOptions);
+                validateInput(target, inputOptions);
             }
         });
 
@@ -103,29 +103,29 @@ var validator =  function() {
         });
 
         $(document).on("focus", "input", function(event) {  //Help text listener. Will display help text for a given input when focused.
-            var target = event.currentTarget;
-            if ($(target).hasClass("invalid")) {    //if the input has error messages associated with it, we don't show help text.
+            var target = $(event.currentTarget);
+            if (target.hasClass("invalid")) {    //if the input has error messages associated with it, we don't show help text.
                 return;
             }
-            if ($(target).prevUntil(":input").filter(".helptext:first").length > 0 && $("[id^='" + $(target)[0].id + "error']").length < 1 && $("#" + $(target)[0].id + "InputGrp").length < 1) {
-                var helptext = $(target).prevUntil(":input").filter(".helptext:first"),
+            if (target.prevUntil(":input").filter(".helptext:first").length > 0 && $("[id^='" + target[0].id + "error']").length < 1 && $("#" + target[0].id + "InputGrp").length < 1) {
+                var helptext = target.prevUntil(":input").filter(".helptext:first"),
                 modal = null;
-                if ($(target).data("modalid") === undefined) {
-                    if ($(target).parents(".formValidate:first").length > 0) {
-                        modal = $(target).parents(".formValidate:first").data("modalId") || null;
+                if (target.data("modalid") === undefined) {
+                    if (target.parents(".formValidate:first").length > 0) {
+                        modal = target.parents(".formValidate:first").data("modalId") || null;
                     }
-                    else if ($(target).parents(".inputValidate:first").length > 0) {
-                        modal = $(target).parents(".inputValidate:first").data("modalId") || null;
+                    else if (target.parents(".inputValidate:first").length > 0) {
+                        modal = target.parents(".inputValidate:first").data("modalId") || null;
                     }
                     else {
                         modal = null;
                     }
                 }
                 else {
-                    modal = $(target).data("modalid");
+                    modal = target.data("modalid");
                 }
                 var helpOptions = {
-                    input: target,
+                    input: event.currentTarget,
                     modalId: modal,
                     helpText: helptext
                 };
@@ -163,43 +163,41 @@ var validator =  function() {
             $.each(events, function(index, val) {
                 try {
                     $(document).on(val, "input", function(event) {
-                        var target = event.currentTarget,
-                        inputOptions, time;
-                        if (!$(target).hasClass("inputValidate") && $(target).data("validateon") === val) {
-                            var parent = $(target).parents(".inputValidate:first");
+                        var target = $(event.currentTarget),
+                        inputOptions;
+                        if (!target.hasClass("inputValidate") && target.data("validateon") === val) {
+                            var parent = target.parents(".inputValidate:first");
                             if (parent !== undefined) {
                                 var exclude = parent.data("excludeinputs");
-                                if (exclude !== undefined && exclude.indexOf(target.id) === -1) {
-                                    time = new Date().getTime();
+                                if (exclude !== undefined && exclude.indexOf(event.currentTarget.id) === -1) {
                                     inputOptions = {
-                                        input: target,
-                                        display: $(target).hasClass("hover") === false ? false : "hover",
-                                        success: $(target).data("inputaction") || null,
-                                        modalId: $(target).data("modalid") || null,
-                                        group: $(target).parents(".formValidate:first").hasClass("groupByInput"),
-                                        time: time,
+                                        input: event.currentTarget,
+                                        display: target.hasClass("hover") === false ? false : "hover",
+                                        success: target.data("inputaction") || null,
+                                        modalId: target.data("modalid") || null,
+                                        group: target.parents(".formValidate:first").hasClass("groupByInput"),
+                                        time: new Date().getTime(),
                                         isForm: false,
                                         event: event
                                     };
                                     Object.freeze(inputOptions);
-                                    validateInput($(target), inputOptions);
+                                    validateInput(target, inputOptions);
                                 }
                             }
                         }
-                        else if ($(target).hasClass("inputValidate") && $(target).data("validateon") === val) {
-                            time = new Date().getTime();
+                        else if (target.hasClass("inputValidate") && target.data("validateon") === val) {
                             inputOptions = {
-                                input: target,
-                                display: $(target).hasClass("hover") === false ? false : "hover",
-                                success: $(target).data("inputaction") || null,
-                                modalId: $(target).data("modalid") || null,
-                                group: $(target).parents(".formValidate:first").hasClass("groupByInput"),
-                                time: time,
+                                input: event.currentTarget,
+                                display: target.hasClass("hover") === false ? false : "hover",
+                                success: target.data("inputaction") || null,
+                                modalId: target.data("modalid") || null,
+                                group: target.parents(".formValidate:first").hasClass("groupByInput"),
+                                time: new Date().getTime(),
                                 isForm: false,
                                 event: event
                             };
                             Object.freeze(inputOptions);
-                            validateInput($(target), inputOptions);
+                            validateInput(target, inputOptions);
                         }
                     });
                 }
