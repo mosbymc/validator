@@ -1099,7 +1099,7 @@ var validator =  function() {
         },
         printable: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode === 8 || (unicode > 31 && unicode < 128) {
+            if (unicode === 8 || (unicode > 31 && unicode < 128)) {
                 return true;
             }
             return false;
