@@ -853,15 +853,10 @@ var validator =  function() {
     };
 
     var getElemOffset = function(element) {     //gets the user-defined offset for the error messages from the element they are being displayed for.
-        var offsetWidth = 0,
-        offsetHeight = 0;
-        if (element.data("offsetwidth") !== undefined) {
-            offsetWidth = element.data("offsetwidth");
-        }
-        if (element.data("offsetheight") !== undefined) {
-            offsetHeight = element.data("offsetheight");
-        }
-        return {left: offsetWidth, top: offsetHeight};
+        return {
+            left: element.data("offsetwidth") || 0,
+            top: element.data("offsetheight") || 0
+        };
     };
 
     var getOtherElem = function(element) {
