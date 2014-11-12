@@ -1057,35 +1057,35 @@ var validator =  function() {
     var inputTypes = {
         numeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if ((unicode > 43 && unicode < 47) || (unicode > 47 && unicode < 58)) { //if a number, decimal, comma, or minus
+            if (unicode === 8 || (unicode > 43 && unicode < 47) || (unicode > 47 && unicode < 58)) { //if a number, decimal, comma, or minus
                 return true;
             }
             return false;
         },
         integer: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if ((unicode !== 45) || (unicode < 48 || unicode > 57)) { //if not a number or minus
+            if (unicode === 8 || unicode !== 45 || (unicode < 48 || unicode > 57)) { //if not a number or minus
                 return false; //disable key press
             }
             return true;
         },
         positiveInt: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode < 48 || unicode > 57) { //if not a number
+            if (unicode === 8 || (unicode < 48 || unicode > 57)) { //if not a number
                 return false; //disable key press
             }
             return true;
         },
         nonNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode < 48 || unicode > 57) { //if a number
+            if (unicode < 48 || unicode > 57) { //if not a number
                 return true;
             }
             return false;
         },
         alphaNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if ((unicode > 47 && unicode < 58) || (unicode > 64 && unicode < 91) || (unicode > 96 && unicode < 123)) { //if alpha-numeric
+            if (unicode === 8 || (unicode > 47 && unicode < 58) || (unicode > 64 && unicode < 91) || (unicode > 96 && unicode < 123)) { //if alpha-numeric
                 return true;
             }
             return false;
@@ -1099,35 +1099,35 @@ var validator =  function() {
         },
         printable: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode > 31 || unicode < 128) {
+            if (unicode === 8 || (unicode > 31 && unicode < 128) {
                 return true;
             }
             return false;
         },
         printableNonNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if ((unicode > 31 && unicode < 48) || (unicode > 57 && unicode < 128)) {
+            if (unicode === 8 || (unicode > 31 && unicode < 48) || (unicode > 57 && unicode < 128)) {
                 return true;
             }
             return false;
         },
         phone: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode === 32 || unicode === 40 || unicode === 41 || unicode === 45 || unicode === 46 || (unicode >= 48 && unicode <= 57)) {
+            if (unicode === 8 || unicode === 32 || unicode === 40 || unicode === 41 || unicode === 45 || unicode === 46 || (unicode >= 48 && unicode <= 57)) {
                 return true;
             }
             return false;
         },
         shortDate: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode >= 45 && unicode <= 57) {
+            if (unicode === 8 || (unicode >= 45 && unicode <= 57)) {
                 return true;
             }
             return false;
         },
         longDate: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if ((unicode < 48 || unicode > 57) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122) && (unicode !== 46) && (unicode !== 44)) { //if not alpha-numeric or space or period
+            if (unicode === 8 || (unicode < 48 || unicode > 57) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122) && (unicode !== 46) && (unicode !== 44)) { //if not alpha-numeric or space or period
                 return false; //disable key press
             }
             return true;
