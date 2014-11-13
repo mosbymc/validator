@@ -30,18 +30,11 @@ var validator =  function() {
             var target = $(event.currentTarget),
             form = target.parents(".formValidate:first");
             if (form.length > 0 && target.hasClass("validate")) {
-                var formOptions = {
-                    form: form,
-                    display: form.hasClass("hover"),
-                    success: form.data("formaction") || null,
-                    modalId: form.data("modalid") || null,
-                    groupErrors: form.data("grouperrors") || null,
-                    callBefore: form.data("beforevalidate") || false,
-                    group: form.hasClass("groupByInput"),
-                    button: target,
-                    time: new Date().getTime(),
-                    event: event
-                };
+                var formOptions = createOptions(form, event);
+                formOptions.form = form;
+                formOptions.groupErrors = form.data("groupErrors") || null;
+                formOptions.callBefore = form.data("beforevalidate") || false;
+                formOptions.button = target;
                 Object.freeze(formOptions);
                 target.prop("disabled", true);
                 callBeforeValidate(form, formOptions);
@@ -56,30 +49,16 @@ var validator =  function() {
                 if (parent !== undefined) {
                     var exclude = parent.data("excludeinputs");
                     if (exclude !== undefined && exclude.indexOf(event.currentTarget.id) === -1) {   //if the parent form has excluded this input from validation, we stop here.
-                        inputOptions = {
-                            input: event.currentTarget,
-                            display: target.hasClass("hover"),
-                            success: target.data("inputaction") || null,
-                            modalId: target.data("modalid") || null,
-                            group: target.hasClass("groupByInput") === false ? target.parents(".formValidate:first").hasClass("groupByInput") : target.hasClass("groupByInput"),
-                            time: new Date().getTime(),
-                            event: event
-                        };
+                        var inputOptions = createOptions(target, event);
+                        inputOptions.input = event.currentTarget;
                         Object.freeze(inputOptions);
                         validateInput(target, inputOptions);
                     }
                 }
             }
             else if (target.hasClass("inputValidate") && (target.data("validateon") === undefined || target.data("validateon") === "input")) {
-                inputOptions = {
-                    input: event.currentTarget,
-                    display: target.hasClass("hover"),
-                    success: target.data("inputaction") || null,
-                    modalId: target.data("modalid") || null,
-                    group: target.hasClass("groupByInput") === false ? target.parents(".formValidate:first").hasClass("groupByInput") : target.hasClass("groupByInput"),
-                    time: new Date().getTime(),
-                    event: event
-                };
+                var inputOptions = createOptions(target, event);
+                inputOptions.input = event.currentTarget;
                 Object.freeze(inputOptions);
                 validateInput(target, inputOptions);
             }
@@ -1036,6 +1015,18 @@ var validator =  function() {
           return testedArray[0];
         }
         return true;
+    };
+    
+    var createOptions = function(elem, event) {
+        options = {
+            display: elem.hasClass("hover"),
+            success: elem.data("formaction") || elem.data("inputaction") || null,
+            modalId: elem.data("modalid") || null,
+            group: elem.hasClass("groupByInput") === false ? elem.parents(".formValidate:first").hasClass("groupByInput") : elem.hasClass("groupByInput"),
+            time: new Date().getTime(),
+            event: event
+        };
+        return options;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////
