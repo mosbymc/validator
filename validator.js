@@ -1178,96 +1178,59 @@ var validator =  function() {
         },
         email: function(obj) {
             var re = new RegExp("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$");
-            var isEmail = re.test(obj.val());
-            if (obj.val() !== "" && !isEmail) {
-                return { valid: isEmail, message: "Not a valid email format.", width: 200 };
-            }
-            return { valid: true };
+            return validationRules.regexTester(obj, re, "Not a valid email format.", 200);
         },
         name: function(obj) {
             var re = new RegExp("^([a-zA-z\\s]{4,32})$");
-            var isName = re.test(obj.val());
-            if (obj.val() !== "" && !isName) {
-                return { valid: isName, message: "Not a valid name.", width: 150 };
-            }
-            return { valid: true };
+            return validationRules.regexTester(obj, re, "Not a valid name.", 200);
         },
         ssn: function(obj) {
             var re = new RegExp("^(?!000)([0-6]\\d{2}|7([0-6]\\d|7[012]))([ -]?)(?!00)\\d\\d\\3(?!0000)\\d{4}$");
-            var isSSN = re.test(obj.val());
-            if (!isSSN) {
-                return { valid: isSSN, message: "Not a valid social security number.", width: 200 };
-            }
-            return { valid: true };
+            return validationRules.regexTester(obj, re, "Not a valid social security number.", 200);
         },
         uscurrency: function(obj) {
             var re = new RegExp("^(\\$|)([1-9]\\d{0,2}(\\,\\d{3})*|([1-9]\\d*))(\\.\\d{2})?$");
-            var isCurrency = re.test(obj.val());
-            if (!isCurrency) {
-                return { valid: isCurrency, message: "Not a valid amount.", width: 200 };
-            }
-            return { valid: true };
+            return validationRules.regexTester(obj, re, "Not a valid amount.", 200);
         },
         phone: function(obj) {
             var re = new RegExp("^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$");
-            var isPhone = re.test(obj.val());
-            if (obj.val() !== "" && !isPhone) {
-                return { valid: isPhone, message: "Not a valid phone number.", width: 200 };
-            }
-            return { valid: true };
+            return validationRules.regexTester(obj, re, "Not a valid phone number.", 200);
         },
         address: function(obj) {
             var re = new RegExp("^\\d+\\s?\\w+\\s?\\w+\\s?\\w+$");
-            var isAddress = re.test(obj.val());
-            if (!isAddress) {
-                return { valid: false, message: "Not a valid street address.", width: 200 };
-            }
-            return { valid: true };
+            return validationRules.regexTester(obj, re, "Not a street address.", 200);
         },
         numeric: function(obj) {
             var re = new RegExp("/[0-9]|\\./");
-            var isInt = re.test(obj.val());
-            if (obj.val() !== "" && !isInt) {
-                return { valid: isInt, message: "Only integers are allowed.", width: 200 };
-            }
-            return { valid: true };
+            return validationRules.regexTester(obj, re, "Only digits are allowed.", 200);
         },
         zip: function(obj) {
             var re = new RegExp("^\\d{5}$");
-            var isZip = re.test(obj.val());
-            if (obj.val() !== "" && !isZip) {
-                return { valid: isZip, message: "Not a valid zip code.", width: 200 };
-            }
-            return { valid: true };
+            return validationRules.regexTester(obj, re, "Not a valid zip code.", 200);
         },
         date: function(obj) {
             var re = new RegExp("^(?:(?:(?:0?[13578]|1[02])(\\/|-|\\.)31)\\1|(?:(?:0?[1,3-9]|1[0-2])(\\/|-|\\.)(?:29|30)\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d" +
                 "{2})$|^(?:0?2(\\/|-|\\.)29\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|" +
                 "^(?:(?:0?[1-9])|(?:1[0-2]))(\\/|-|\\.)(?:0?[1-9]|1\\d|2[0-8])\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$");
-            var isDate = re.test(obj.val());
-            if (obj.val() !== "" && !isDate) {
-                return { valid: isDate, message: "Not a valid date.", width: 200};
-            }
-            return { valid: true };
+            return validationRules.regexTester(obj, re, "Not a valid date.", 200);
         },
         url: function(obj) {
             var re = new RegExp("^(http|https|ftp)\\://[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\\-\\._\\?\\,\\'/\\\\+&amp;%\\$#\\=~])*$");
-            var isURL = re.test(obj.val());
-            if (obj.val() !== "" && !isURL) {
-                return { valid: isURL, message: "Not a valid url.", width: 150};
-            }
-            return { valid: true };
+            return validationRules.regexTester(obj, re, "Not a valid url.", 200);
         },
         /*
         Password matching expression. Password must be at least 8 characters, no more than 40 characters, and must include at least one upper case letter, one lower case letter, and one digit.
         */
         password: function(obj) {
             var re = new RegExp("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,40}$");
-            var isStrong = re.test(obj.val());
-            if (obj.val() !== "" && !isStrong) {
-                return { valid: isStrong, message: "Password must be at least 8 characters and include both upper and lower case letters and a number.", width: 300};
+            return validationRules.regexTester(obj, re, "Password must be at least 8 characters and include both upper and lower case letters and a number.", 300);
+        },
+        regexTester: function(obj, regEx, message, width) {
+            var isValid = regEx.test(obj.val());
+            if (obj.val() !== "" && !isValid) {
+                return {valid: isValid, message: message, width: width};
             }
-            return { valid: true };
+            return {valid: true};
         }
     };
     return this;
