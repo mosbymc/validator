@@ -146,30 +146,16 @@ var validator =  function() {
                             if (parent !== undefined) {
                                 var exclude = parent.data("excludeinputs");
                                 if (exclude !== undefined && exclude.indexOf(event.currentTarget.id) === -1) {
-                                    inputOptions = {
-                                        input: event.currentTarget,
-                                        display: target.hasClass("hover"),
-                                        success: target.data("inputaction") || null,
-                                        modalId: target.data("modalid") || null,
-                                        group: target.parents(".formValidate:first").hasClass("groupByInput"),
-                                        time: new Date().getTime(),
-                                        event: event
-                                    };
+                                    inputOptions = createOptions(target, event);
+                                    inputOptions.input = event.currentTarget;
                                     Object.freeze(inputOptions);
                                     validateInput(target, inputOptions);
                                 }
                             }
                         }
                         else if (target.hasClass("inputValidate") && target.data("validateon") === val) {
-                            inputOptions = {
-                                input: event.currentTarget,
-                                display: target.hasClass("hover"),
-                                success: target.data("inputaction") || null,
-                                modalId: target.data("modalid") || null,
-                                group: target.parents(".formValidate:first").hasClass("groupByInput"),
-                                time: new Date().getTime(),
-                                event: event
-                            };
+                            inputOptions = createOptions(target, event);
+                            inputOptions.input = event.currentTarget;
                             Object.freeze(inputOptions);
                             validateInput(target, inputOptions);
                         }
