@@ -180,24 +180,18 @@ var validator =  function() {
             }
             try {
                 var button = form.find(".validate"),
-                formOptions = {
-                    form: form,
-                    display: form.hasClass("hover"),
-                    success: form.data("formaction") || null,
-                    modalId: form.data("modalid") || null,
-                    groupErrors: form.data("grouperrors") || null,
-                    callBefore: form.data("beforevalidate") || false,
-                    group: form.hasClass("groupByInput"),
-                    button: button,
-                    time: new Date().getTime(),
-                    event: null
-                };
+                formOptions = createOptions(form, null);
+                formOptions.form = form;
+                formOptions.groupErrors = form.data("groupErrors") || null;
+                formOptions.callBefore = form.data("beforevalidate") || false;
+                formOptions.button = button;
                 Object.freeze(formOptions);
                 button.prop("disabled", true);
                 callBeforeValidate(form, formOptions);
             }
             catch (ex) {
                 console.log("Could not validate form: " + formElem);
+                console.log(ex);
             }
         }
         else {
