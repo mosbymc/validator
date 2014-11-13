@@ -581,11 +581,11 @@ var validator =  function() {
                 console.log("Could not find successful validation function: '" + options.success + "' for the current form.");
             }
         }
-        else if (numFailed === 0 && options.event.currentTarget !== null && options.input === undefined) {  //We need to programmatically submit the form here - async function will prevent to form action from firing.
-            options.event.preventDefault(); //prevent default form sumbit
+        else if (numFailed === 0 && options.event !== null && options.event.currentTarget !== null && options.input === undefined) {  //We need to programmatically submit the form here - async function will prevent to form action from firing.
+            options.event.preventDefault();   //prevent default form sumbit
             options.form[0].submit();       //then call it programmatically.
         }
-        else if (numFailed !== 0 && options.event.currentTarget !== null) {   //If the form failed validation and has an action attribute, prevent the default action of the form.
+        else if (numFailed !== 0 && options.event !== null && options.event.currentTarget !== null) {   //If the form failed validation and has an action attribute, prevent the default action of the form.
             options.event.preventDefault();
         }
     };
