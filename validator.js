@@ -564,7 +564,13 @@ var validator =  function() {
     };
 
     var placeGroupErrorDiv = function(toDisplay, options, elem) {
-        var loc = options.form.data("location");
+        var loc = "right";
+        if (options.form !== undefined) {
+            loc = options.form.data("location");
+        }
+        else if (elem.parents(".formValidate:first").hasClass("groupByInput")){
+            loc = elem.parents(".formValidate:first").data("location");
+        }
 
         switch (loc) {
             case "right":
