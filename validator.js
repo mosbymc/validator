@@ -44,20 +44,11 @@ var validator =  function() {
         $(document).on("input", "input", function(event) {      //Bind input event listener on input event. The input itself or its parent must have the "inputValidate" class.
             var target = $(event.currentTarget),
             inputOptions;
-            if (!target.hasClass("inputValidate") && (target.data("validateon") === undefined || target.data("validateon") === "input")) {
-                var parent = target.parents(".inputValidate:first");
-                if (parent !== undefined) {
-                    var exclude = parent.data("excludeinputs");
-                    if (exclude !== undefined && exclude.indexOf(event.currentTarget.id) === -1) {   //if the parent form has excluded this input from validation, we stop here.
-                        var inputOptions = createOptions(target, event);
-                        inputOptions.input = event.currentTarget;
-                        Object.freeze(inputOptions);
-                        validateInput(target, inputOptions);
-                    }
+            if ((target.hasClass("inputValidate") || target.parents(".inputValidate:first")) && (target.data("validateon") === undefined || target.data("validateon") === "input")) {
+                if (target.parents(".inputValidate:first").data("excludeinputs") !== undefined && target.parents(".inputValidate:first").data("excludeinputs").indexOf(event.currentTarget.id) !== -1) {
+                    return;
                 }
-            }
-            else if (target.hasClass("inputValidate") && (target.data("validateon") === undefined || target.data("validateon") === "input")) {
-                var inputOptions = createOptions(target, event);
+                inputOptions = createOptions(target, event);
                 inputOptions.input = event.currentTarget;
                 Object.freeze(inputOptions);
                 validateInput(target, inputOptions);
@@ -141,19 +132,12 @@ var validator =  function() {
                     $(document).on(val, "input", function(event) {
                         var target = $(event.currentTarget),
                         inputOptions;
-                        if (!target.hasClass("inputValidate") && target.data("validateon") === val) {
-                            var parent = target.parents(".inputValidate:first");
-                            if (parent !== undefined) {
-                                var exclude = parent.data("excludeinputs");
-                                if (exclude !== undefined && exclude.indexOf(event.currentTarget.id) === -1) {
-                                    inputOptions = createOptions(target, event);
-                                    inputOptions.input = event.currentTarget;
-                                    Object.freeze(inputOptions);
-                                    validateInput(target, inputOptions);
-                                }
+                        var target = $(event.currentTarget),
+                        inputOptions;
+                        if ((target.hasClass("inputValidate") || target.parents(".inputValidate:first")) && target.data("validateon") === val) {
+                            if (target.parents(".inputValidate:first").data("excludeinputs") !== undefined && target.parents(".inputValidate:first").data("excludeinputs").indexOf(event.currentTarget.id) !== -1) {
+                                return;
                             }
-                        }
-                        else if (target.hasClass("inputValidate") && target.data("validateon") === val) {
                             inputOptions = createOptions(target, event);
                             inputOptions.input = event.currentTarget;
                             Object.freeze(inputOptions);
