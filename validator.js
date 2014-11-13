@@ -40,7 +40,6 @@ var validator =  function() {
                     group: form.hasClass("groupByInput"),
                     button: target,
                     time: new Date().getTime(),
-                    isForm: event.currentTarget.form !== null,
                     event: event
                 };
                 Object.freeze(formOptions);
@@ -64,7 +63,6 @@ var validator =  function() {
                             modalId: target.data("modalid") || null,
                             group: target.hasClass("groupByInput") === false ? target.parents(".formValidate:first").hasClass("groupByInput") : target.hasClass("groupByInput"),
                             time: new Date().getTime(),
-                            isForm: false,
                             event: event
                         };
                         Object.freeze(inputOptions);
@@ -80,7 +78,6 @@ var validator =  function() {
                     modalId: target.data("modalid") || null,
                     group: target.hasClass("groupByInput") === false ? target.parents(".formValidate:first").hasClass("groupByInput") : target.hasClass("groupByInput"),
                     time: new Date().getTime(),
-                    isForm: false,
                     event: event
                 };
                 Object.freeze(inputOptions);
@@ -177,7 +174,6 @@ var validator =  function() {
                                         modalId: target.data("modalid") || null,
                                         group: target.parents(".formValidate:first").hasClass("groupByInput"),
                                         time: new Date().getTime(),
-                                        isForm: false,
                                         event: event
                                     };
                                     Object.freeze(inputOptions);
@@ -193,7 +189,6 @@ var validator =  function() {
                                 modalId: target.data("modalid") || null,
                                 group: target.parents(".formValidate:first").hasClass("groupByInput"),
                                 time: new Date().getTime(),
-                                isForm: false,
                                 event: event
                             };
                             Object.freeze(inputOptions);
@@ -230,7 +225,6 @@ var validator =  function() {
                     group: form.hasClass("groupByInput"),
                     button: button,
                     time: new Date().getTime(),
-                    isForm: false,
                     event: null
                 };
                 Object.freeze(formOptions);
@@ -587,11 +581,11 @@ var validator =  function() {
                 console.log("Could not find successful validation function: '" + options.success + "' for the current form.");
             }
         }
-        else if (numFailed === 0 && options.isForm === true) {  //We need to programmatically submit the form here - async function will prevent to form action from firing.
+        else if (numFailed === 0 && options.event.currentTarget !== null) {  //We need to programmatically submit the form here - async function will prevent to form action from firing.
             options.event.preventDefault(); //prevent default form sumbit
             options.form[0].submit();       //then call it programmatically.
         }
-        else if (numFailed !== 0 && options.isForm === true) {   //If the form failed validation and has an action attribute, prevent the default action of the form.
+        else if (numFailed !== 0 && options.event.currentTarget !== null) {   //If the form failed validation and has an action attribute, prevent the default action of the form.
             options.event.preventDefault();
         }
     };
