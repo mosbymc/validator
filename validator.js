@@ -76,21 +76,7 @@ var validator =  function() {
             }
             if (target.prevUntil(":input").filter(".helptext:first").length > 0 && $("[id^='" + target[0].id + "error']").length < 1 && $("#" + target[0].id + "InputGrp").length < 1) {
                 var helptext = target.prevUntil(":input").filter(".helptext:first"),
-                modal = null;
-                if (target.data("modalid") === undefined) {
-                    if (target.parents(".formValidate:first").length > 0) {
-                        modal = target.parents(".formValidate:first").data("modalId") || null;
-                    }
-                    else if (target.parents(".inputValidate:first").length > 0) {
-                        modal = target.parents(".inputValidate:first").data("modalId") || null;
-                    }
-                    else {
-                        modal = null;
-                    }
-                }
-                else {
-                    modal = target.data("modalid");
-                }
+                modal = target.parents(".formValidate:first").data("modalId") || target.parents(".inputValidate:first").data("modalId") || target.data("modalid") || null;
                 var helpOptions = {
                     input: event.currentTarget,
                     modalId: modal,
@@ -103,22 +89,7 @@ var validator =  function() {
         $(document).on("blur", "input", function(event) {   //Remove help text on blur.
             var target = $(event.currentTarget),
             helpText = target.prevUntil(":input").filter(".helptext:first"),
-            modal;
-            if (target.data("modalid") === undefined) {
-                if (target.parents(".formValidate:first").length > 0) {
-                    modal = target.parents(".formValidate:first").data("modalId") || null;
-                }
-                else if (target.parents(".inputValidate:first").length > 0) {
-                    modal = target.parents(".inputValidate:first").data("modalId") || null;
-                }
-                else {
-                    modal = null;
-                }
-            }
-            else {
-                modal = target.data("modalid");
-            }
-
+            modal = target.parents(".formValidate:first").data("modalId") || target.parents(".inputValidate:first").data("modalId") || target.data("modalid") || null;
             helpText.addClass("hideMessage").removeClass("showMessage");
             if (modal !== null) {   //unbind event listeners for the help text spans
                 $(document).off("helpTextModalScroll" + target.data("htid"));
