@@ -893,15 +893,13 @@ var validator =  function() {
     };
 
     var monitorChars = function(elem, options, event) {   //tests input characters before allowing event to continue
-        var valid = false,
-        rules = options.type.split(','),
+        var rules = options.type.split(','),
         testedArray = [];
         $.each(rules, function(index, value) {
             var fn = inputTypes[value];
             if (typeof fn === "function") {
                 try {
-                        valid = fn.call(this, elem, event);
-                        testedArray.push(valid);
+                    testedArray.push(fn.call(this, elem, event));
                 }
                 catch(ex) {
                     console.log("The supplied character restriction type: '" + value + "' could not be executed.");
