@@ -62,10 +62,7 @@ var validator =  function() {
                     input: event.currentTarget,
                     type: target.data("inputtype")
                 };
-                var valid = monitorChars(target, restrictOptions, event);
-                if (!valid) {
-                    event.preventDefault();
-                }
+                monitorChars(target, restrictOptions, event);
             }
         });
 
@@ -936,15 +933,14 @@ var validator =  function() {
         if (testedArray.length > 1) {
             for (var i = 0; i < testedArray.length-1; i++) {
                 if (!testedArray[i]) {
-                    return false;
+                    event.preventDefault();
+                    break;
                 }
             }
-            return true;
         }
-        else if (testedArray.length === 1) {
-          return testedArray[0];
+        else if (testedArray.length === 1 && testedArray[0] === false) {
+            event.preventDefault();
         }
-        return true;
     };
     
     var createOptions = function(elem, event) {
