@@ -475,9 +475,8 @@ var validator =  function() {
 
     var groupByInput = function(options, elem, rule) {
         if (options.group) {
-            var toDisplay = getOtherElem(elem);
             if ($("#" + elem.data("vid") + "InputGrp").length === 0) {
-                placeGroupErrorDiv(toDisplay, options, elem);
+                placeGroupErrorDiv(getOtherElem(elem), options, elem);
             }
             var errorToMove = $("#" + elem.data("vid") + "error" + rule),
             html = errorToMove.html(),
