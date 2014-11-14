@@ -72,14 +72,8 @@ var validator =  function() {
                 return;
             }
             if (target.prevUntil(":input").filter(".helptext:first").length > 0 && $("[id^='" + target[0].id + "error']").length < 1 && $("#" + target[0].id + "InputGrp").length < 1) {
-                var helptext = target.prevUntil(":input").filter(".helptext:first"),
-                modal = target.parents(".formValidate:first").data("modalId") || target.parents(".inputValidate:first").data("modalId") || target.data("modalid") || null;
-                var helpOptions = {
-                    input: event.currentTarget,
-                    modalId: modal,
-                    helpText: helptext
-                };
-                displayHelpText(helpOptions);
+                var modal = target.parents(".formValidate:first").data("modalId") || target.parents(".inputValidate:first").data("modalId") || target.data("modalid") || null;
+                displayHelpText(target, modal);
             }
         });
 
@@ -367,7 +361,7 @@ var validator =  function() {
         }
         setRuleStatus(elem, inputsArray, rule, tested.valid);
     };
-    
+
     var setRuleStatus = function(elem, inputsArray, value, status) {
         for (var k = 0; k < inputsArray.length; k++) {
             if (elem[0] === inputsArray[k].input[0] && value === inputsArray[k].rule) {
@@ -401,7 +395,7 @@ var validator =  function() {
         rulesTestedCount = 0;
         for (var i = 0; i < inputArray.length; i++) {
             if (inputArray[i].valid === "waiting") {
-                return;
+                return;     //if there are any inputs still waiting, get out - validation isn't done yet.
             }
             else if (inputArray[i].valid === false) {
                 numFailed++;
@@ -579,7 +573,7 @@ var validator =  function() {
             adjustTextOnScroll(element, messageDiv, offsetWidth, offsetHeight);
         }
         else if (!options.display && options.modalId !== null) {
-            scrollModalListener(options, element, offsetWidth, offsetHeight, messageDiv);
+            scrollModalListener(options.modalId, element, offsetWidth, offsetHeight, messageDiv);
         }
     };
 
@@ -640,7 +634,7 @@ var validator =  function() {
         var toDisplay = getOtherElem(element);
         toDisplay.bind("mouseover", function () {
             if (options.modalId !== null) {
-                if (isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
+                if (isContainerVisible(options.modalId, element, offsetWidth, offsetHeight, messageDiv)) {
                     setErrorPos(element, offsetWidth, offsetHeight, messageDiv);
                     return;
                 }
@@ -660,9 +654,9 @@ var validator =  function() {
         });
     };
 
-    var isContainerVisible = function(options, element, offsetWidth, offsetHeight, messageDiv) {  //used to determine if help text spans should be removed if they scroll outside of the modal
+    var isContainerVisible = function(modalId, element, offsetWidth, offsetHeight, messageDiv) {  //used to determine if help text spans should be removed if they scroll outside of the modal
         var placement = determinePlacement(getOtherElem(element).offset(), element, offsetWidth, offsetHeight, messageDiv),
-        modal = $("#" + options.modalId),
+        modal = $("#" + modalId),
         modaloffset = modal.offset(),
         modalTop = modaloffset.top - $(window).scrollTop(),
         modalBottom = modalTop + modal.height(),
@@ -679,13 +673,13 @@ var validator =  function() {
         return true;
     };
 
-    var scrollModalListener = function(options, element, offsetWidth, offsetHeight, messageDiv) {
-        if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
+    var scrollModalListener = function(modalId, element, offsetWidth, offsetHeight, messageDiv) {
+        if (!isContainerVisible(modalId, element, offsetWidth, offsetHeight, messageDiv)) {
             messageDiv.addClass("hideMessage").removeClass("showMessage");
         }
 
         $("#" + options.modalId).on("scroll", function() {
-            if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
+            if (!isContainerVisible(modalId, element, offsetWidth, offsetHeight, messageDiv)) {
                 messageDiv.addClass("hideMessage").removeClass("showMessage");
             }
             else {
@@ -695,7 +689,7 @@ var validator =  function() {
         });
 
         $(window).scroll(function() {
-            if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv)) {
+            if (!isContainerVisible(modalId, element, offsetWidth, offsetHeight, messageDiv)) {
                 messageDiv.addClass("hideMessage").removeClass("showMessage");
             }
             else {
@@ -818,7 +812,7 @@ var validator =  function() {
         }
         else {
             $("body").find(".errorMessage").each(function(index, val) {
-            val.remove();
+                val.remove();
             });
 
             $("body").find(".invalid").each(function(index, val) {
@@ -831,14 +825,18 @@ var validator =  function() {
                 $(val).addClass("hideGroupedErrors");
             });
 
-            $("body").find(".inputGroup").each(function(index, val) {
+            $("body").find(".vInputGroup").each(function(index, val) {
+                val.remove();
+            });
+
+            $("body").find(".hInputGroup").each(function(index, val) {
                 val.remove();
             });
         }
     }
 
-    var helpTextScrollModalListener = function(options, element, offsetWidth, offsetHeight, messageDiv) {
-        if (!isContainerVisible(options, element, offsetWidth, offsetHeight, messageDiv) || element.hasClass("invalid")) {
+    var helpTextScrollModalListener = function(modalId, element, offsetWidth, offsetHeight, messageDiv) {
+        if (!isContainerVisible(modalId, element, offsetWidth, offsetHeight, messageDiv) || element.hasClass("invalid")) {
             messageDiv.addClass("hideMessage").removeClass("showMessage");
         }
         else {
@@ -847,9 +845,8 @@ var validator =  function() {
         }
     };
 
-    var displayHelpText = function(helpOptions) {   //sets up event listeners for help text when the window/modal is scrolled
-        var elem = $(helpOptions.input),
-        helpText = elem.prevUntil(":input").filter(".helptext:first"),
+    var displayHelpText = function(elem, modalId) {   //sets up event listeners for help text when the window/modal is scrolled
+        var helpText = elem.prevUntil(":input").filter(".helptext:first"),
         position = getOtherElem(elem).offset(),
         errorOffsets = getMessageOffset(elem);
         helpText.addClass("showMessage").removeClass("hideMessage");
@@ -858,11 +855,11 @@ var validator =  function() {
 
         elem.data("htid", new Date().getTime());
 
-        if (helpOptions.modalId !== null) {
+        if (modalId !== null) {
             $(document).on("helpTextModalScroll" + elem.data("htid"), function() {
-                helpTextScrollModalListener(helpOptions, elem, errorOffsets.width, errorOffsets.height, helpText);
+                helpTextScrollModalListener(modalId, elem, errorOffsets.width, errorOffsets.height, helpText);
             });
-            $("#" + helpOptions.modalId).on("scroll", function() {
+            $("#" + modalId).on("scroll", function() {
                 $(document).trigger("helpTextModalScroll" + elem.data("htid"), [{}]);
             });
         }
@@ -906,7 +903,7 @@ var validator =  function() {
             event.preventDefault();
         }
     };
-    
+
     var createOptions = function(elem, event) {
         options = {
             display: elem.hasClass("hover"),
@@ -1060,7 +1057,7 @@ var validator =  function() {
             if (obj.val() === toMatch.val()) {
                 return { valid: true };
             }
-            return { valid: false, message: "Passwords must match.", width: 175 };
+            return { valid: false, message: "Passwords must match.", width: 200 };
         },
         email: function(obj) {
             var re = new RegExp("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$");
