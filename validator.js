@@ -516,9 +516,6 @@ var validator =  function() {
             case "bottom":
                 toDisplay.after("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='vInputGroup'></div>");
                 return;
-            default:
-                toDisplay.after("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup alignInput'></div>");
-                return;
         }
     };
 
@@ -637,8 +634,6 @@ var validator =  function() {
                 return [position.left + offset.left - $(window).scrollLeft(), position.top - $(window).scrollTop() - 5 - height - offsetHeight - offset.top];
             case "bottom":
                 return [position.left + offset.left - $(window).scrollLeft(), position.top - $(window).scrollTop() + displayedElem[0].clientHeight + 8 + offsetHeight + offset.top];
-            default:
-                return [position.left + displayedElem.width() + offsetWidth + offset.left + 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
         }
     };
 
