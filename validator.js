@@ -324,7 +324,7 @@ var validator =  function() {
                     }
                     else {
                         console.log("Could not find library function: " + value + " for element: " + elem);
-                        setRuleToNull(elem, inputsArray, rules, value);
+                        setRuleStatus(elem, inputsArray, value, null);
                     }
                 });
             }
@@ -348,12 +348,12 @@ var validator =  function() {
                         catch(ex) {
                             console.log("Failed to execute custom rule: '" + inputState.rule + "'");
                             console.log(ex);
-                            setRuleToNull(elem, inputsArray, rules, value);
+                            setRuleStatus(elem, inputsArray, value, null);
                         }
                     }
                     else {  //if the provided function name cannot be found, or isn't a function, then "ignore" as a rule we need to validate against.
                         console.log("Could not find library function: " + value + " for element: " + elem);
-                        setRuleToNull(elem, inputsArray, rules, value);
+                        setRuleStatus(elem, inputsArray, value, null);
                     }
                 });
             }
@@ -374,18 +374,13 @@ var validator =  function() {
             groupByForm(options, elem, rule);
             groupByInput(options, elem, rule);
         }
-        for (var i = 0; i < inputsArray.length; i++) {
-            if (elem[0] === inputsArray[i].input[0] && rule === inputsArray[i].rule) {
-                inputsArray[i].valid = tested.valid;
-                break;
-            }
-        }
+        setRuleStatus(elem, inputsArray, rule, tested.valid);
     };
     
-    var setRuleToNull = function(elem, inputsArray, rules, value) {
+    var setRuleStatus = function(elem, inputsArray, value, status) {
         for (var k = 0; k < inputsArray.length; k++) {
             if (elem[0] === inputsArray[k].input[0] && value === inputsArray[k].rule) {
-                inputsArray[k].valid = null;
+                inputsArray[k].valid = status;
                 break;
             }
         }
