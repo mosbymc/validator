@@ -645,10 +645,8 @@ var validator =  function() {
     };
 
     var setErrorPos = function(element, offsetWidth, offsetHeight, messageDiv) {
-        var position = getOtherElem(element).offset(),
-        placement = determinePlacement(position, element, offsetWidth, offsetHeight, messageDiv);
+        var placement = determinePlacement(getOtherElem(element).offset(), element, offsetWidth, offsetHeight, messageDiv);
         messageDiv.addClass("showMessage").removeClass("hideMessage").css('top', placement[1]).css('left', placement[0]);
-
         return placement;
     };
 
