@@ -537,8 +537,7 @@ var validator =  function() {
             errorSpans.each(function(index, val) {
                 if ($(val).data("parentinput") === inputId) {
                     $(span).insertBefore($(val));
-                    var thisSpan = $("#formGrp" + inputId + rule);
-                    $("</br>").insertAfter(thisSpan);
+                    $("</br>").insertAfter($("#formGrp" + inputId + rule));
                     foundSibling = true;
                     return false;
                 }
@@ -552,8 +551,7 @@ var validator =  function() {
                         var siblingSpan = $("#" + options.groupErrors).children("[data-parentinput='" + inputs[i].id + "']");
                         if (siblingSpan.length > 0) {
                             $(span).insertBefore(siblingSpan);
-                            var thisSpan = $("#formGrp" + inputId + rule);
-                            $("</br>").insertAfter(thisSpan);
+                            $("</br>").insertAfter($("#formGrp" + inputId + rule));
                             foundSibling = true;
                             break;
                         }
