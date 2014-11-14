@@ -216,16 +216,9 @@ var validator =  function() {
             rulesArray.push("required");
         }
 
-        var rules = vRules.split(",");
-        if (rules.length > 0 && rules[0] !== "") {
-            for (var i = 0; i < rules.length; i++) {
-                rulesArray.push(rules[i]);
-            }
-        }
-
-        rules = customRules.split(",");
-        if (rules.length > 0 && rules[0] !== "") {
-            for (i = 0; i < rules.length; i++) {
+        var rules = vRules.split(",").concat(customRules.split(","));
+        for (var i = 0; i < rules.length; i++) {
+            if (rules[i] !== "") {
                 rulesArray.push(rules[i]);
             }
         }
