@@ -211,11 +211,6 @@ var validator =  function() {
     var buildInputArray = function(elem) {
         var vRules = elem.data("validationrules") || "",
         customRules = elem.data('customrules') || "",
-        min = elem.data('min') || "",
-        max = elem.data("max") || "",
-        match = elem.data("matchfield") || "",
-        maxChecked = elem.data("maxchecked") || "",
-        minChecked = elem.data("minchecked") || "",
         rulesArray = [],
         inputArray = [],
         inputObj;
@@ -238,23 +233,23 @@ var validator =  function() {
             }
         }
 
-        if (min.length > 0) {
+        if (elem.data("min") !== undefined) {
             rulesArray.push("min");
         }
 
-        if (max.length > 0) {
+        if (elem.data("max") !== undefined) {
             rulesArray.push("max");
         }
 
-        if (match.length > 0) {
+        if (elem.data("matchfield") !== undefined) {
             rulesArray.push("match");
         }
 
-        if (maxChecked.length > 0) {
+        if (elem.data("maxchecked") !== undefined) {
             rulesArray.push("maxchecked");
         }
 
-        if (minChecked.length > 0) {
+        if (elem.data("minchecked") !== undefined) {
             rulesArray.push("minchecked");
         }
 
