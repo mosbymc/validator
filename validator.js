@@ -32,7 +32,7 @@ var validator =  function() {
             if (form.length > 0 && target.hasClass("validate")) {
                 var formOptions = createOptions(form, event);
                 formOptions.form = form;
-                formOptions.groupErrors = form.data("groupErrors") || null;
+                formOptions.groupErrors = form.data("grouperrors") || null;
                 formOptions.callBefore = form.data("beforevalidate") || false;
                 formOptions.button = target;
                 Object.freeze(formOptions);
@@ -134,7 +134,7 @@ var validator =  function() {
                 var button = form.find(".validate"),
                 formOptions = createOptions(form, null);
                 formOptions.form = form;
-                formOptions.groupErrors = form.data("groupErrors") || null;
+                formOptions.groupErrors = form.data("grouperrors") || null;
                 formOptions.callBefore = form.data("beforevalidate") || false;
                 formOptions.button = button;
                 Object.freeze(formOptions);
@@ -524,11 +524,9 @@ var validator =  function() {
             $("#" + input.data("vid") + "error" + rule).each(function(index, val) {
                 var prefix = $(input).data("errorprefix");
                 if (prefix !== undefined) {
-                    var text = $(val).html();
-                    $(val).html(prefix + ": " + text);
+                    $(val).html(prefix + ": " + $(val).html());
                 }
-                var html = $(val).html(),
-                span = "<span class='errorSpan' id='formGrp" + input.data("vid") + rule + "' data-parentinput='" + input.data("vid") + "'>" + html + "</span>";
+                var span = "<span class='errorSpan' id='formGrp" + input.data("vid") + rule + "' data-parentinput='" + input.data("vid") + "'>" + $(val).html() + "</span>";
                 placeErrorSpan(options, input.data("vid"), span, rule);
                 $(val).remove();
             });
