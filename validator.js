@@ -270,25 +270,19 @@ var validator =  function() {
         failedRequired = false, //Determines whether it should continue validation after testing the required functionality.
         vRules = elem.data("validationrules"),  //The predefined rules that are part of this library.
         customRules = elem.data('customrules'), //User defined validation rules.
-        isRequired = elem.attr("data-required"),
-        minVal = elem.data("min"),
-        maxVal = elem.data("max"),
-        match = elem.data("matchfield"),
-        maxChecked = elem.data("maxchecked"),
-        minChecked = elem.data("minchecked"),
         rules,
         tested;
 
         elem.data("vts", options.time);
 
-        if (isRequired !== undefined || vRules !== undefined || customRules !== undefined || minVal !== undefined || 
-            maxVal !== undefined || match !== undefined || maxChecked !== undefined || minChecked !== undefined) { //remove any previous error div from the previous validation attempt.
+        if (elem.attr("data-required") !== undefined || vRules !== undefined || customRules !== undefined || elem.data("min") !== undefined || elem.data("max") !== undefined ||
+            elem.data("matchfield") !== undefined || elem.data("maxchecked") !== undefined || elem.data("minchecked") !== undefined) { //remove any previous error div from the previous validation attempt.
             removeErrorText(elem);
             getOtherElem(elem).removeClass("invalid");
         }
         elem.data("vid", new Date().getTime());
 
-        if (isRequired !== undefined) {
+        if (elem.attr("data-required") !== undefined) {
             if (elem[0].type === "radio") {
                 tested = validationRules.requiredGroup(elem);
             }
@@ -303,23 +297,23 @@ var validator =  function() {
 
         //If the input passed the required validation or didn't need it, then continue to the other rules.
         if (!failedRequired) {
-            if (minVal !== undefined) {
+            if (elem.data("min") !== undefined) {
                 tested = validationRules.testMinValue(elem);
                 postValidation(tested, elem, options, "min", inputsArray);
             }
-            if (maxVal !== undefined) {
+            if (elem.data("max") !== undefined) {
                 tested = validationRules.testMaxValue(elem);
                 postValidation(tested, elem, options, "max", inputsArray);
             }
-            if (match !== undefined) {
+            if (elem.data("matchfield") !== undefined) {
                 tested = validationRules.verifyMatch(elem);
                 postValidation(tested, elem, options, "match", inputsArray);
             }
-            if (maxChecked !== undefined) {
+            if (elem.data("maxchecked") !== undefined) {
                 tested = validationRules.maxChecked(elem);
                 postValidation(tested, elem, options, "maxchecked", inputsArray);
             }
-            if (minChecked !== undefined) {
+            if (elem.data("minchecked") !== undefined) {
                 tested = validationRules.minChecked(elem);
                 postValidation(tested, elem, options, "minchecked", inputsArray);
             }
