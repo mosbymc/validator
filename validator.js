@@ -58,11 +58,7 @@ var validator =  function() {
         $(document).on("keypress", "input", function(event) {   //Bind event listener for the keypress event on an input. Used for restricting character input.
             var target = $(event.currentTarget);
             if (target.data("inputtype") !== undefined) {
-                var restrictOptions = {
-                    input: event.currentTarget,
-                    type: target.data("inputtype")
-                };
-                monitorChars(target, restrictOptions, event);
+                monitorChars(target, target.data("inputtype"), event);
             }
         });
 
@@ -872,8 +868,8 @@ var validator =  function() {
         });
     };
 
-    var monitorChars = function(elem, options, event) {   //tests input characters before allowing event to continue
-        var rules = options.type.split(','),
+    var monitorChars = function(elem, charRestrictions, event) {   //tests input characters before allowing event to continue
+        var rules = charRestrictions.split(','),
         testedArray = [];
         $.each(rules, function(index, value) {
             var fn = inputTypes[value];
