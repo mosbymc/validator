@@ -95,6 +95,12 @@
 			test : function(form, options, callback) {
 				alert("Namespaced function working!");
 				callback(true, form, options);
+			},
+			innerObj: {
+				testFunction: function(form, options, callback) {
+					alert("This function is nested two deep.");
+					callback(true, form, options);
+				}
 			}
 		};
 		
@@ -375,7 +381,7 @@
 			</dl>
 		</fieldset>
 
-		<fieldset id="fieldValidate4" class="formValidate groupByInput" data-formaction="submitThisForm" data-excludeinputs="fv4password">
+		<fieldset id="fieldValidate4" class="formValidate groupByInput" data-formaction="submitThisForm" data-excludeinputs="fv4password" data-beforevalidate="object.innerObj.testFunction">
 	    	<legend>Form Validation - Error messages grouped by input and character restrictions.</legend>
 	      	<dl align='left'>
 	      		<dt><label for='fv4fName'>First Name: </label></dt>
