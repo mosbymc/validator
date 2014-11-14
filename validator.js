@@ -677,8 +677,7 @@ var validator =  function() {
     };
 
     var isContainerVisible = function(options, element, offsetWidth, offsetHeight, messageDiv) {  //used to determine if help text spans should be removed if they scroll outside of the modal
-        var position = getOtherElem(element).offset(),
-        placement = determinePlacement(position, element, offsetWidth, offsetHeight, messageDiv),
+        var placement = determinePlacement(getOtherElem(element).offset(), element, offsetWidth, offsetHeight, messageDiv),
         modal = $("#" + options.modalId),
         modaloffset = modal.offset(),
         modalTop = modaloffset.top - $(window).scrollTop(),
