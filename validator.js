@@ -937,82 +937,64 @@ var validator =  function() {
     */
     ////////////////////////////////////////////////////////////////////////////////////////////
     var inputTypes = {
-        numeric: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode === 8 || (unicode > 43 && unicode < 47) || (unicode > 47 && unicode < 58)) { //if a number, decimal, comma, or minus
-                return true;
+        inputTypeTester: function(charArray, value) {
+            for (var i = 0; i < charArray.length; i++) {
+                if ($.isArray(charArray[i])) {
+                    if (value > charArray[i][0] && value < charArray[i][1]) {
+                        return true;
+                    }
+                }
+                else {
+                    if (value === charArray[i]) {
+                        return true;
+                    }
+                }
             }
             return false;
+        },
+        numeric: function(obj, e) {
+            var unicode = e.charCode? e.charCode : e.keyCode;
+            return inputTypes.inputTypeTester([8, [43, 47], [47, 58]], unicode);
         },
         integer: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode === 8 || unicode !== 45 || (unicode < 48 || unicode > 57)) { //if not a number or minus
-                return false; //disable key press
-            }
-            return true;
+            return inputTypes.inputTypeTester([8, 45, [47, 58]], unicode);
         },
         positiveInt: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode === 8 || (unicode < 48 || unicode > 57)) { //if not a number
-                return false; //disable key press
-            }
-            return true;
+            return inputTypes.inputTypeTester([8, [47, 58]], unicode);
         },
         nonNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode < 48 || unicode > 57) { //if not a number
-                return true;
-            }
-            return false;
+            return inputTypes.inputTypeTester([[-1, 48], [57, 128]], unicode);
         },
         alphaNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode === 8 || (unicode > 47 && unicode < 58) || (unicode > 64 && unicode < 91) || (unicode > 96 && unicode < 123)) { //if alpha-numeric
-                return true;
-            }
-            return false;
+            return inputTypes.inputTypeTester([8, [47, 58], [64, 91], [96, 123]], unicode);
         },
         nonAlphaNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if ((unicode > 47 && unicode < 58) || (unicode > 64 && unicode < 91) || (unicode > 96 && unicode < 123)) { //if alpha-numeric
-                return false; //disable key press
-            }
-            return true;
+            return inputTypes.inputTypeTester([[-1, 48], [57, 65], [90, 97], [122, 128]], unicode);
         },
         printable: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode === 8 || (unicode > 31 && unicode < 128)) {
-                return true;
-            }
-            return false;
+            return inputTypes.inputTypeTester([8, [31, 128]], unicode);
         },
         printableNonNumeric: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode === 8 || (unicode > 31 && unicode < 48) || (unicode > 57 && unicode < 128)) {
-                return true;
-            }
-            return false;
+            return inputTypes.inputTypeTester([8, [31, 48], [57, 128]], unicode);
         },
         phone: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode === 8 || unicode === 32 || unicode === 40 || unicode === 41 || unicode === 45 || unicode === 46 || (unicode >= 48 && unicode <= 57)) {
-                return true;
-            }
-            return false;
+            return inputTypes.inputTypeTester([8, 32, 40, 41, 45, 46, [47, 58]], unicode);
         },
         shortDate: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode === 8 || (unicode >= 45 && unicode <= 57)) {
-                return true;
-            }
-            return false;
+            return inputTypes.inputTypeTester([8, [44, 58]], unicode);
         },
         longDate: function(obj, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
-            if (unicode === 8 || (unicode < 48 || unicode > 57) && (unicode < 65 || unicode > 90) && (unicode < 97 || unicode > 122) && (unicode !== 46) && (unicode !== 44)) { //if not alpha-numeric or space or period
-                return false; //disable key press
-            }
-            return true;
+            return inputTypes.inputTypeTester([8, 32, 44, 46, [47, 58], [64, 91], [96, 123]], unicode);
         }
     };
 
