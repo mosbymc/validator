@@ -395,12 +395,7 @@ var validator =  function() {
                 groupByForm(inputState.option, inputState.element, inputState.rule);
                 groupByInput(inputState.option, inputState.element, inputState.rule);
             }
-            for (var i = 0; i < inputState.inputArray.length; i++) {
-                if (inputState.element[0] === inputState.inputArray[i].input[0] && inputState.rule === inputState.inputArray[i].rule) {
-                    inputState.inputArray[i].valid = tested.valid;
-                    break;
-                }
-            }
+            setRuleStatus(inputState.element, inputState.inputArray, inputState.rule, tested.valid);
             finalizeValidation(inputState.inputArray, inputState.option);
         }
         catch(ex) {
