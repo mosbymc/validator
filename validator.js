@@ -820,11 +820,7 @@ var validator =  function() {
                 $(val).addClass("hideGroupedErrors");
             });
 
-            $("body").find(".vInputGroup").each(function(index, val) {
-                val.remove();
-            });
-
-            $("body").find(".hInputGroup").each(function(index, val) {
+            $("body").find("[id^=InputGroup").each(function(index, val) {
                 val.remove();
             });
         }
