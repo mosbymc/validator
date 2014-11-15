@@ -796,7 +796,8 @@ var validator =  function() {
 
                 element.find(".groupedErrors").each(function(index, val) {
                     $(val).empty();
-                    $(val).css("display", "none");
+                    $(val).removeClass("showGroupedErrors");
+                    $(val).addClass("hideGroupedErrors");
                 });
             }
             catch (ex) {
