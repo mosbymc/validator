@@ -564,7 +564,9 @@ var validator =  function() {
             displayErrorTextOnHover(options, element, messageDiv, offsetWidth, offsetHeight);
         }
         else if (!options.display && options.modalId === null) {
-            adjustTextOnScroll(element, messageDiv, offsetWidth, offsetHeight);
+            $(window).scroll(function() {
+                setErrorPos(element, offsetWidth, offsetHeight, messageDiv);
+            });
         }
         else if (!options.display && options.modalId !== null) {
             scrollModalListener(options.modalId, element, offsetWidth, offsetHeight, messageDiv);
@@ -638,12 +640,6 @@ var validator =  function() {
 
         toDisplay.bind("mouseout", function () {
             messageDiv.addClass("hideMessage").removeClass("showMessage");
-        });
-    };
-
-    var adjustTextOnScroll = function(element, messageDiv, offsetWidth, offsetHeight) {
-        $(window).scroll(function() {
-            setErrorPos(element, offsetWidth, offsetHeight, messageDiv);
         });
     };
 
