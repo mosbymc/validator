@@ -917,10 +917,8 @@ var validator =  function() {
                         return true;
                     }
                 }
-                else {
-                    if (value === charArray[i]) {
+                else if (value === charArray[i]) {
                         return true;
-                    }
                 }
             }
             return false;
