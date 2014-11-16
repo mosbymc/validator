@@ -696,12 +696,10 @@ var validator =  function() {
     var getMessageOffset = function(element) {
         var width = 0,
         height = 0;
-        if ($("[id^='" + element.data("vid") + "error']").length !== 0) {
-            $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
-                width += $(val).width() + 5;
-                height += $(val).height() + 5;
-            });
-        }
+        $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
+            width += $(val).width() + 5;
+            height += $(val).height() + 5;
+        });
         return {width: width, height: height};
     };
 
