@@ -576,8 +576,7 @@ var validator =  function() {
         toDisplay.addClass("invalid");
         var popupId = element.data("vid") + "error" + errorName;
         if ($("#" + popupId).length < 1) {
-            var popupDiv = "<div id='" + popupId + "' data-parentinput='" + element.data("vid") + "'></div>";
-            toDisplay.parent().append(popupDiv);
+            toDisplay.parent().append("<div id='" + popupId + "' data-parentinput='" + element.data("vid") + "'></div>");
             var popup = $("#" + popupId);
             popup.addClass("errorMessage");
             var errorMessage = errorData.message === undefined ? "Validation Error" : errorData.message;
