@@ -109,6 +109,13 @@
 				alert("Inner function is working!");
 				callback(true, form, options);
 			};
+
+			this.obj = {
+				objFunc: function(form, options, callback) {
+					alert("Fucntion -> Object -> Function found");
+					callback(true, form, options);
+				}
+			}
 			return this;
 		}
 
@@ -460,11 +467,11 @@
 		</fieldset>
 
 		<fieldset id="formValidate">
-			<form action="alert('validated');" id="testForm" class="formValidate hover">
+			<form action="alert('validated');" id="testForm" class="formValidate hover" data-beforevalidate="nameSpace.obj.objFunc">
 		    	<legend>Basic Form Validation - uses an actual form and lets the form's action fire on successful validation</legend>
 		      	<dl align='left'>
 		      		<dt><label for='fv1fName'>First Name: </label></dt>
-					<dd><input type='text' id='fv1fName' title="First Name" size='20' data-required data-type="phone"/></dd>
+					<dd><input type='text' id='fv1fName' title="First Name" size='20' data-required data-type="phone" data-customrules="notMark"/></dd>
 					<dt><label for='fv1lName'>Last Name: </label></dt>
 					<dd><input type='text' id='fv1lName' size='20' title="Last Name" data-required data-type="name"/></dd>
 					<dt><label for="fv1homephone">Home Phone: </label></dt>
