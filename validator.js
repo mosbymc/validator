@@ -369,7 +369,6 @@ var validator =  function() {
         try {
             if (!tested.valid && inputState.element.data("vts") === inputState.option.time) {    //If validation fails, create the error message element
                 var errorOffsets = getMessageOffset(inputState.element);
-
                 createErrorMessage(inputState.element, tested, inputState.option, inputState.rule, errorOffsets.width, errorOffsets.height);
                 groupByForm(inputState.option, inputState.element, inputState.rule);
                 groupByInput(inputState.option, inputState.element, inputState.rule);
