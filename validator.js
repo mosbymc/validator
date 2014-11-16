@@ -879,16 +879,13 @@ var validator =  function() {
             }
         });
 
-        if (testedArray.length > 1) {
-            for (var i = 0; i < testedArray.length-1; i++) {
+        if (testedArray.length > 0) {
+            for (var i = 0; i < testedArray.length; i++) {
                 if (!testedArray[i]) {
                     event.preventDefault();
                     break;
                 }
             }
-        }
-        else if (testedArray.length === 1 && testedArray[0] === false) {
-            event.preventDefault();
         }
     };
 
