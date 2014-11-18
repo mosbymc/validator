@@ -176,7 +176,7 @@ var validator =  function() {
                 $("#" + options.groupErrors).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");
             }
 
-            var inputs = $(form).find(":input").filter(":input"),
+            var inputs = $(form).find("input"),
             formArray = [],
             rules;
             for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray with the various validation rules
