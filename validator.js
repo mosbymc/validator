@@ -67,7 +67,7 @@ var validator =  function() {
             if (target.hasClass("invalid")) {    //if the input has error messages associated with it, we don't show help text.
                 return;
             }
-            if (target.prevUntil(":input").filter(".helptext:first").length > 0 && $("[id^='" + target[0].id + "error']").length < 1 && $("#" + target[0].id + "InputGrp").length < 1) {
+            if (target.prevUntil("input").filter(".helptext:first").length > 0 && $("[id^='" + target[0].id + "error']").length < 1 && $("#" + target[0].id + "InputGrp").length < 1) {
                 var modal = target.parents(".formValidate:first").data("modalId") || target.parents(".inputValidate:first").data("modalId") || target.data("modalid") || null;
                 displayHelpText(target, modal);
             }
@@ -75,7 +75,7 @@ var validator =  function() {
 
         $(document).on("blur", "input", function(event) {   //Remove help text on blur.
             var target = $(event.currentTarget),
-            helpText = target.prevUntil(":input").filter(".helptext:first"),
+            helpText = target.prevUntil("input").filter(".helptext:first"),
             modal = target.parents(".formValidate:first").data("modalId") || target.parents(".inputValidate:first").data("modalId") || target.data("modalid") || null;
             helpText.addClass("hideMessage").removeClass("showMessage");
             if (modal !== null) {   //unbind event listeners for the help text spans
