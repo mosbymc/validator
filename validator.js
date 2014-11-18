@@ -527,7 +527,7 @@ var validator =  function() {
                 }
             });
             if (!foundSibling) {
-                var inputs = options.form.find(":input"),
+                var inputs = options.form.find("input"),
                 parentInput = $("#" + inputId),
                 inputIndex = inputs.index(parentInput);
                 if (inputIndex < inputs.length - 1) {
