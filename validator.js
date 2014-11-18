@@ -829,7 +829,7 @@ var validator =  function() {
     };
 
     var displayHelpText = function(elem, modalId) {   //sets up event listeners for help text when the window/modal is scrolled
-        var helpText = elem.prevUntil(":input").filter(".helptext:first"),
+        var helpText = elem.prevUntil("input").filter(".helptext:first"),
         position = getOtherElem(elem).offset(),
         errorOffsets = getMessageOffset(elem);
         helpText.addClass("showMessage").removeClass("hideMessage");
