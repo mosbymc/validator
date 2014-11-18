@@ -402,7 +402,7 @@ var validator =  function() {
         if (options.groupErrors !== undefined && options.groupErrors !== null) {  //set up "highlight" bindings for each grouped error
             var form = options.form;
             if (form.hasClass("highlightErrors")) {
-                form.find(":input").each(function(idx, input) {
+                form.find("input").each(function(idx, input) {
                     $(input).on("focus", $(input), function() {
                         $("[data-parentinput='" + $(input).data("vid") + "']").each(function(index, val) {
                             $(val).addClass("groupHighlight");
