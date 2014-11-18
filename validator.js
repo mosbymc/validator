@@ -760,7 +760,7 @@ var validator =  function() {
                 element = elem;
             }
             try {
-                var inputs = element.find(":input").filter(":input");
+                var inputs = element.find("input");
                 for (var i = 0; i < inputs.length; i++) {
                     $("[id^='" + $(inputs[i]).data("vid") + "error']").each(function(index, val) {
                         $(val).remove();
