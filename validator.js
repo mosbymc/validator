@@ -758,15 +758,10 @@ var validator =  function() {
                 element = elem;
             }
             try {
-                var inputs = element.find("input");
-                for (var i = 0; i < inputs.length; i++) {
-                    $("[id^='" + $(inputs[i]).data("vid") + "error']").each(function(index, val) {
-                        $(val).remove();
-                    });
-                    $("[id^='" + $(inputs[i]).data("vid") + "InputGrp']").each(function(index, val) {
-                        $(val).remove();
-                    });
-                }
+                element.find("input").each(function(index, val) {
+                    $("[id^='" + $(val).data("vid") + "error']").remove();
+                    $("[id^='" + $(val).data("vid") + "InputGrp']").remove();
+                });
                 
                 $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
                     val.remove();
