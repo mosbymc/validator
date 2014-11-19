@@ -594,18 +594,17 @@ var validator =  function() {
 
     var determinePlacement = function(position, element, offsetWidth, offsetHeight, messageDiv) {
         var location = element.data("location") === undefined ? "right" : element.data("location"),
-        offset = getElemOffset(element),
-        displayedElem = getOtherElem(element);
+        offset = getElemOffset(element);
         switch (location)   //add all the offsets for a given element to calculate the error message placement
         {
             case "right": 
-                return [position.left + displayedElem.width() + offsetWidth + offset.left + 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
+                return [position.left + getOtherElem(element).width() + offsetWidth + offset.left + 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
             case "left":
                 return [position.left - messageDiv.width() - offsetWidth - offset.left - 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
             case "top":
                 return [position.left + offset.left - $(window).scrollLeft(), position.top - $(window).scrollTop() - 5 - messageDiv.height() - offsetHeight - offset.top];
             case "bottom":
-                return [position.left + offset.left - $(window).scrollLeft(), position.top - $(window).scrollTop() + displayedElem[0].clientHeight + 8 + offsetHeight + offset.top];
+                return [position.left + offset.left - $(window).scrollLeft(), position.top - $(window).scrollTop() + getOtherElem(element)[0].clientHeight + 8 + offsetHeight + offset.top];
         }
     };
 
