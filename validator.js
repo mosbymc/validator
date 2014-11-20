@@ -763,11 +763,7 @@ var validator =  function() {
                     $("[id^='" + $(val).data("vid") + "InputGrp']").remove();
                 });
                 
-                $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
-                    val.remove();
-                });
-
-                $("[id^='" + element.data("vid") + "InputGrp']").each(function(index, val) {
+                $("[id^='" + element.data("vid") + "']").each(function(index, val) {
                     val.remove();
                 });
 
