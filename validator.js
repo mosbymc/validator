@@ -155,9 +155,7 @@ var validator =  function() {
                 validateForm(true, form, options);
             }
         }
-        else {
-            validateForm(true, form, options);
-        }
+        validateForm(true, form, options);
     };
 
     var validateInput = function(input, options) {  //Where inputs go to be validated and the success function called if supplied.
