@@ -35,7 +35,6 @@ var validator =  function() {
                 formOptions.groupErrors = form.data("grouperrors") || null;
                 formOptions.callBefore = form.data("beforevalidate") || false;
                 formOptions.button = target;
-                Object.freeze(formOptions);
                 target.prop("disabled", true);
                 callBeforeValidate(form, formOptions);
             }
@@ -50,7 +49,6 @@ var validator =  function() {
                 }
                 inputOptions = createOptions(target, event);
                 inputOptions.input = event.currentTarget;
-                Object.freeze(inputOptions);
                 validateInput(target, inputOptions);
             }
         });
@@ -96,7 +94,6 @@ var validator =  function() {
                             }
                             inputOptions = createOptions(target, event);
                             inputOptions.input = event.currentTarget;
-                            Object.freeze(inputOptions);
                             validateInput(target, inputOptions);
                         }
                     });
@@ -125,7 +122,6 @@ var validator =  function() {
                 formOptions.groupErrors = form.data("grouperrors") || null;
                 formOptions.callBefore = form.data("beforevalidate") || false;
                 formOptions.button = button;
-                Object.freeze(formOptions);
                 button.prop("disabled", true);
                 callBeforeValidate(form, formOptions);
             }
@@ -146,7 +142,7 @@ var validator =  function() {
             });
             if (typeof fn === "function") {
                 try {
-                    fn.call(this, form, options, validateForm);
+                    fn.call(this, form, Object.freeze(options), validateForm);
                 }
                 catch (ex) {
                     console.log("'Call before' function: '" + options.callBefore + "'' failed to execute");
