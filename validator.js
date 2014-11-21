@@ -414,7 +414,7 @@ var validator =  function() {
         }
 
         $(document).trigger("validated", [{
-            type: "validation",
+            type: options.form === undefined ? "input validation" : "form validation",
             element: options.form !== undefined ? options.form[0].id : options.input,
             passed: numFailed === 0,
             count: numFailed,
