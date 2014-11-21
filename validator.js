@@ -170,8 +170,7 @@ var validator =  function() {
             }
 
             var inputs = $(form).find("input"),
-            formArray = [],
-            rules;
+            formArray = [];
             for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray with the various validation rules
                 var inputArray = buildInputArray($(inputs[j]));
                 formArray = formArray.concat(inputArray);
