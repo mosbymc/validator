@@ -834,9 +834,8 @@ var validator =  function() {
     };
 
     var monitorChars = function(elem, charRestrictions, event) {   //tests input characters before allowing event to continue
-        var rules = charRestrictions.split(','),
         testedArray = [];
-        $.each(rules, function(index, value) {
+        $.each(charRestrictions.split(','), function(index, value) {
             var fn = inputTypes[value];
             if (typeof fn === "function") {
                 try {
