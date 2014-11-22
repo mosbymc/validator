@@ -402,17 +402,15 @@ var validator =  function() {
 
         if (options.groupErrors !== undefined && options.groupErrors !== null) {  //set up "highlight" bindings for each grouped error
             if (options.form.hasClass("highlightErrors")) {
-                options.form.find("input").each(function(idx, input) {
-                    $(input).on("focus", $(input), function() {
-                        $("[data-parentinput='" + $(input).data("vid") + "']").each(function(index, val) {
-                            $(val).addClass("groupHighlight");
+                $.each(inputArray, function(index, val) {
+                    if (val.valid === false) {
+                        $(val.input).on("focus", function() {
+                            $("[id='formGrp" + val.input.data("vid") + val.rule + "']").addClass("groupHighlight");
                         });
-                    });
-                    $(input).on("blur", $(input), function() {
-                        $("[data-parentinput='" + $(input).data("vid") + "']").each(function(index, val) {
-                            $(val).removeClass("groupHighlight");
+                        $(val.input).on("blur", function() {
+                            $("[id='formGrp" + val.input.data("vid") + val.rule + "']").removeClass("groupHighlight");
                         });
-                    });
+                    }
                 });
             }
         }
