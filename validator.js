@@ -152,6 +152,7 @@ var validator =  function() {
             }
             else {
                 console.log("The supplied 'call before' function: " + options.callBefore + " could not be found.");
+                validateForm(true, form, options);
             }
         }
         else {
