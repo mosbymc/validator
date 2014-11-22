@@ -738,61 +738,51 @@ var validator =  function() {
     };
 
     this.removeErrors = function(elem) {  //public function to remove error messages
+        var element;
         if (elem !== undefined) {
-            var element;
             if (typeof elem === "string") {
                 element = $(elem);
             }
             else if (typeof elem === "object") {
                 element = elem;
             }
-            try {
-                element.find("input").each(function(index, val) {
-                    $("[id^='" + $(val).data("vid") + "error']").remove();
-                    $("[id^='" + $(val).data("vid") + "InputGrp']").remove();
-                });
-                
-                $("[id^='" + element.data("vid") + "']").each(function(index, val) {
-                    val.remove();
-                });
-
-                element.find(".errorMessage").each(function(index, val) {
-                    val.remove();
-                });
-
-                element.find(".invalid").each(function(index, val) {
-                    $(val).removeClass("invalid");
-                });
-
-                element.find(".groupedErrors").each(function(index, val) {
-                    $(val).empty();
-                    $(val).removeClass("showGroupedErrors");
-                    $(val).addClass("hideGroupedErrors");
-                });
-            }
-            catch (ex) {
-                console.log("Could not remove errors from the supplied element: " + elem);
-                console.log(ex);
-            }
         }
         else {
-            $("body").find(".errorMessage").each(function(index, val) {
+            element = $("body");
+        }
+        try {
+            element.find("input").each(function(index, val) {
+                $("[id^='" + $(val).data("vid") + "error']").remove();
+                $("[id^='" + $(val).data("vid") + "InputGrp']").remove();
+            });
+            
+            $("[id^='" + element.data("vid") + "']").each(function(index, val) {
                 val.remove();
             });
 
-            $("body").find(".invalid").each(function(index, val) {
+            element.find(".errorMessage").each(function(index, val) {
+                val.remove();
+            });
+
+            element.find(".invalid").each(function(index, val) {
                 $(val).removeClass("invalid");
             });
 
-            $("body").find(".groupedErrors").each(function(index, val) {
+            element.find(".groupedErrors").each(function(index, val) {
                 $(val).empty();
                 $(val).removeClass("showGroupedErrors");
                 $(val).addClass("hideGroupedErrors");
             });
 
-            $("body").find("[id^=InputGroup").each(function(index, val) {
-                val.remove();
+            element.find(".showGroupedErrors").each(function(index, val) {
+                $(val).empty();
+                $(val).removeClass("showGroupedErrors");
+                $(val).addClass("hideGroupedErrors");
             });
+        }
+        catch (ex) {
+            console.log("Could not remove errors from the supplied element: " + elem);
+            console.log(ex);
         }
     }
 
