@@ -241,23 +241,16 @@ var validator =  function() {
         failedRequired = false, //Determines whether it should continue validation after testing the required functionality.
         vRules = elem.data("validationrules"),  //The predefined rules that are part of this library.
         customRules = elem.data('customrules'), //User defined validation rules.
-        isBeingValidated = false,
         rules,
         tested;
 
-        for (var i = 0; i < inputsArray.length; i++) {
-            if (inputsArray[i].input[0] === element) {
-                isBeingValidated = true;
-                break;
-            }
-        }
-
-        if (!isBeingValidated)
-            return;
-
         elem.data("vts", options.time);
-        removeErrorText(elem);
-        getOtherElem(elem).removeClass("invalid");
+
+        if (elem.attr("data-required") !== undefined || vRules !== undefined || customRules !== undefined || elem.data("min") !== undefined || elem.data("max") !== undefined ||
+            elem.data("matchfield") !== undefined || elem.data("maxchecked") !== undefined || elem.data("minchecked") !== undefined) { //remove any previous error div from the previous validation attempt.
+            removeErrorText(elem);
+            getOtherElem(elem).removeClass("invalid");
+        }
         elem.data("vid", new Date().getTime());
 
         if (elem.attr("data-required") !== undefined) {
