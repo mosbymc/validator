@@ -755,25 +755,15 @@ var validator =  function() {
                 $("[id^='" + $(val).data("vid") + "error']").remove();
                 $("[id^='" + $(val).data("vid") + "InputGrp']").remove();
             });
-            
             $("[id^='" + element.data("vid") + "']").each(function(index, val) {
                 val.remove();
             });
-
             element.find(".errorMessage").each(function(index, val) {
                 val.remove();
             });
-
             element.find(".invalid").each(function(index, val) {
                 $(val).removeClass("invalid");
             });
-
-            element.find(".groupedErrors").each(function(index, val) {
-                $(val).empty();
-                $(val).removeClass("showGroupedErrors");
-                $(val).addClass("hideGroupedErrors");
-            });
-
             element.find(".showGroupedErrors").each(function(index, val) {
                 $(val).empty();
                 $(val).removeClass("showGroupedErrors");
