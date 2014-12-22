@@ -181,7 +181,7 @@ var validator =  function() {
 
         if (continueValidation) {   //Only continue validating if given the go ahead from the "call before" function.
             if (options.groupErrors !== null) {     //Remove previous grouped validation errors before validating a new input.
-                $("#" + options.groupErrors).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");
+                $("#" + options.groupErrors).find(".errorSpan").remove();
             }
 
             var inputs = $(form).find("input"),
