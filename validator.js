@@ -687,8 +687,8 @@ var validator =  function() {
 
     var getElemOffset = function(element) {     //gets the user-defined offset for the error messages from the element they are being displayed for.
         return {
-            left: element.data("offsetwidth") || 0,
-            top: element.data("offsetheight") || 0
+            left: parseInt(element.data("offsetwidth")) || 0,
+            top: parseInt(element.data("offsetheight")) || 0
         };
     };
 
