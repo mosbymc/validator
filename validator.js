@@ -464,12 +464,12 @@ var validator =  function() {
     };
 
     var placeGroupErrorDiv = function(toDisplay, options, elem) {
-        var loc = "right";
+        var loc;
         if (options.form !== undefined) {
-            loc = options.form.data("location");
+            loc = options.form.data("location") || "right";
         }
         else if (elem.parents(".formValidate:first").hasClass("groupByInput")){
-            loc = elem.parents(".formValidate:first").data("location");
+            loc = elem.parents(".formValidate:first").data("location") || "right";
         }
 
         switch (loc) {
