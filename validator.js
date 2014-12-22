@@ -161,12 +161,24 @@ var validator =  function() {
     };
 
     var validateInput = function(input, options) {  //Where inputs go to be validated and the success function called if supplied.
+        $(options.input).removeData("validationdone");
+        $(options.input).removeAttr("validationdone");
+
         var inputArray = buildInputArray($(input));
         validateElement(input, options, inputArray);    //Main function where validation is done.
-        finalizeValidation(inputArray, options);        //Checks when the validation is complete if it should call the succes function, sends event, etc.
+
+        if ($(options.input).data("validationdone") !== undefined && $(options.input).data("validationdone")) {
+            return;
+        }
+        else {
+            finalizeValidation(inputArray, options);    //Checks when the validation is complete if it should call the succes function, sends event, etc.
+        }
     };
 
     this.validateForm = function(continueValidation, form, options) {    //Used as both a callback and internally if no call before function is supplied.
+        $(options.form).removeData("validationdone");
+        $(options.form).removeAttr("validationdone");
+
         if (continueValidation) {   //Only continue validating if given the go ahead from the "call before" function.
             if (options.groupErrors !== null) {     //Remove previous grouped validation errors before validating a new input.
                 $("#" + options.groupErrors).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");
@@ -182,7 +194,13 @@ var validator =  function() {
             for (var i = 0; i < inputs.length; i++) {
                 validateElement(inputs[i], options, formArray);    //Validate each input element in the form.
             }
-            finalizeValidation(formArray, options);
+
+            if ($(options.form).data("validationdone") !== undefined && $(options.form).data("validationdone")) {
+                return;
+            }
+            else {
+                finalizeValidation(formArray, options);    //Checks when the validation is complete if it should call the succes function, sends event, etc.
+            }
         }
     }
 
@@ -379,6 +397,11 @@ var validator =  function() {
     }
 
     var finalizeValidation = function(inputArray, options) {
+        var element = options.form === undefined ? $(options.input) : $(options.form);
+        if (element.data("validationdone") !== undefined && element.data("validationdone")) {
+            return;
+        }
+        
         var numFailed = 0,
         rulesTestedCount = 0;
         for (var i = 0; i < inputArray.length; i++) {
@@ -393,6 +416,8 @@ var validator =  function() {
                 rulesTestedCount++;
             }
         }
+        
+        element.data("validationdone", true);
 
         if (options.groupErrors !== undefined && options.groupErrors !== null) {  //set up "highlight" bindings for each grouped error
             if (options.form.hasClass("highlightErrors")) {
