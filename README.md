@@ -13,9 +13,7 @@ The validator.css file in this repo is the one you'd want to use should you deci
 
 The html page is my test page for the validator to do initial testing of new features. You'll find it's fairly scatter-brained, but I believe all of the functionality of validator.js is on display there. Note that the time delay in some of the custom rules as well as the function called before validation on some of the forms is due to a timeout place in the function to simulate an asynchrous function, and not due to the validator itself. To get validate.html working, you'll need the files form.css and validator.js. It's also currently using JQuery and JQuery UI CDNs. As stated above, while the example page requires JQuery UI, the validator itself does not. Some of the functionality has been tested against production websites, but not all of it has been vetted in the real world yet. I look forward to hearing about the bugs and additional feature requests from anyone who uses this.
 
-I am adding in the ability to have a required attribute for radio buttons. In the mean time, this has altered how the required attribute works for the regular input fields. Make sure to reread the documentation on required fields as it has changed.
-
-I am currently working on an extension to validator.js that will format inputs for the user as specified by the developer. It will be able to take in basic formatting or a regex string can be supplied that will format input as the user types - only allowing characters as specified and adding any formatting such as "-", or ",".
+I have a javascript formatter that will format inputs for the user as they type. It allows the developer to define the format of the input as a data-attribute, only allowing the specified characters and adding any formatting that was declared.
 
 The repo for the formatter is at: https://github.com/mosbymc/inputformatter
 
