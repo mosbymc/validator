@@ -13,6 +13,8 @@ The validator.css file in this repo is the one you'd want to use should you deci
 
 The html page is my test page for the validator to do initial testing of new features. You'll find it's fairly scatter-brained, but I believe all of the functionality of validator.js is on display there. Note that the time delay in some of the custom rules as well as the function called before validation on some of the forms is due to a timeout place in the function to simulate an asynchrous function, and not due to the validator itself. To get validate.html working, you'll need the files form.css and validator.js. It's also currently using JQuery and JQuery UI CDNs. As stated above, while the example page requires JQuery UI, the validator itself does not.
 
+The file featureTester.html is a page that uses the validator on a small form and allows the user to add and remove features and see the HTML required to produce the effects. After reading the wiki here, I recommend this as the best place to learn how to use the validator and to see what options are available.
+
 I also have a javascript formatter that will format inputs for the user as they type. It allows the developer to define the format of the input as a data-attribute, only allowing the specified characters and adding any formatting that was declared.
 
 The repo for the formatter is at: https://github.com/mosbymc/inputformatter
