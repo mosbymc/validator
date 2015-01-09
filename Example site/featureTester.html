@@ -1,0 +1,412 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="form.css" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script LANGUAGE="javascript" SRC="validator.js"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				validator().init(["input", "change", "keyup", "blur"]);
+				setDisplayContent();
+
+				$("input[name='event']").on("change", function() {
+					var selectedEvent = $('input[name=event]:checked').val();
+					$("#fieldValidate1").find("input").each(function(idx, val) {
+						val.setAttribute("data-validateon", selectedEvent);
+					});
+					setDisplayContent();
+				});
+
+				$("#elementExclude").on("change", function() {
+					var exclude = "";
+					if ($("#elementExclude").val().length > 1 || $("#elementExclude").val()[0] !== "") {
+						for (var i = 0; i < $("#elementExclude").val().length; i++) {
+							if ($("#elementExclude").val()[i] === "") {
+								continue;
+							}
+							if (i === $("#elementExclude").val().length-1) {
+								exclude += $("#elementExclude").val()[i];
+							}
+							else {
+								exclude += $("#elementExclude").val()[i] + ",";
+							}
+						}
+						document.getElementById("fieldValidate1").setAttribute("data-excludeinputs", exclude);
+					}
+					else {
+						document.getElementById("fieldValidate1").removeAttribute("data-excludeinputs");
+						$("#fieldValidate1").removeData("excludeinputs");
+						$("#fieldValidate1").removeAttr("excludeinputs", exclude);
+					}
+					setDisplayContent();
+				});
+
+				$("#offsetError").on("change", function() {
+					var elements = $("#offsetError").val();
+					var height = $("#height").val() === "" ? 0 : $("#height").val();
+					var width = $("#width").val() === "" ? 0 : $("#width").val();
+
+					setOffsets(elements, height, width);
+				});
+
+				$("#width").on("input", function() {
+					var elements = $("#offsetError").val();
+					var height = $("#height").val() === "" ? 0 : $("#height").val();
+					var width = $("#width").val() === "" ? 0 : $("#width").val();
+
+					setOffsets(elements, height, width);
+				});
+
+				$("#height").on("input", function() {
+					var elements = $("#offsetError").val();
+					var height = $("#height").val() === "" ? 0 : $("#height").val();
+					var width = $("#width").val() === "" ? 0 : $("#width").val();
+
+					setOffsets(elements, height, width);
+				});
+
+				$("input[name='placement']").on("change", function() {
+					var placement = $('input[name=placement]:checked').val();
+					if (placement !== "right") {
+						$("#fieldValidate1").find("input").each(function(idx, val) {
+							document.getElementById(val.id).setAttribute("data-location", placement);
+						});
+					}
+					else {
+						$("#fieldValidate1").find("input").each(function(idx, val) {
+							document.getElementById(val.id).removeAttribute("data-location");
+							$(val).removeData("location");
+							$(val).removeAttr("location");
+						});
+					}
+
+					var displayType = $('input[name=display]:checked').val();
+					if (displayType === "groupByInput" && $('input[name=placement]:checked').val() !== "right") {
+						document.getElementById("fieldValidate1").setAttribute("data-location", $('input[name=placement]:checked').val());
+					}
+					else if(displayType === "groupByInput" && $('input[name=placement]:checked').val() !== "right") {
+						document.getElementById("fieldValidate1").removeAttribute("data-location");
+						$("#fieldValidate1").removeData("location");
+						$("#fieldValidate1").removeAttr("location");
+					}
+					setDisplayContent();
+				});
+
+				$("input[name='display']").on("change", function() {
+					var displayType = $('input[name=display]:checked').val();
+					$("input[name='highlight']").prop("disabled", true);
+					$("#fieldValidate1").removeClass("hover");
+					$("#fieldValidate1").removeClass("groupByInput");
+					$("#fieldValidate1").removeClass("highlightErrors");
+					document.getElementById("fieldValidate1").removeAttribute("data-grouperrors");
+					$("#fieldValidate1").removeData("grouperrors");
+					$("#fieldValidate1").removeData("grouperrors");
+					$("#formErrors").find(".errorSpan").remove();
+            		$("#formErrors").find("br").remove();
+            		$("#formErrors").removeClass("showGroupedErrors");
+            		$("#formErrors").addClass("hideGroupedErrors");
+					if (displayType === "hover" || displayType === "groupByInput") {
+						$("#fieldValidate1").addClass(displayType);
+						if (displayType === "groupByInput" && $('input[name=placement]:checked').val() !== "right") {
+							document.getElementById("fieldValidate1").setAttribute("data-location", $('input[name=placement]:checked').val());
+						}
+						else if(displayType === "groupByInput" && $('input[name=placement]:checked').val() !== "right") {
+							document.getElementById("fieldValidate1").removeAttribute("data-location");
+							$("#fieldValidate1").removeData("location");
+							$("#fieldValidate1").removeAttr("location");
+						}
+					}
+					else if (displayType === "grpByForm") {
+						$("input[name='highlight']").prop("disabled", false);
+						var form = document.getElementById("fieldValidate1");
+						form.setAttribute("data-grouperrors", "formErrors");
+						$("#fieldValidate1").find("input").each(function(idx, val) {
+							$(val).data("errorprefix", $(val).prop("name"));
+						});
+
+						if ($("input[name='highlight']:checked").val() === "highlight") {
+							$("#fieldValidate1").addClass("highlightErrors");
+						}
+					}
+
+					setDisplayContent();
+				});
+
+				$("input[name='highlight']").on("change", function() {
+					if ($("input[name='highlight']:checked").val() === "highlight") {
+						$("#fieldValidate1").addClass("highlightErrors");
+					}
+					else {
+						$("#fieldValidate1").removeClass("highlightErrors");
+					}
+					setDisplayContent();
+				});
+
+
+				$("#pWord").on("change", function() {
+					if (document.getElementById("pWord").checked == true) {
+						$("#password").parent().prepend(pass);
+					}
+					else {
+						$("#password").parent().children(".helptext").remove();
+					}
+					setDisplayContent();
+				});
+
+				$("#errorLoc").on("change", function() {
+					if (document.getElementById("errorLoc").checked == true) {
+						document.getElementById("fName").setAttribute("data-displayon", "#dummy,up");
+						if ($("#fName").hasClass("invalid")) {
+							$("#fName").removeClass("invalid");
+							$("#dummy").addClass("invalid");
+						}
+						$("#fName").removeClass("invalid");
+					}
+					else {
+						document.getElementById("fName").removeAttribute("data-displayon");
+						$("#fName").removeData("displayon");
+						$("#fName").removeAttr("displayon");
+						if ($("#dummy").hasClass("invalid")) {
+							$("#dummy").removeClass("invalid");
+							$("#fName").addClass("invalid");
+						}
+					}
+					setDisplayContent();
+				});
+
+				$("#callBefore").on("change", function() {
+					if (document.getElementById("callBefore").checked == true) {
+						document.getElementById("fieldValidate1").setAttribute("data-beforevalidate", "call.me.before.validation");
+					}
+					else {
+						document.getElementById("fieldValidate1").removeAttribute("data-beforevalidate");
+						$("#fieldValidate1").removeData("beforevalidate");
+						$("#fieldValidate1").removeAttr("beforevalidate");
+					}
+					setDisplayContent();
+				});
+
+				$("#formAction").on("change", function() {
+					if (document.getElementById("formAction").checked == true) {
+						document.getElementById("fieldValidate1").setAttribute("data-formaction", "call.me.after.successful.validation");
+					}
+					else {
+						document.getElementById("fieldValidate1").removeAttribute("data-formaction");
+						$("#fieldValidate1").removeData("formaction");
+						$("#fieldValidate1").removeAttr("formaction");
+					}
+					setDisplayContent();
+				});
+
+				$("#functionWindow").text("function call() {" +
+						"\n\tthis.me = function() {" +
+							"\n\t\tthis.before = function() {" +
+								"\n\t\t\tthis.validation = function(form, options, callback) {" +
+									"\n\t\t\t\talert('This function is nested four deep.');" +
+									"\n\t\t\t\tcallback(true, form, options);" +
+								"\n\t\t\t}" +
+								"\n\t\t\treturn this;" +
+							"\n\t\t}" +
+							"\n\t\tthis.after = function() {" +
+								"\n\t\t\tthis.successful = function() {" +
+									"\n\t\t\t\tthis.validation = function() {" +
+										"\n\t\t\t\t\talert('validation passed!');" +
+									"\n\t\t\t\t}" +
+									"\n\t\t\t\treturn this;" +
+								"\n\t\t\t}" +
+								"\n\t\t\treturn this;" +
+							"\n\t\t}" +
+							"\n\t\treturn this;" +
+						"\n\t}" +
+						"\n\treturn this;" +
+					"\n}");
+			});
+
+			function call() {
+				this.me = function() {
+					this.before = function() {
+						this.validation = function(form, options, callback) {
+							alert("This function is nested four deep.");
+							callback(true, form, options);
+						}
+						return this;
+					}
+
+					this.after = function() {
+						this.successful = function() {
+							this.validation = function() {
+								alert("validation passed!");
+							}
+							return this;
+						}
+						return this;
+					}
+					return this;
+				}
+				return this;
+			}
+
+			function setOffsets(elements, height, width) {
+				$("#fieldValidate1").find("input").each(function(index, value) {
+					value.removeAttribute("data-offsetwidth");
+					value.removeAttribute("data-offsetheight");
+					$(value).removeData("offsetwidth");
+					$(value).removeAttr("offsetwidth");
+					$(value).removeData("offsetheight");
+					$(value).removeAttr("offsetheight");
+				});
+				if (elements !== null && ((elements.length > 1) || (elements.length === 1 && elements[0] !== ""))) {
+					for (var i = 0; i < elements.length; i++) {
+						document.getElementById(elements[i]).setAttribute("data-offsetwidth", width);
+						document.getElementById(elements[i]).setAttribute("data-offsetheight", height);
+					}
+				}
+				setDisplayContent();
+			}
+
+			function setDisplayContent() {
+				$("#displayContent").text("");
+				var test = $("#fieldValidate1").parent().html();
+				var temp = $("#fieldValidate1").parent().clone();
+				temp.find(".errorMessage").remove();
+				temp.find(".errorSpan").remove();
+				temp.find(".hInputGroup").remove();
+				temp.find(".vInputGroup").remove();
+				$("#displayContent").text(temp.html());
+				runValidationIfNeeded();
+			}
+
+			function runValidationIfNeeded() {
+				if ($("#fieldValidate1").find(".invalid").length > 0) {
+					validator().validate("#fieldValidate1");
+				}
+			}
+
+			var pass = '<span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>';
+		</script>
+
+	</head>
+	<body style="width:2115px;">
+		<br><br>
+		<div>
+			<div style="width:1000px; height:365px;">
+				<div style="float:left; display:inline;">
+					<h2>Events</h2>
+					<h3>Event Listeners</h3>
+					<input type="radio" name="event" value="input" checked>Input
+					<input type="radio" name="event" value="change">Change
+					<input type="radio" name="event" value="keyup">Keyup
+					<input type="radio" name="event" value="blur">Blur
+					<h3>Exclude Elements on Event</h3>
+					<select multiple size="8" id="elementExclude">
+						<option value=""></option>
+						<option value="fName">First Name</option>
+						<option value="lName">Last Name</option>
+						<option value="homePhone">Home Phone</option>
+						<option value="cellPhone">Cell Phone</option>
+						<option value="zip">Zip</option>
+						<option value="email">Email</option>
+						<option value="password">Password</option>
+					</select>
+					<br>
+				</div>
+				<div style="float:right; display:inline;">
+					<h2>Error Message Placement</h2>
+					<h3>Location</h3>
+					<input type="radio" name="placement" value="left">Left
+					<input type="radio" name="placement" value="right" checked>Right
+					<input type="radio" name="placement" value="top">Top
+					<input type="radio" name="placement" value="bottom">Bottom
+					<h3>Offsets</h3>
+					Input: <select multiple size="8" id="offsetError">
+						<option value=""></option>
+						<option value="fName">First Name</option>
+						<option value="lName">Last Name</option>
+						<option value="homePhone">Home Phone</option>
+						<option value="cellPhone">Cell Phone</option>
+						<option value="zip">Zip</option>
+						<option value="email">Email</option>
+						<option value="password">Password</option>
+					</select>
+					<br><br>
+					Offset Height: <input type="text" id="height" data-inputType="numeric">
+					Offset Width: <input type="text" id="width" data-inputType="numeric">
+				</div>
+			</div>
+			<hr>
+			<br>
+			<div style="width:1100px; height:150px;">
+				<div style="float:left; display:inline;">
+					<h2>Display Options</h2>
+					<input type="radio" name="display" value="" checked>Default
+					<input type="radio" name="display" value="hover">Hover
+					<input type="radio" name="display" value="groupByInput">Group By Input
+					<input type="radio" name="display" value="grpByForm">Group By Form
+					<br>
+					<input type="radio" name="highlight" value="highlight" disabled>Highlight grouped errors
+					<input type="radio" name="highlight" value="noHighlight" disabled checked>No highlight
+				</div>
+				<div style="float:right; display:inline;">
+					<h2>Miscellany</h2>
+					<input type="checkbox" value="helpText" id="pWord">Password Help Text
+					<br>
+					<input type="checkbox" value="displayOther" id="errorLoc">Display First Name Error Messages Here: 
+					<input type="text" id="dummy">
+					<br>
+					<input type="checkbox" id="callBefore">Add Call Before Validation function - Function name: call().me().before().validation()
+					<br>
+					<input type="checkbox" id="formAction">Add a Form Action - Function name: call().me().after().successful().validation()
+				</div>
+			</div>
+		</div>
+		<hr>
+		<br><br>
+		<div>
+			<div style="width:auto; display:inline-block; float:left" id="content">
+<fieldset id="fieldValidate1" class="formValidate inputValidate testForm">
+	<legend>Group Validation</legend>
+	<div id="formErrors" class="hideGroupedErrors">
+		<h3 class='errorMsg'>There was a problem with your request.</h3>
+	</div>
+  	<dl align='left'>
+  		<dt><label for='fName'>First Name: </label></dt>
+		<dd><input type='text' id='fName' name="First Name" data-required data-validationrules="name"/></dd>
+		<dt><label for='lName'>Last Name: </label></dt>
+		<dd><input type='text' id='lName' name="Last Name" data-required data-validationrules="name"/></dd>
+		<dt><label for="homePhone">Home Phone: </label></dt>
+		<dd><input type="text" id="homePhone" name="Home Phone" data-required data-validationrules="phone"/></dd>
+		<dt><label for="cellPhone">Cell Phone: </label></dt>
+		<dd><input type="text" id="cellPhone" name="Cell Phone" data-validationrules="phone"/></dd>
+
+		<dt><label for="zip">Zip: </label></dt>
+		<dd><input type="text" id="zip" name="Zip" data-required data-validationrules="zip"/></dd>
+		<dt><label for="email">Email: </label></dt>
+		<dd><input type="text" id="email" name="Email" data-required data-validationrules="email"/></dd>
+
+		<dt><label for="password">Password: </label></dt>
+		<dd><input type="text" id="password" name="Password" data-required data-validationrules="password"/></dd>
+		<dt><button id="fv1groupSubmit" value="Submit" class="validate" data-form="fieldValidate1"/>Submit</button></dt>
+	</dl>
+</fieldset>
+			</div>
+			<div style="display:inline-block; width:auto; height:500px; border:2px red; float:none;">
+				<fieldset>
+					<legend>Display Window</legend>
+						<pre>
+							<div id="displayContent"></div>
+						</pre>
+				</fieldset>
+			</div>
+			<br><br><br><br>
+			<div style="width:auto; height:500px;">
+				<fieldset>
+					<legend>Functions</legend>
+					<pre>
+						<div id="functionWindow">
+						</div>
+					</pre>
+				</fieldset>
+			</div>
+		</div>
+	</body>
+</html>
