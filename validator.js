@@ -273,7 +273,7 @@ var validator =  function() {
         elem.data("vid", new Date().getTime());
 
         if (elem.attr("data-required") !== undefined) {
-            if (elem[0].type === "radio") {
+            if (elem[0].type === "radio" || elem[0].type === "checkbox") {
                 tested = validationRules.requiredGroup(elem);
             }
             else {
@@ -966,6 +966,15 @@ var validator =  function() {
                     return { valid: false, message: "You must select an option.", width: 175 };
                 }
                 return { valid: true };
+            }
+            else if (obj.data("checkboxgroup")) {
+                var grpName = obj.data("checkboxgroup");
+                if ($("input[data-checkboxgroup=" + grpName + "]:checked").length < 1) {
+                    return { valid: false, message: "You must select an option.", width: 175 };
+                }
+                else {
+                    return { valid: true };
+                }
             }
             return { valid: false, message: "This input has no identifying name." };
         },
