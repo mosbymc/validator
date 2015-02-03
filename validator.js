@@ -187,12 +187,12 @@ var validator =  function() {
 
             var inputs = $(form).find("input"),
             formArray = [];
-            for (var j = 0; j < inputs.length; j++) {   //Build out the inputArray with the various validation rules
+            for (var j = 0, length = inputs.length; j < length; j++) {   //Build out the inputArray with the various validation rules
                 var inputArray = buildInputArray($(inputs[j]));
                 formArray = formArray.concat(inputArray);
             }
 
-            for (var i = 0; i < inputs.length; i++) {
+            for (var i = 0, length = inputs.length; i < length; i++) {
                 validateElement(inputs[i], options, formArray);    //Validate each input element in the form.
             }
 
@@ -217,7 +217,7 @@ var validator =  function() {
         }
 
         var rules = vRules.split(",").concat(customRules.split(","));
-        for (var i = 0; i < rules.length; i++) {
+        for (var i = 0, length = rules.length; i < length; i++) {
             if (rules[i] !== "") {
                 rulesArray.push(rules[i]);
             }
@@ -243,7 +243,7 @@ var validator =  function() {
             rulesArray.push("minchecked");
         }
 
-        for (var i = 0; i < rulesArray.length; i++) {
+        for (var i = 0, length = rulesArray.length; i < length; i++) {
             inputObj = {
                 input: elem,
                 rule: rulesArray[i],
@@ -352,7 +352,7 @@ var validator =  function() {
             }
         }
         else {
-            for (var k = 0; k < inputsArray.length; k++) {
+            for (var k = 0, length = inputsArray.length; k < length; k++) {
                 if (elem[0] === inputsArray[k].input[0] && inputsArray[k].rule !== "required") {
                     inputsArray[k].valid = null;
                 }
@@ -371,7 +371,7 @@ var validator =  function() {
     };
 
     var setRuleStatus = function(elem, inputsArray, value, status) {
-        for (var k = 0; k < inputsArray.length; k++) {
+        for (var k = 0, length = inputsArray.length; k < length; k++) {
             if (elem[0] === inputsArray[k].input[0] && value === inputsArray[k].rule) {
                 inputsArray[k].valid = status;
                 break;
@@ -405,7 +405,7 @@ var validator =  function() {
         
         var numFailed = 0,
         rulesTestedCount = 0;
-        for (var i = 0; i < inputArray.length; i++) {
+        for (var i = 0, length = inputArray.length; i < length; i++) {
             if (inputArray[i].valid === "waiting") {
                 return;     //if there are any inputs still waiting, get out - validation isn't done yet.
             }
@@ -858,7 +858,7 @@ var validator =  function() {
         });
 
         if (testedArray.length > 0) {
-            for (var i = 0; i < testedArray.length; i++) {
+            for (var i = 0, length = testedArray.length; i < length; i++) {
                 if (!testedArray[i]) {
                     event.preventDefault();
                     break;
@@ -886,7 +886,7 @@ var validator =  function() {
     ////////////////////////////////////////////////////////////////////////////////////////////
     var inputTypes = {
         inputTypeTester: function(charArray, value) {
-            for (var i = 0; i < charArray.length; i++) {
+            for (var i = 0, length = charArray.length; i < length; i++) {
                 if ($.isArray(charArray[i])) {
                     if (value > charArray[i][0] && value < charArray[i][1]) {
                         return true;
