@@ -158,8 +158,7 @@ var validator =  function() {
     };
 
     var validateInput = function(input, options) {  //Where inputs go to be validated and the success function called if supplied.
-        $(options.input).removeData("validationdone");
-        $(options.input).removeAttr("validationdone");
+        $(options.input).removeData("validationdone").removeAttr("validationdone");
 
         var inputArray = buildInputArray($(input));
         validateElement(input, options, inputArray);    //Main function where validation is done.
@@ -173,8 +172,7 @@ var validator =  function() {
     };
 
     this.validateForm = function(continueValidation, form, options) {    //Used as both a callback and internally if no call before function is supplied.
-        $(options.form).removeData("validationdone");
-        $(options.form).removeAttr("validationdone");
+        $(options.form).removeData("validationdone").removeAttr("validationdone");
 
         if (continueValidation) {   //Only continue validating if given the go ahead from the "call before" function.
             if (options.groupErrors !== null) {     //Remove previous grouped validation errors before validating a new input.
