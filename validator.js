@@ -99,8 +99,7 @@ var validator =  function() {
                     });
                 }
                 catch(ex) {
-                    console.log("Could not bind forms to event: '" + val + "'");
-                    console.log(ex);
+                    console.log("Could not bind forms to event: '" + val + "'\n" + ex);
                 }
             });
         }
@@ -126,8 +125,7 @@ var validator =  function() {
                 callBeforeValidate(form, formOptions);
             }
             catch (ex) {
-                console.log("Could not validate form: " + formElem);
-                console.log(ex);
+                console.log("Could not validate form: " + formElem + "\n" + ex);
             }
         }
         else {
@@ -145,8 +143,7 @@ var validator =  function() {
                     fn.call(this, form, Object.freeze(options), validateForm);
                 }
                 catch (ex) {
-                    console.log("'Call before' function: '" + options.callBefore + "'' failed to execute");
-                    console.log(ex);
+                    console.log("'Call before' function: '" + options.callBefore + "'' failed to execute\n" + ex);
                     validateForm(true, form, options);
                 }
             }
@@ -339,8 +336,7 @@ var validator =  function() {
                             fn.call(this, elem, inputState, customRulesCallback);
                         }
                         catch(ex) {
-                            console.log("Failed to execute custom rule: '" + inputState.rule + "'");
-                            console.log(ex);
+                            console.log("Failed to execute custom rule: '" + inputState.rule + "'\n" + ex);
                             setRuleStatus(elem, inputsArray, value, null);
                         }
                     }
@@ -391,8 +387,7 @@ var validator =  function() {
             finalizeValidation(inputState.inputArray, inputState.option);
         }
         catch(ex) {
-            console.log("Returned parameters from custom validation rule: '" + inputState.rule + "', are not in the correct format.");
-            console.log(ex);
+            console.log("Returned parameters from custom validation rule: '" + inputState.rule + "', are not in the correct format.\n" + ex);
             inputState.option.button.prop("disabled", false);
         }
     }
@@ -459,8 +454,7 @@ var validator =  function() {
                    fn.call(this); 
                 }
                 catch(ex) {
-                    console.log("'Success' function: '" + options.success + "'' failed to execute");
-                    console.log(ex);
+                    console.log("'Success' function: '" + options.success + "'' failed to execute\n" + ex);
                 }
             }
             else {
@@ -797,8 +791,7 @@ var validator =  function() {
             });
         }
         catch (ex) {
-            console.log("Could not remove errors from the supplied element: " + elem);
-            console.log(ex);
+            console.log("Could not remove errors from the supplied element: " + elem + "\n" + ex);
         }
     }
 
@@ -848,8 +841,7 @@ var validator =  function() {
                     testedArray.push(fn.call(this, elem, event));
                 }
                 catch(ex) {
-                    console.log("The supplied character restriction type: '" + value + "' could not be executed.");
-                    console.log(ex);
+                    console.log("The supplied character restriction type: '" + value + "' could not be executed.\n" + ex);
                 }
             }
             else {
