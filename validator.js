@@ -439,7 +439,7 @@ var validator =  function() {
             count: numFailed,
             totalRules: inputArray.length,
             testedRules: rulesTestedCount,
-            time: new Date(),
+            time: options.time,
             event: options.event
         }]);
 
