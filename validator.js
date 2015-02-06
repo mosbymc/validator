@@ -783,9 +783,7 @@ var validator =  function() {
                 $(val).removeClass("invalid");
             });
             element.find(".showGroupedErrors").each(function(index, val) {
-                $(val).empty();
-                $(val).removeClass("showGroupedErrors");
-                $(val).addClass("hideGroupedErrors");
+                $(val).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");
             });
         }
         catch (ex) {
