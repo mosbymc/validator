@@ -875,62 +875,52 @@ var validator =  function() {
     */
     ////////////////////////////////////////////////////////////////////////////////////////////
     var inputTypes = {
-        inputTypeTester: function(charArray, value) {
+        inputTypeTester: function(charArray, e) {
+            var unicode = e.charCode? e.charCode : e.keyCode;
             for (var i = 0, length = charArray.length; i < length; i++) {
                 if ($.isArray(charArray[i])) {
-                    if (value > charArray[i][0] && value < charArray[i][1]) {
+                    if (unicode > charArray[i][0] && unicode < charArray[i][1]) {
                         return true;
                     }
                 }
-                else if (value === charArray[i]) {
+                else if (unicode === charArray[i]) {
                         return true;
                 }
             }
             return false;
         },
         numeric: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            return inputTypes.inputTypeTester([8, [43, 47], [47, 58]], unicode);
+            return inputTypes.inputTypeTester([8, [43, 47], [47, 58]], e);
         },
         integer: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            return inputTypes.inputTypeTester([8, 45, [47, 58]], unicode);
+            return inputTypes.inputTypeTester([8, 45, [47, 58]], e);
         },
         positiveInt: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            return inputTypes.inputTypeTester([8, [47, 58]], unicode);
+            return inputTypes.inputTypeTester([8, [47, 58]], e);
         },
         nonNumeric: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            return inputTypes.inputTypeTester([[-1, 48], [57, 128]], unicode);
+            return inputTypes.inputTypeTester([[-1, 48], [57, 128]], e);
         },
         alphaNumeric: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            return inputTypes.inputTypeTester([8, [47, 58], [64, 91], [96, 123]], unicode);
+            return inputTypes.inputTypeTester([8, [47, 58], [64, 91], [96, 123]], e);
         },
         nonAlphaNumeric: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            return inputTypes.inputTypeTester([[-1, 48], [57, 65], [90, 97], [122, 128]], unicode);
+            return inputTypes.inputTypeTester([[-1, 48], [57, 65], [90, 97], [122, 128]], e);
         },
         printable: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            return inputTypes.inputTypeTester([8, [31, 128]], unicode);
+            return inputTypes.inputTypeTester([8, [31, 128]], e);
         },
         printableNonNumeric: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            return inputTypes.inputTypeTester([8, [31, 48], [57, 128]], unicode);
+            return inputTypes.inputTypeTester([8, [31, 48], [57, 128]], e);
         },
         phone: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            return inputTypes.inputTypeTester([8, 32, 40, 41, 45, 46, [47, 58]], unicode);
+            return inputTypes.inputTypeTester([8, 32, 40, 41, 45, 46, [47, 58]], e);
         },
         shortDate: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            return inputTypes.inputTypeTester([8, [44, 58]], unicode);
+            return inputTypes.inputTypeTester([8, [44, 58]], e);
         },
         longDate: function(obj, e) {
-            var unicode = e.charCode? e.charCode : e.keyCode;
-            return inputTypes.inputTypeTester([8, 32, 44, 46, [47, 58], [64, 91], [96, 123]], unicode);
+            return inputTypes.inputTypeTester([8, 32, 44, 46, [47, 58], [64, 91], [96, 123]], e);
         }
     };
 
