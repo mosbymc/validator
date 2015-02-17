@@ -1,0 +1,180 @@
+a:link, a:visited, a:hover, a:active {
+    color:#EEEEEE;
+}
+
+ul {
+    margin-top: 0px;
+    padding:0;
+    list-style-type:auto;
+    padding-left:auto;
+}
+
+li {
+    list-style-type:disc;
+    padding-left:auto;
+}
+
+h1, h2, h3 {
+    margin:5px;
+}
+
+h1 {
+    font-size:150%;
+}
+
+h2 {
+    font-size:140%;
+}
+
+#header {
+    margin: 0;
+    height:75px;
+    padding:25px;
+    padding-left:auto;
+    padding-right:auto;
+    border-bottom:3px solid #000000;
+    background:url(headerBG.gif) repeat-x;
+}
+
+/*Defines the UL headers and the
+//LI open/closed headers.*/
+ul.listHeader {
+    margin: 5px 5px 0px 5px;
+    padding: 2px 2px 0px 2px;
+    border: 0px solid #333333;
+    list-style-type:none;
+}
+
+li.openHeader {
+    list-style-type:none;
+    background: #333333;
+    width: 100%;
+    height: 35px;
+    margin: 0;
+    padding: 2px;
+    font: bold 20px 'Lucida Grande', Verdana, san-serif;
+    border-left: 1px solid #888888;
+    border-top: 2px solid #444444;
+    border-right: 1px solid #FFFFFF;
+}
+
+li.closeHeader {
+    list-style-type:none;
+    background: #777777;
+    width: 100%;
+    height: 35px;
+    padding: 2px
+;    margin:0px;
+    font: bold 20px 'Lucida Grande', Verdana, san-serif;
+    border-left: 1px solid #FFFFFF;
+    border-top: 1px solid #FFFFFF;
+    border-right: 1px solid #666666;
+    border-bottom: 2px solid #444444;
+}
+
+ul.listHeader a:link, ul.listHeader a:visited, ul.listHeader a:active {
+    color: #ffffff;
+    display:block;
+    padding:2px 10px;
+    text-decoration:none;
+}
+
+ul.listHeader a:hover {
+    color: #ffffff;
+    display:block;
+    padding:2px 10px;
+    text-decoration:none;
+}
+
+li.menuList {
+    list-style-type:none;
+    background: #118811;
+    width: 100%;
+    height: 35px;
+    margin: 0;
+    font: 11px bold 'Lucida Grande', Verdana, san-serif;
+    border-left: 1px solid #FFFFFF;
+    border-top: 2px solid #FFFFFF;
+    border-right: 2px solid #888888;
+    border-bottom: 1px solid #444444;
+}
+
+/*Defines the arrows used on the LI headers*/
+.downArrow, .upArrow {
+    border-style: dashed;
+    border-color: transparent;
+    border-width: 0.53em;
+    display: -moz-inline-box;
+    display: inline-block;
+    /* Use font-size to control the size of the arrow. */
+    font-size: 12px;
+    height: 0;
+    line-height: 0;
+    position: relative;
+    vertical-align: middle;
+    width: 0;
+}
+
+.upArrow {
+    border-bottom-width: 1em;
+    border-bottom-style: solid;
+    border-bottom-color: #fff;
+    bottom: 0.25em;
+    float:right;
+}
+
+.downArrow {
+    border-top-width: 1em;
+    border-top-style: solid;
+    border-top-color: #fff;
+    top: 0.25em;
+    float:right;
+}
+
+/*Accordion Div definition*/
+.accDiv {
+    /*background-color: #888;*/
+    overflow: hidden;
+    vertical-align: middle;
+    display:table-cell;
+    -moz-user-select: none;
+    width: 100%;
+    color:#000000;
+    margin-left: 8px;
+    margin-right: 10px;
+    padding-left:5px;
+    width: 283px;
+    border: 1px solid;
+}
+
+#accordion {
+    width:47%;
+    padding-left: auto;
+    padding-right:9px;
+}
+
+.highlight {
+    background-color: #999999 !important;
+}
+
+#menuField > dt {
+    width: 40px;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+#menuField > dd {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+#menuField {
+    border: none;
+    margin-left: 0;
+    margin-bottom:0;
+    padding-left: 0;
+}
+
+.displayhere {
+    padding:2px;
+}
