@@ -268,27 +268,27 @@ var validator =  function() {
 
         //If the input passed the required validation or didn't need it, then continue to the other rules.
         if (!failedRequired) {
-            if (elem.data("min") !== undefined) {
+            if (!!elem.data("min")) {
                 tested = validationRules.testMinValue(elem);
                 postValidation(tested, elem, options, "min", inputsArray);
             }
-            if (elem.data("max") !== undefined) {
+            if (!!elem.data("max")) {
                 tested = validationRules.testMaxValue(elem);
                 postValidation(tested, elem, options, "max", inputsArray);
             }
-            if (elem.data("matchfield") !== undefined) {
+            if (!!elem.data("matchfield")) {
                 tested = validationRules.verifyMatch(elem);
                 postValidation(tested, elem, options, "match", inputsArray);
             }
-            if (elem.data("maxchecked") !== undefined) {
+            if (!!elem.data("maxchecked")) {
                 tested = validationRules.maxChecked(elem);
                 postValidation(tested, elem, options, "maxchecked", inputsArray);
             }
-            if (elem.data("minchecked") !== undefined) {
+            if (!!elem.data("minchecked")) {
                 tested = validationRules.minChecked(elem);
                 postValidation(tested, elem, options, "minchecked", inputsArray);
             }
-            if (vRules !== undefined) {
+            if (!!vRules) {
                 rules = vRules.split(',');
                 $.each(rules, function(index, value) {
                     var fn = validationRules[value];
@@ -302,7 +302,7 @@ var validator =  function() {
                     }
                 });
             }
-            if (customRules !== undefined) {
+            if (!!customRules) {
                 rules = customRules.split(',');
                 $.each(rules, function(index, value) {
                     var fn = [window].concat(value.split('.')).reduce(function (prev, curr) {
