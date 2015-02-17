@@ -82,7 +82,7 @@ var validator =  function() {
            $(document).off("helpTextScroll" + target.data("htid"));
         });
 
-        if (events !== undefined) {     //Bind any passed in events for inputs to listen for.
+        if (events !== undefined && typeof events === 'array') {     //Bind any passed in events for inputs to listen for.
             $.each(events, function(index, val) {
                 try {
                     $(document).on(val, "input", function(event) {
