@@ -3,20 +3,45 @@
 		<link rel="stylesheet" href="form.css" />
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 		<script LANGUAGE="javascript" SRC="validator.js"></script>
+		<script src="accordion.js"></script>
+		<link rel="stylesheet" href="accordion.css"/>
 
 		<script type="text/javascript">
 			$(document).ready(function() {
 				validator().init(["input", "change", "keyup", "blur"]);
-				setDisplayContent();
+				initAccordion();
+				var revalidate = false;
+				setDisplayContent(revalidate);
 
+				$("#markup").height($("#form").height());
+				$("#markupField").height($("#fieldValidate1").height());
+
+				//Events to validate on
 				$("input[name='event']").on("change", function() {
 					var selectedEvent = $('input[name=event]:checked').val();
-					$("#fieldValidate1").find("input").each(function(idx, val) {
-						val.setAttribute("data-validateon", selectedEvent);
-					});
-					setDisplayContent();
+					if (selectedEvent === "none") {
+						$("#fieldValidate1").find("input").each(function(idx, val) {
+							val.removeAttribute("data-validateon");
+							$(val).removeData("validateon");
+							$(val).removeAttr("validateon");
+						});
+						$("#elementExclude").prop("disabled", true);
+						$("#elementExclude")
+						document.getElementById("fieldValidate1").removeAttribute("data-excludeinputs");
+						$("#fieldValidate1").removeData("excludeinputs");
+						$("#fieldValidate1").removeAttr("excludeinputs");
+					}
+					else {
+						$("#fieldValidate1").find("input").each(function(idx, val) {
+							val.setAttribute("data-validateon", selectedEvent);
+						});
+						$("#elementExclude").prop("disabled", false);
+					}
+					var revalidate = true;
+					setDisplayContent(revalidate);
 				});
 
+				//Exclude from events above
 				$("#elementExclude").on("change", function() {
 					var exclude = "";
 					if ($("#elementExclude").val().length > 1 || $("#elementExclude").val()[0] !== "") {
@@ -36,11 +61,13 @@
 					else {
 						document.getElementById("fieldValidate1").removeAttribute("data-excludeinputs");
 						$("#fieldValidate1").removeData("excludeinputs");
-						$("#fieldValidate1").removeAttr("excludeinputs", exclude);
+						$("#fieldValidate1").removeAttr("excludeinputs");
 					}
-					setDisplayContent();
+					var revalidate = true;
+					setDisplayContent(revalidate);
 				});
 
+				//Input to add offsets to
 				$("#offsetError").on("change", function() {
 					var elements = $("#offsetError").val();
 					var height = $("#height").val() === "" ? 0 : $("#height").val();
@@ -49,6 +76,7 @@
 					setOffsets(elements, height, width);
 				});
 
+				//offset width
 				$("#width").on("input", function() {
 					var elements = $("#offsetError").val();
 					var height = $("#height").val() === "" ? 0 : $("#height").val();
@@ -57,6 +85,7 @@
 					setOffsets(elements, height, width);
 				});
 
+				//offset height
 				$("#height").on("input", function() {
 					var elements = $("#offsetError").val();
 					var height = $("#height").val() === "" ? 0 : $("#height").val();
@@ -65,6 +94,7 @@
 					setOffsets(elements, height, width);
 				});
 
+				//Error message location
 				$("input[name='placement']").on("change", function() {
 					var placement = $('input[name=placement]:checked').val();
 					if (placement !== "right") {
@@ -89,9 +119,11 @@
 						$("#fieldValidate1").removeData("location");
 						$("#fieldValidate1").removeAttr("location");
 					}
-					setDisplayContent();
+					var revalidate = true;
+					setDisplayContent(revalidate);
 				});
 
+				//how/when to display the error messages
 				$("input[name='display']").on("change", function() {
 					var displayType = $('input[name=display]:checked').val();
 					$("input[name='highlight']").prop("disabled", true);
@@ -100,7 +132,7 @@
 					$("#fieldValidate1").removeClass("highlightErrors");
 					document.getElementById("fieldValidate1").removeAttribute("data-grouperrors");
 					$("#fieldValidate1").removeData("grouperrors");
-					$("#fieldValidate1").removeData("grouperrors");
+					$("#fieldValidate1").removeAttr("grouperrors");
 					$("#formErrors").find(".errorSpan").remove();
             		$("#formErrors").find("br").remove();
             		$("#formErrors").removeClass("showGroupedErrors");
@@ -110,7 +142,7 @@
 						if (displayType === "groupByInput" && $('input[name=placement]:checked').val() !== "right") {
 							document.getElementById("fieldValidate1").setAttribute("data-location", $('input[name=placement]:checked').val());
 						}
-						else if(displayType === "groupByInput" && $('input[name=placement]:checked').val() !== "right") {
+						else if(displayType === "groupByInput" && $('input[name=placement]:checked').val() === "right") {
 							document.getElementById("fieldValidate1").removeAttribute("data-location");
 							$("#fieldValidate1").removeData("location");
 							$("#fieldValidate1").removeAttr("location");
@@ -129,9 +161,11 @@
 						}
 					}
 
-					setDisplayContent();
+					var revalidate = true;
+					setDisplayContent(revalidate);
 				});
 
+				//highlight the error message tied to the currently focused input when grouped by form
 				$("input[name='highlight']").on("change", function() {
 					if ($("input[name='highlight']:checked").val() === "highlight") {
 						$("#fieldValidate1").addClass("highlightErrors");
@@ -139,10 +173,11 @@
 					else {
 						$("#fieldValidate1").removeClass("highlightErrors");
 					}
-					setDisplayContent();
+					var revalidate = true;
+					setDisplayContent(revalidate);
 				});
 
-
+				//add helptext to the password field
 				$("#pWord").on("change", function() {
 					if (document.getElementById("pWord").checked == true) {
 						$("#password").parent().prepend(pass);
@@ -150,9 +185,11 @@
 					else {
 						$("#password").parent().children(".helptext").remove();
 					}
-					setDisplayContent();
+					var revalidate = true;
+					setDisplayContent(revalidate);
 				});
 
+				//display first name error message on another input
 				$("#errorLoc").on("change", function() {
 					if (document.getElementById("errorLoc").checked == true) {
 						document.getElementById("fName").setAttribute("data-displayon", "#dummy,up");
@@ -171,9 +208,11 @@
 							$("#fName").addClass("invalid");
 						}
 					}
-					setDisplayContent();
+					var revalidate = true;
+					setDisplayContent(revalidate);
 				});
 
+				//Add a call before validation function
 				$("#callBefore").on("change", function() {
 					if (document.getElementById("callBefore").checked == true) {
 						document.getElementById("fieldValidate1").setAttribute("data-beforevalidate", "call.me.before.validation");
@@ -183,9 +222,11 @@
 						$("#fieldValidate1").removeData("beforevalidate");
 						$("#fieldValidate1").removeAttr("beforevalidate");
 					}
-					setDisplayContent();
+					var revalidate = true;
+					setDisplayContent(revalidate);
 				});
 
+				//add a form action function
 				$("#formAction").on("change", function() {
 					if (document.getElementById("formAction").checked == true) {
 						document.getElementById("fieldValidate1").setAttribute("data-formaction", "call.me.after.successful.validation");
@@ -195,56 +236,79 @@
 						$("#fieldValidate1").removeData("formaction");
 						$("#fieldValidate1").removeAttr("formaction");
 					}
-					setDisplayContent();
+					var revalidate = true;
+					setDisplayContent(revalidate);
 				});
 
-				$("#functionWindow").text("function call() {" +
-						"\n\tthis.me = function() {" +
-							"\n\t\tthis.before = function() {" +
-								"\n\t\t\tthis.validation = function(form, options, callback) {" +
-									"\n\t\t\t\talert('This function is nested four deep.');" +
-									"\n\t\t\t\tcallback(true, form, options);" +
-								"\n\t\t\t}" +
-								"\n\t\t\treturn this;" +
-							"\n\t\t}" +
-							"\n\t\tthis.after = function() {" +
-								"\n\t\t\tthis.successful = function() {" +
-									"\n\t\t\t\tthis.validation = function() {" +
-										"\n\t\t\t\t\talert('validation passed!');" +
-									"\n\t\t\t\t}" +
-									"\n\t\t\t\treturn this;" +
-								"\n\t\t\t}" +
-								"\n\t\t\treturn this;" +
-							"\n\t\t}" +
-							"\n\t\treturn this;" +
-						"\n\t}" +
-						"\n\treturn this;" +
-					"\n}");
+				//restrict in allowed characters for the inputs
+				$("#types").on("change", function() {
+					if (document.getElementById("types").checked == true) {
+						document.getElementById("fName").setAttribute("data-inputType", "nonNumeric");
+						document.getElementById("homePhone").setAttribute("data-inputType", "phone");
+						document.getElementById("email").setAttribute("data-inputType", "printable");
+						document.getElementById("password").setAttribute("data-inputType", "printable");
+						document.getElementById("repassword").setAttribute("data-inputType", "printable");
+					}
+					else {
+						document.getElementById("fName").removeAttribute("data-inputType");
+						$("#fName").removeData("inputType");
+						$("#fName").removeAttr("inputType");
+						document.getElementById("homePhone").removeAttribute("data-inputType");
+						$("#homePhone").removeData("inputType");
+						$("#homePhone").removeAttr("inputType");
+						document.getElementById("email").removeAttribute("data-inputType");
+						$("#email").removeData("inputType");
+						$("#email").removeAttr("inputType");
+						document.getElementById("password").removeAttribute("data-inputType");
+						$("#password").removeData("inputType");
+						$("#password").removeAttr("inputType");
+						document.getElementById("repassword").removeAttribute("data-inputType");
+						$("#repassword").removeData("inputType");
+						$("#repassword").removeAttr("inputType");
+					}
+					setDisplayContent(true);
+				});
+
+				//update the display content after validation so it shows the classes that have been added/removed
+				$(document).on("validated", function(e, eventData) {
+					var revalidate = false;
+					setDisplayContent(revalidate);
+				});
 			});
 
-			function call() {
-				this.me = function() {
-					this.before = function() {
+			//Call before and form action functions
+			var call = {
+				me: {
+					before: function() {
 						this.validation = function(form, options, callback) {
-							alert("This function is nested four deep.");
+							alert("This function is nested three deep.");
 							callback(true, form, options);
 						}
 						return this;
-					}
-
-					this.after = function() {
-						this.successful = function() {
+					},
+					after: {
+						successful: function() {
 							this.validation = function() {
 								alert("validation passed!");
 							}
 							return this;
 						}
-						return this;
 					}
-					return this;
 				}
-				return this;
-			}
+			};
+
+			var object = {	//used to test namespaced functions
+				test : function(form, options, callback) {
+					alert("Namespaced function working!");
+					callback(true, form, options);
+				},
+				innerObj: {
+					testFunction: function(form, options, callback) {
+						alert("This function is nested two deep.");
+						callback(true, form, options);
+					}
+				}
+			};
 
 			function setOffsets(elements, height, width) {
 				$("#fieldValidate1").find("input").each(function(index, value) {
@@ -261,10 +325,12 @@
 						document.getElementById(elements[i]).setAttribute("data-offsetheight", height);
 					}
 				}
-				setDisplayContent();
+				var revalidate = true;
+				setDisplayContent(revalidate);
 			}
 
-			function setDisplayContent() {
+			//updates the display window
+			function setDisplayContent(revalidate) {
 				$("#displayContent").text("");
 				var test = $("#fieldValidate1").parent().html();
 				var temp = $("#fieldValidate1").parent().clone();
@@ -273,138 +339,231 @@
 				temp.find(".hInputGroup").remove();
 				temp.find(".vInputGroup").remove();
 				$("#displayContent").text(temp.html());
-				runValidationIfNeeded();
-			}
-
-			function runValidationIfNeeded() {
-				if ($("#fieldValidate1").find(".invalid").length > 0) {
-					validator().validate("#fieldValidate1");
+				if (revalidate) {
+					runValidationIfNeeded();
 				}
 			}
 
+			//checks to see if we should run validation again - primary motivated by someone changing one of the accordion options.
+			function runValidationIfNeeded() {
+				if ($("#fieldValidate1").find(".invalid").length > 0) {
+					var beforeFunc = $("#fieldValidate1").data("beforevalidate") || false;
+					var afterFunc = $("#fieldValidate1").data("formaction") || false;
+
+					if (!(!beforeFunc && !afterFunc)) {
+						document.getElementById("fieldValidate1").removeAttribute("data-beforevalidate");
+						$("#fieldValidate1").removeData("beforevalidate");
+						$("fieldValidate1").removeAttr("beforevalidate");
+						document.getElementById("fieldValidate1").removeAttribute("data-formaction");
+						$("#fieldValidate1").removeData("formaction");
+						$("#fieldValidate1").removeAttr("formaction");
+					}
+					validator().validate("#fieldValidate1");
+
+					if (!!beforeFunc) {
+						document.getElementById("fieldValidate1").setAttribute("data-beforevalidate", beforeFunc);
+						$("#fieldValidate1").data("beforevalidate", beforeFunc);
+					}
+
+					if (!!afterFunc) {
+						document.getElementById("fieldValidate1").setAttribute("data-formaction", afterFunc);
+						$("#fieldValidate1").data("formAction", afterFunc);
+					}
+					setDisplayContent(false);
+				}
+			}
+
+			//help text for the password input
 			var pass = '<span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>';
 		</script>
 
 	</head>
 	<body style="width:2115px;">
-		<br><br>
-		<div>
-			<div style="width:1000px; height:365px;">
-				<div style="float:left; display:inline;">
-					<h2>Events</h2>
-					<h3>Event Listeners</h3>
-					<input type="radio" name="event" value="input" checked>Input
-					<input type="radio" name="event" value="change">Change
-					<input type="radio" name="event" value="keyup">Keyup
-					<input type="radio" name="event" value="blur">Blur
-					<h3>Exclude Elements on Event</h3>
-					<select multiple size="8" id="elementExclude">
-						<option value=""></option>
-						<option value="fName">First Name</option>
-						<option value="lName">Last Name</option>
-						<option value="homePhone">Home Phone</option>
-						<option value="cellPhone">Cell Phone</option>
-						<option value="zip">Zip</option>
-						<option value="email">Email</option>
-						<option value="password">Password</option>
-					</select>
-					<br>
-				</div>
-				<div style="float:right; display:inline;">
-					<h2>Error Message Placement</h2>
-					<h3>Location</h3>
-					<input type="radio" name="placement" value="left">Left
-					<input type="radio" name="placement" value="right" checked>Right
-					<input type="radio" name="placement" value="top">Top
-					<input type="radio" name="placement" value="bottom">Bottom
-					<h3>Offsets</h3>
-					Input: <select multiple size="8" id="offsetError">
-						<option value=""></option>
-						<option value="fName">First Name</option>
-						<option value="lName">Last Name</option>
-						<option value="homePhone">Home Phone</option>
-						<option value="cellPhone">Cell Phone</option>
-						<option value="zip">Zip</option>
-						<option value="email">Email</option>
-						<option value="password">Password</option>
-					</select>
-					<br><br>
-					Offset Height: <input type="text" id="height" data-inputType="numeric">
-					Offset Width: <input type="text" id="width" data-inputType="numeric">
-				</div>
+		<div id="accordion" style="float:left; width:300px; display:inline-block; border:1px solid; margin-top:14px; height:1000px;">
+			<ul class="listHeader">
+				<li id="eventsHeader">
+					<a href="javascript:openTab('events', 275);">Events</a>
+				</li>
+			</ul>
+			<div id="events" class="accDiv">
+				<h3>Input Event Listeners</h3>
+				<input type="radio" name="event" value="none" checked>None<br>
+				<input type="radio" name="event" value="input">Input
+				<input type="radio" name="event" value="change">Change
+				<input type="radio" name="event" value="keyup">Keyup
+				<input type="radio" name="event" value="blur">Blur
+				<h3>Exclude Elements on Event</h3>
+				<fieldset id="menuField">
+					<dt><label>Inputs:</label></dt>
+					<dd><select multiple size="7" id="elementExclude" style="vertical-align: top;" disabled>
+							<option value=""></option>
+							<option value="fName">First Name</option>
+							<option value="homePhone">Home Phone</option>
+							<option value="email">Email</option>
+							<option value="gender">Gender</option>
+							<option value="password">Password</option>
+							<option value="repassword">Password Match</option>
+						</select></dd>
+				</fieldset>
 			</div>
-			<hr>
-			<br>
-			<div style="width:1100px; height:150px;">
-				<div style="float:left; display:inline;">
-					<h2>Display Options</h2>
-					<input type="radio" name="display" value="" checked>Default
-					<input type="radio" name="display" value="hover">Hover
-					<input type="radio" name="display" value="groupByInput">Group By Input
-					<input type="radio" name="display" value="grpByForm">Group By Form
-					<br>
+			<ul class="listHeader">
+				<li id="errorsHeader">
+					<a href="javascript:openTab('errors', 400);">Message Placement</a>
+				</li>
+			</ul>
+			<div id="errors" class="accDiv">
+				<h3>Display Location</h3>
+				<input type="radio" name="placement" value="left">Left
+				<input type="radio" name="placement" value="right" checked>Right
+				<input type="radio" name="placement" value="top">Top
+				<input type="radio" name="placement" value="bottom">Bottom
+				<br><br>
+				<h3>Message Offsets</h3>
+				<fieldset id="menuField">
+					<dt><label>Height:</label></dt>
+					<dd><input type="text" id="height" data-inputType="numeric"></dd>
+					<dt><label>Width:</label></dt>
+					<dd><input type="text" id="width" data-inputType="numeric"></dd>
+					<dt><label>Inputs:</label></dt>
+					<dd><select multiple size="7" id="offsetError" style="vertical-align: top;">
+							<option value=""></option>
+							<option value="fName">First Name</option>
+							<option value="homePhone">Home Phone</option>
+							<option value="email">Email</option>
+							<option value="gender">Gender</option>
+							<option value="password">Password</option>
+							<option value="repassword">Password Match</option>
+						</select></dd>
+				</fieldset>
+			</div>
+			<ul class="listHeader">
+				<li id="displayHeader">
+					<a href="javascript:openTab('display', 200);">Display Options</a>
+				</li>
+			</ul>
+			<div id="display" class="accDiv">
+				<br>
+				<input type="radio" name="display" value="" checked>Default
+				<br>
+				<input type="radio" name="display" value="hover">Hover
+				<br>
+				<input type="radio" name="display" value="groupByInput">Group By Input
+				<br>
+				<input type="radio" name="display" value="grpByForm">Group By Form
+				<br>
+				<span style="padding-left:15px;">
 					<input type="radio" name="highlight" value="highlight" disabled>Highlight grouped errors
+				</span>
+					<br>
+				<span style="padding-left:15px;">
 					<input type="radio" name="highlight" value="noHighlight" disabled checked>No highlight
-				</div>
-				<div style="float:right; display:inline;">
-					<h2>Miscellany</h2>
-					<input type="checkbox" value="helpText" id="pWord">Password Help Text
-					<br>
-					<input type="checkbox" value="displayOther" id="errorLoc">Display First Name Error Messages Here: 
-					<input type="text" id="dummy">
-					<br>
-					<input type="checkbox" id="callBefore">Add Call Before Validation function - Function name: call().me().before().validation()
-					<br>
-					<input type="checkbox" id="formAction">Add a Form Action - Function name: call().me().after().successful().validation()
-				</div>
+				</span>
+			</div>
+			<ul class="listHeader">
+				<li id="miscHeader">
+					<a href="javascript:openTab('misc', 250);">Miscellany</a>
+				</li>
+			</ul>
+			<div id="misc" class="accDiv">
+				<br>
+				<input type="checkbox" value="charTypes" id="types">Restrict input characters
+				<br>
+				<input type="checkbox" value="helpText" id="pWord">Password Help Text
+				<br>
+				<input type="checkbox" value="displayOther" id="errorLoc">Display First Name Errors Below:
+				<br>
+				<span style="padding-left:20px;"><input type="text" id="dummy"></span>
+				<br>
+				<input type="checkbox" id="callBefore">Add Call Before Validation function
+				<br>
+				<input type="checkbox" id="formAction">Add a Form Action
 			</div>
 		</div>
-		<hr>
-		<br><br>
-		<div>
-			<div style="width:auto; display:inline-block; float:left" id="content">
+
+		<div style="width:auto; display:inline-block; margin-left:20px;">
+			<div id="form" style="width:auto; display:inline-block; float:left" id="content">
 <fieldset id="fieldValidate1" class="formValidate inputValidate testForm">
-	<legend>Group Validation</legend>
+	<legend>Form Validation</legend>
 	<div id="formErrors" class="hideGroupedErrors">
 		<h3 class='errorMsg'>There was a problem with your request.</h3>
 	</div>
   	<dl align='left'>
-  		<dt><label for='fName'>First Name: </label></dt>
+  		<dt><label for='fName'>Name: </label></dt>
 		<dd><input type='text' id='fName' name="First Name" data-required data-validationrules="name"/></dd>
-		<dt><label for='lName'>Last Name: </label></dt>
-		<dd><input type='text' id='lName' name="Last Name" data-required data-validationrules="name"/></dd>
 		<dt><label for="homePhone">Home Phone: </label></dt>
 		<dd><input type="text" id="homePhone" name="Home Phone" data-required data-validationrules="phone"/></dd>
-		<dt><label for="cellPhone">Cell Phone: </label></dt>
-		<dd><input type="text" id="cellPhone" name="Cell Phone" data-validationrules="phone"/></dd>
-
-		<dt><label for="zip">Zip: </label></dt>
-		<dd><input type="text" id="zip" name="Zip" data-required data-validationrules="zip"/></dd>
 		<dt><label for="email">Email: </label></dt>
 		<dd><input type="text" id="email" name="Email" data-required data-validationrules="email"/></dd>
-
+		<dt><label for="radio">Gender: </label></dt>
+		<dd><span class="displayhere"><input type="radio" id="gender" name="Gender" value="male" data-required data-displayon=".displayhere,up"/>Male
+			<input type="radio" name="Gender" value="female"/>Female</span></dd>
 		<dt><label for="password">Password: </label></dt>
 		<dd><input type="text" id="password" name="Password" data-required data-validationrules="password"/></dd>
+		<dt><label for="repassword">Retype Password: </label></dt>
+		<dd><input type="text" id="repassword" name="Password" data-required data-validationrules="password" data-matchfield="password"/></dd>
 		<dt><button id="fv1groupSubmit" value="Submit" class="validate" data-form="fieldValidate1"/>Submit</button></dt>
 	</dl>
 </fieldset>
 			</div>
-			<div style="display:inline-block; width:auto; height:500px; border:2px red; float:none;">
-				<fieldset>
-					<legend>Display Window</legend>
+			<div id="markup" style="display:inline-block; width:auto; height:auto; border:2px red; float:none;">
+				<fieldset id="markupField">
+					<legend>Form Markup</legend>
 						<pre>
 							<div id="displayContent"></div>
 						</pre>
 				</fieldset>
 			</div>
-			<br><br><br><br>
-			<div style="width:auto; height:500px;">
+			<div style="width:auto; height:500px; clear:both; float:left; display:inline-block">
 				<fieldset>
-					<legend>Functions</legend>
+					<legend>"Call Before" and "Successful Validation" Functions</legend>
 					<pre>
 						<div id="functionWindow">
+var call = {
+	me: {
+		before: function() {
+			this.validation = function(form, options, callback) {
+				alert("This function is nested three deep.");
+				callback(true, form, options);
+			}
+			return this;
+		},
+		after: {
+			successful: function() {
+				this.validation = function() {
+					alert("validation passed!");
+				}
+				return this;
+			}
+		}
+	}
+};
 						</div>
 					</pre>
+				</fieldset>
+			</div>
+			<div style="width:auto; height:500px; clear:both; float:none; display:inline-block">
+				<fieldset>
+					<legend>Description</legend>
+					This is the example page for validator.js.
+					<br><br>
+					On the left are the various features and display options available for the validator.
+					On page load, the form has been set up with the most basic validator options available.
+					The "Markup" field next to it show the HTML required to produce both the form and the
+					validator functionality.
+					<br><br>
+					As you change the options on the validator, the "Markup" field will update with the new HTML
+					needed to support those options. I choose to remove the error messages from the displayed
+					markup to reduce the clutter and show only what is needed to produce a given functionality.
+					<br><br>
+					The functions to the left are not used by the form/validator on setup, but when the options
+					are selected, the "call-before" function is called when the submit button is clicked, before validation
+					is run. If the function returns "true", validation will continue, "false" will prevent the validator from
+					running. The "success" function is called when the form is successfully validated.
+					<br><br>
+					I choose to nest these two functions to show that the validator can accept namespaced functions. In
+					this case, they are functions nested inside objects, but you can also have functions nested functions,
+					or any other combination that you want/need to namespace you functions. Just ensure that any nested 
+					function's parent function returns "this", otherwise, the validator will not have access to it.
 				</fieldset>
 			</div>
 		</div>
