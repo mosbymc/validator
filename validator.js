@@ -218,25 +218,11 @@ var validator =  function() {
             }
         }
 
-        if (elem.data("min") !== undefined) {
-            rulesArray.push("min");
-        }
-
-        if (elem.data("max") !== undefined) {
-            rulesArray.push("max");
-        }
-
-        if (elem.data("matchfield") !== undefined) {
-            rulesArray.push("match");
-        }
-
-        if (elem.data("maxchecked") !== undefined) {
-            rulesArray.push("maxchecked");
-        }
-
-        if (elem.data("minchecked") !== undefined) {
-            rulesArray.push("minchecked");
-        }
+        !elem.data("min") ? false : rulesArray.push("min");
+        !elem.data("max") ? false : rulesArray.push("max");
+        !elem.data("matchfield") ? false : rulesArray.push("matchfield");
+        !elem.data("maxchecked") ? false : rulesArray.push("maxchecked");
+        !elem.data("minchecked") ? false : rulesArray.push("minchecked");
 
         for (var i = 0, length = rulesArray.length; i < length; i++) {
             inputObj = {
