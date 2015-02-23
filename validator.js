@@ -194,9 +194,12 @@ var validator =  function() {
         inputArray = [],
         inputObj;
 
-        if (elem.attr("data-required") !== undefined) {
-            rulesArray.push("required");
-        }
+        elem.data("required") === "" ? rulesArray.push("required") : false;
+        !elem.data("min") ? false : rulesArray.push("min");
+        !elem.data("max") ? false : rulesArray.push("max");
+        !elem.data("matchfield") ? false : rulesArray.push("matchfield");
+        !elem.data("maxchecked") ? false : rulesArray.push("maxchecked");
+        !elem.data("minchecked") ? false : rulesArray.push("minchecked");
 
         var rules = vRules.split(",").concat(customRules.split(","));
         for (var i = 0, length = rules.length; i < length; i++) {
@@ -204,12 +207,6 @@ var validator =  function() {
                 rulesArray.push(rules[i]);
             }
         }
-
-        !elem.data("min") ? false : rulesArray.push("min");
-        !elem.data("max") ? false : rulesArray.push("max");
-        !elem.data("matchfield") ? false : rulesArray.push("matchfield");
-        !elem.data("maxchecked") ? false : rulesArray.push("maxchecked");
-        !elem.data("minchecked") ? false : rulesArray.push("minchecked");
 
         for (var i = 0, length = rulesArray.length; i < length; i++) {
             inputObj = {
