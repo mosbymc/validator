@@ -80,7 +80,7 @@ var validator =  function() {
             }
         });
 
-        if (events !== undefined && typeof events === 'array') {     //Bind any passed in events for inputs to listen for.
+        if (events !== undefined && events.constructor === Array) {     //Bind any passed in events for inputs to listen for.
             $.each(events, function(index, val) {
                 try {
                     $(document).on(val, "input", function(event) {
