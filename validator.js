@@ -68,18 +68,16 @@ var validator =  function() {
             if (target.prevUntil("input").filter(".helptext:first").length > 0 && $("[id^='" + target[0].id + "error']").length < 1 && $("#" + target[0].id + "InputGrp").length < 1) {
                 var modal = target.parents(".formValidate:first").data("modalId") || target.parents(".inputValidate:first").data("modalId") || target.data("modalid") || null;
                 displayHelpText(target, modal);
-            }
-        });
 
-        $(document).on("blur", "input", function(event) {   //Remove help text on blur.
-            var target = $(event.currentTarget),
-            helpText = target.prevUntil("input").filter(".helptext:first"),
-            modal = target.parents(".formValidate:first").data("modalId") || target.parents(".inputValidate:first").data("modalId") || target.data("modalid") || null;
-            helpText.addClass("hideMessage").removeClass("showMessage");
-            if (modal !== null) {   //unbind event listeners for the help text spans
-                $(document).off("helpTextModalScroll" + target.data("htid"));
+                target.one("blur", function(event) {
+                    var helpText = target.prevUntil("input").filter(".helptext:first");
+                    helpText.addClass("hideMessage").removeClass("showMessage");
+                    if (modal !== null) {   //unbind event listeners for the help text spans
+                        $(document).off("helpTextModalScroll" + target.data("htid"));
+                    }
+                   $(document).off("helpTextScroll" + target.data("htid"));
+                });
             }
-           $(document).off("helpTextScroll" + target.data("htid"));
         });
 
         if (events !== undefined && typeof events === 'array') {     //Bind any passed in events for inputs to listen for.
