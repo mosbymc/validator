@@ -40,22 +40,9 @@ var validator =  function() {
             }
         });
 
-        $(document).on("input", "input", function(event) {      //Bind input event listener on input event. The input itself or its parent must have the "inputValidate" class.
-            var target = $(event.currentTarget),
-            inputOptions;
-            if ((target.hasClass("inputValidate") || target.parents(".inputValidate:first")) && (target.data("validateon") === undefined || target.data("validateon") === "input")) {
-                if (target.parents(".inputValidate:first").data("excludeinputs") !== undefined && target.parents(".inputValidate:first").data("excludeinputs").indexOf(event.currentTarget.id) !== -1) {
-                    return;
-                }
-                inputOptions = createOptions(target, event);
-                inputOptions.input = event.currentTarget;
-                validateInput(target, inputOptions);
-            }
-        });
-
         $(document).on("keypress", "input", function(event) {   //Bind event listener for the keypress event on an input. Used for restricting character input.
             var target = $(event.currentTarget);
-            if (target.data("inputtype") !== undefined) {
+            if (target.data("inputtype") != undefined) {
                 monitorChars(target, target.data("inputtype"), event);
             }
         });
@@ -75,32 +62,34 @@ var validator =  function() {
                     if (modal !== null) {   //unbind event listeners for the help text spans
                         $(document).off("helpTextModalScroll" + target.data("htid"));
                     }
-                   $(document).off("helpTextScroll" + target.data("htid"));
+                    $(document).off("helpTextScroll" + target.data("htid"));
                 });
             }
         });
 
-        if (events !== undefined && events.constructor === Array) {     //Bind any passed in events for inputs to listen for.
-            $.each(events, function(index, val) {
-                try {
-                    $(document).on(val, "input", function(event) {
-                        var target = $(event.currentTarget),
-                        inputOptions;
-                        if ((target.hasClass("inputValidate") || target.parents(".inputValidate:first")) && target.data("validateon") === val) {
-                            if (target.parents(".inputValidate:first").data("excludeinputs") !== undefined && target.parents(".inputValidate:first").data("excludeinputs").indexOf(event.currentTarget.id) !== -1) {
-                                return;
-                            }
-                            inputOptions = createOptions(target, event);
-                            inputOptions.input = event.currentTarget;
-                            validateInput(target, inputOptions);
+        if (!!events && events.constructor === Array)
+            events.push('input');
+        else
+            events = ['inputs'];
+
+        $.each(events, function(index, val) {
+            try {
+                $(document).on(val, "input", function(event) {
+                    var target = $(event.currentTarget), inputOptions;
+                    if ((target.hasClass("inputValidate") || target.parents(".inputValidate:first")) && (target.data("validateon") === val || (val === 'input' && target.data("validateon") == undefined))) {
+                        if (target.parents(".inputValidate:first").data("excludeinputs") != undefined && target.parents(".inputValidate:first").data("excludeinputs").indexOf(event.currentTarget.id) !== -1) {
+                            return;
                         }
-                    });
-                }
-                catch(ex) {
-                    console.log("Could not bind forms to event: '" + val + "'\n" + ex);
-                }
-            });
-        }
+                        inputOptions = createOptions(target, event);
+                        inputOptions.input = event.currentTarget;
+                        validateInput(target, inputOptions);
+                    }
+                });
+            }
+            catch(ex) {
+                console.log("Could not bind forms to event: '" + val + "'\n" + ex);
+            }
+        });
     };
 
     this.validate = function(formElem) {    //Public function for starting off the validation process.
