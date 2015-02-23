@@ -346,12 +346,8 @@ var validator =  function() {
     this.customRulesCallback = function(tested, inputState) {
         try {
             if (!tested.valid && inputState.element.data("vts") === inputState.option.time) {    //If validation fails, create the error message element
-                var errorOffsets = getMessageOffset(inputState.element);
-                createErrorMessage(inputState.element, tested, inputState.option, inputState.rule, errorOffsets.width, errorOffsets.height);
-                groupByForm(inputState.option, inputState.element, inputState.rule);
-                groupByInput(inputState.option, inputState.element, inputState.rule);
+                postValidation(tested, inputState.element, inputState.option, inputState.rule, inputState.inputArray);
             }
-            setRuleStatus(inputState.element, inputState.inputArray, inputState.rule, tested.valid);
             finalizeValidation(inputState.inputArray, inputState.option);
         }
         catch(ex) {
