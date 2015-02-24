@@ -230,8 +230,8 @@ var validator =  function() {
 
         elem.data("vts", options.time);
 
-        if (elem.attr("data-required") !== undefined || vRules !== undefined || customRules !== undefined || elem.data("min") !== undefined || elem.data("max") !== undefined ||
-            elem.data("matchfield") !== undefined || elem.data("maxchecked") !== undefined || elem.data("minchecked") !== undefined) { //remove any previous error div from the previous validation attempt.
+        if (elem.attr("data-required") !== undefined || !!vRules || !!customRules || !!elem.data("min") || !!elem.data("max") ||
+            !!elem.data("matchfield") || !!elem.data("maxchecked") || !!elem.data("minchecked")) { //remove any previous error div from the previous validation attempt.
             removeErrorText(elem);
             getOtherElem(elem).removeClass("invalid");
         }
