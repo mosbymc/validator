@@ -67,10 +67,7 @@ var validator =  function() {
             }
         });
 
-        if (!!events && events.constructor === Array)
-            events.push('input');
-        else
-            events = ['inputs'];
+        (!!events && events.constructor === Array) ? events.push('input') : events = ['inputs'];
 
         $.each(events, function(index, val) {
             try {
