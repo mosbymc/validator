@@ -345,7 +345,7 @@ var validator =  function() {
 
     this.customRulesCallback = function(tested, inputState) {
         try {
-            if (!tested.valid && inputState.element.data("vts") === inputState.option.time) {    //If validation fails, create the error message element
+            if (inputState.element.data("vts") === inputState.option.time) {    //If validation fails, create the error message element
                 postValidation(tested, inputState.element, inputState.option, inputState.rule, inputState.inputArray);
             }
             finalizeValidation(inputState.inputArray, inputState.option);
