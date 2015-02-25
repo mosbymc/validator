@@ -31,7 +31,6 @@ var validator =  function() {
             form = target.parents(".formValidate:first");
             if (form.length > 0 && target.hasClass("validate")) {
                 var formOptions = createOptions(form, event);
-                formOptions.form = form;
                 formOptions.groupErrors = form.data("grouperrors") || null;
                 formOptions.callBefore = form.data("beforevalidate") || false;
                 formOptions.button = target;
@@ -78,7 +77,6 @@ var validator =  function() {
                             return;
                         }
                         inputOptions = createOptions(target, event);
-                        inputOptions.input = event.currentTarget;
                         validateInput(target, inputOptions);
                     }
                 });
@@ -101,7 +99,6 @@ var validator =  function() {
             try {
                 var button = form.find(".validate"),
                 formOptions = createOptions(form, null);
-                formOptions.form = form;
                 formOptions.groupErrors = form.data("grouperrors") || null;
                 formOptions.callBefore = form.data("beforevalidate") || false;
                 formOptions.button = button;
@@ -827,6 +824,7 @@ var validator =  function() {
             time: new Date().getTime(),
             event: event
         };
+        elem[0].tagName === "INPUT" ? options.input = elem : options.form = elem;
         return options;
     };
 
