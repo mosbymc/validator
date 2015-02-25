@@ -66,7 +66,7 @@ var validator =  function() {
             }
         });
 
-        (!!events && events.constructor === Array) ? events.push('input') : events = ['inputs'];
+        (!!events && events.constructor === Array) ? events.push('input') : events = ['input'];
 
         $.each(events, function(index, val) {
             try {
