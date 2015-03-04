@@ -130,16 +130,16 @@ var validator =  function() {
                 validateForm(true, form, options);
             }
         }
-        else {
+        else{
             validateForm(true, form, options);
         }
     };
 
     var validateInput = function(input, options) {  //Where inputs go to be validated and the success function called if supplied.
         $(options.input).removeData("validationdone").removeAttr("validationdone");
-
-        var inputArray = buildInputArray($(input));
-        validateElement(input, options, inputArray);    //Main function where validation is done.
+        var inputArray = [];
+        inputArray.push(buildInputArray($(input)));
+        validateElement(options, inputArray);    //Main function where validation is done.
 
         if ($(options.input).data("validationdone") !== undefined && $(options.input).data("validationdone")) {
             return;
@@ -164,10 +164,7 @@ var validator =  function() {
                 var inputArray = buildInputArray($(inputs[j]));
                 formArray = formArray.concat(inputArray);
             }
-
-            for (var i = 0, length = inputs.length; i < length; i++) {
-                validateElement(inputs[i], options, formArray);    //Validate each input element in the form.
-            }
+            validateElement(options, formArray);
 
             if ($(options.form).data("validationdone") !== undefined && $(options.form).data("validationdone")) {
                 return;
@@ -181,135 +178,89 @@ var validator =  function() {
     var buildInputArray = function(elem) {
         var vRules = elem.data("validationrules") || "",
         customRules = elem.data('customrules') || "",
-        rulesArray = [],
-        inputArray = [],
-        inputObj;
+        rulesArray = [], inputArray = [];
 
-        elem.data("required") === "" ? rulesArray.push("required") : false;
-        !elem.data("min") ? false : rulesArray.push("min");
-        !elem.data("max") ? false : rulesArray.push("max");
-        !elem.data("matchfield") ? false : rulesArray.push("matchfield");
-        !elem.data("maxchecked") ? false : rulesArray.push("maxchecked");
-        !elem.data("minchecked") ? false : rulesArray.push("minchecked");
+        elem.data("required") === "" ? rulesArray.push({method: "required", type: "required"}) : false;
+        !elem.data("min") ? false : rulesArray.push({method: "testMinValue", type: "validator"});
+        !elem.data("max") ? false : rulesArray.push({method: "testMaxValue", type: "validator"});
+        !elem.data("matchfield") ? false : rulesArray.push({method: "verifyMatch", type: "validator"});
+        !elem.data("maxchecked") ? false : rulesArray.push({method: "maxChecked", type: "validator"});
+        !elem.data("minchecked") ? false : rulesArray.push({method: "minChecked", type: "validator"});
 
-        var rules = vRules.split(",").concat(customRules.split(","));
+        var rules = vRules.split(",");
+        for (var l = 0, len = rules.length; l < len; l++) {
+            if (rules[l] !== "") {
+                rulesArray.push({method: rules[l], type: "validator"});
+            }
+        }
+        rules = customRules.split(",");
         for (var i = 0, length = rules.length; i < length; i++) {
             if (rules[i] !== "") {
-                rulesArray.push(rules[i]);
+                rulesArray.push({method: rules[i], type: "custom"});
             }
         }
 
         for (var i = 0, length = rulesArray.length; i < length; i++) {
-            inputObj = {
-                input: elem,
-                rule: rulesArray[i],
-                valid: "waiting"
-            };
-            inputArray.push(inputObj);
+            inputArray.push({methodInfo: rulesArray[i], valid: "waiting"});
         }
 
-        return inputArray;
+        return { element: elem, rules: inputArray };
     };
 
-    var validateElement = function(element, options, inputsArray) {      //Starting point for single input validation - reached by both forms and inputs.
-        var elem = $(element),
-        failedRequired = false, //Determines whether it should continue validation after testing the required functionality.
-        vRules = elem.data("validationrules"),  //The predefined rules that are part of this library.
-        customRules = elem.data('customrules'), //User defined validation rules.
-        rules,
-        tested;
+    var validateElement = function(options, inputsArray) {      //Starting point for single input validation - reached by both forms and inputs.
+        for (var i = 0, len = inputsArray.length; i < len; i++) {
+            if (inputsArray[i].rules.length < 1) {
+                continue;
+            }
+            var elem = inputsArray[i].element,
+            failedRequired = false;
 
-        elem.data("vts", options.time);
-
-        if (elem.attr("data-required") !== undefined || !!vRules || !!customRules || !!elem.data("min") || !!elem.data("max") ||
-            !!elem.data("matchfield") || !!elem.data("maxchecked") || !!elem.data("minchecked")) { //remove any previous error div from the previous validation attempt.
             removeErrorText(elem);
             getOtherElem(elem).removeClass("invalid");
-        }
-        elem.data("vid", new Date().getTime());
+            elem.data("vts", options.time);
+            var id = performance.now().toString().split(".");
+            elem.data("vid", id[1]);
 
-        if (elem.attr("data-required") !== undefined) {
-            if (elem[0].type === "radio" || elem[0].type === "checkbox") {
-                tested = validationRules.requiredGroup(elem);
-            }
-            else {
-                tested = validationRules.requiredInput(elem);
-            }
-            postValidation(tested, elem, options, "required", inputsArray);
-            if (!tested.valid) {
-                failedRequired = true;
-            }
-        }
-
-        //If the input passed the required validation or didn't need it, then continue to the other rules.
-        if (!failedRequired) {
-            if (!!elem.data("min")) {
-                tested = validationRules.testMinValue(elem);
-                postValidation(tested, elem, options, "min", inputsArray);
-            }
-            if (!!elem.data("max")) {
-                tested = validationRules.testMaxValue(elem);
-                postValidation(tested, elem, options, "max", inputsArray);
-            }
-            if (!!elem.data("matchfield")) {
-                tested = validationRules.verifyMatch(elem);
-                postValidation(tested, elem, options, "match", inputsArray);
-            }
-            if (!!elem.data("maxchecked")) {
-                tested = validationRules.maxChecked(elem);
-                postValidation(tested, elem, options, "maxchecked", inputsArray);
-            }
-            if (!!elem.data("minchecked")) {
-                tested = validationRules.minChecked(elem);
-                postValidation(tested, elem, options, "minchecked", inputsArray);
-            }
-            if (!!vRules) {
-                rules = vRules.split(',');
-                $.each(rules, function(index, value) {
-                    var fn = validationRules[value];
-                    if (typeof fn === "function") {
-                        tested = fn.call(this, elem);
-                        postValidation(tested, elem, options, value, inputsArray);
+            var rules = inputsArray[i].rules;
+            for (var j = 0, length = rules.length; j < length; j++) {
+                if (rules[j].methodInfo.type === "required") {
+                    if (elem[0].type === "radio" || elem[0].type === "checkbox") {
+                        tested = validationRules.requiredGroup(elem);
                     }
                     else {
-                        console.log("Could not find library function: " + value + " for element: " + elem);
-                        setRuleStatus(elem, inputsArray, value, null);
+                        tested = validationRules.requiredInput(elem);
                     }
-                });
-            }
-            if (!!customRules) {
-                rules = customRules.split(',');
-                $.each(rules, function(index, value) {
-                    var fn = [window].concat(value.split('.')).reduce(function (prev, curr) {
-                        return (typeof prev === "function" ? prev()[curr] : prev[curr]);
-                    });
-                    if (typeof fn === "function") {
-                        var inputState = {
-                            option: options,
-                            element: elem,
-                            rule: value,
-                            inputArray: inputsArray
-                        };
-                        Object.freeze(inputState);
-                        try {
-                            fn.call(this, elem, inputState, customRulesCallback);
+                    postValidation(tested, elem, options, "required", inputsArray);
+                    if (!tested.valid) {
+                        failedRequired = true;
+                    }
+                }
+                else {
+                    if (!failedRequired) {
+                        var name = rules[j].methodInfo.method;
+                        var fn = rules[j].methodInfo.type === "validator" ? validationRules[name] : 
+                                    [window].concat(name.split('.')).reduce(function (prev, curr) {
+                                        return (typeof prev === "function" ? prev()[curr] : prev[curr]);
+                                    });;
+                        if (typeof fn === "function") {
+                            var inputState = {
+                                option: options,
+                                element: elem,
+                                rule: name,
+                                inputArray: inputsArray
+                            };
+                            Object.freeze(inputState);
+                            tested = fn.call(this, elem, inputState, customRulesCallback);
+                            rules[j].methodInfo.type === "validator" ? postValidation(tested, elem, options, name, inputsArray) : false;
                         }
-                        catch(ex) {
-                            console.log("Failed to execute custom rule: '" + inputState.rule + "'\n" + ex);
-                            setRuleStatus(elem, inputsArray, value, null);
+                        else {
+                            console.log("Could not find library function: " + name + " for element: " + elem);
+                            setRuleStatus(elem, inputsArray, name, null);
                         }
                     }
-                    else {  //if the provided function name cannot be found, or isn't a function, then "ignore" as a rule we need to validate against.
-                        console.log("Could not find library function: " + value + " for element: " + elem);
-                        setRuleStatus(elem, inputsArray, value, null);
+                    else {
+                        setRuleStatus(elem, inputsArray, rules[j].methodInfo.method, null); //input failed the required validation and we just need to clear this rule out of the array
                     }
-                });
-            }
-        }
-        else {
-            for (var k = 0, length = inputsArray.length; k < length; k++) {
-                if (elem[0] === inputsArray[k].input[0] && inputsArray[k].rule !== "required") {
-                    inputsArray[k].valid = null;
                 }
             }
         }
@@ -320,16 +271,20 @@ var validator =  function() {
             var errorOffsets = getMessageOffset(elem);
             createErrorMessage(elem, tested, options, rule, errorOffsets.width, errorOffsets.height);
             groupByForm(options, elem, rule);
-            groupByInput(options, elem, rule);
+            groupByInput(options, elem, rule); //See if these can be moved to the createErrorMessage function
         }
         setRuleStatus(elem, inputsArray, rule, tested.valid);
     };
 
     var setRuleStatus = function(elem, inputsArray, value, status) {
         for (var k = 0, length = inputsArray.length; k < length; k++) {
-            if (elem[0] === inputsArray[k].input[0] && value === inputsArray[k].rule) {
-                inputsArray[k].valid = status;
-                break;
+            if (elem[0] === inputsArray[k].element[0]) {
+                for (var i = 0, len = inputsArray[k].rules.length; i < len; i++) {
+                    if (value === inputsArray[k].rules[i].methodInfo.method) {
+                        inputsArray[k].rules[i].valid = status;
+                        break;
+                    }
+                }
             }
         }
     };
@@ -352,37 +307,39 @@ var validator =  function() {
         if (element.data("validationdone") !== undefined && element.data("validationdone")) {
             return;
         }
-        
+
         var numFailed = 0,
         rulesTestedCount = 0;
         for (var i = 0, length = inputArray.length; i < length; i++) {
-            if (inputArray[i].valid === "waiting") {
-                return;     //if there are any inputs still waiting, get out - validation isn't done yet.
-            }
-            else if (inputArray[i].valid === false) {
-                numFailed++;
-                rulesTestedCount++;
-            }
-            else if (inputArray[i].valid === true) {
-                rulesTestedCount++;
+            for (var j = 0, len = inputArray[i].rules.length; j < len; j++) {
+                if (inputArray[i].rules[j].valid === "waiting") {
+                    return;     //if there are any inputs still waiting, get out - validation isn't done yet.
+                }
+                else if (inputArray[i].rules[j].valid === false) {
+                    numFailed++;
+                    rulesTestedCount++;
+                }
+                else if (inputArray[i].rules[j].valid === true) {
+                    rulesTestedCount++;
+                }
             }
         }
-        
+
         element.data("validationdone", true);
 
-        if (options.groupErrors !== undefined && options.groupErrors !== null) {  //set up "highlight" bindings for each grouped error
-            if (options.form.hasClass("highlightErrors")) {
-                $.each(inputArray, function(index, val) {
+        if (!!options.groupErrors && options.form.hasClass("highlightErrors")) {  //set up "highlight" bindings for each grouped errors
+            $.each(inputArray, function(index, value) {
+                $.each(value.rules, function(idx, val) {
                     if (val.valid === false) {
-                        $(val.input).on("focus", function() {
-                            $("[id='formGrp" + val.input.data("vid") + val.rule + "']").addClass("groupHighlight");
+                        $(value.element).on("focus", function() {
+                            $("[id='formGrp" + value.element.data("vid") + val.methodInfo.method + "']").addClass("groupHighlight");
                         });
-                        $(val.input).on("blur", function() {
-                            $("[id='formGrp" + val.input.data("vid") + val.rule + "']").removeClass("groupHighlight");
+                        $(value.element).on("blur", function() {
+                            $("[id='formGrp" + value.element.data("vid") + val.methodInfo.method + "']").removeClass("groupHighlight");
                         });
                     }
                 });
-            }
+            });
         }
 
         if (options.button !== undefined) {   //re-enable the submit button
@@ -439,13 +396,7 @@ var validator =  function() {
     };
 
     var placeGroupErrorDiv = function(toDisplay, options, elem) {
-        var loc;
-        if (options.form !== undefined) {
-            loc = options.form.data("location") || "right";
-        }
-        else if (elem.parents(".formValidate:first").hasClass("groupByInput")){
-            loc = elem.parents(".formValidate:first").data("location") || "right";
-        }
+        var loc = elem.hasClass("groupByInput") === false ? elem.parents(".formValidate:first").data("location") : elem.data("location");
 
         switch (loc) {
             case "right":
@@ -523,8 +474,8 @@ var validator =  function() {
         displayErrorText(element, errorData, options, errorName, offsetWidth, offsetHeight);
 
         var messageDiv = $("#" + element.data("vid") + "error" + errorName);
-        if ((element).prevUntil(":input").filter(".helptext:first").length > 0) {   //Remove help text because there's an error being displayed now.
-            element.prevUntil(":input").filter(".helptext:first").addClass("hideMessage").removeClass("showMessage");
+        if ((element).prevUntil("input").filter(".helptext:first").length > 0) {   //Remove help text because there's an error being displayed now.
+            element.prevUntil("input").filter(".helptext:first").addClass("hideMessage").removeClass("showMessage");
         }
         if (options.display) {
             displayErrorTextOnHover(options, element, messageDiv, offsetWidth, offsetHeight);
