@@ -26,16 +26,17 @@
 							$(val).removeAttr("validateon");
 						});
 						$("#elementExclude").prop("disabled", true);
-						$("#elementExclude")
 						document.getElementById("fieldValidate1").removeAttribute("data-excludeinputs");
 						$("#fieldValidate1").removeData("excludeinputs");
 						$("#fieldValidate1").removeAttr("excludeinputs");
+						$("#fieldValidate1").removeClass("inputValidate");
 					}
 					else {
 						$("#fieldValidate1").find("input").each(function(idx, val) {
 							val.setAttribute("data-validateon", selectedEvent);
 						});
 						$("#elementExclude").prop("disabled", false);
+						$("#fieldValidate1").addClass("inputValidate");
 					}
 					var revalidate = true;
 					setDisplayContent(revalidate);
