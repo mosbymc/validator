@@ -69,7 +69,8 @@ var validator =  function() {
             try {
                 $(document).on(val, "input", function(event) {
                     var target = $(event.currentTarget), inputOptions;
-                    if ((target.hasClass("inputValidate") || target.parents(".inputValidate:first")) && (target.data("validateon") === val || (val === 'input' && target.data("validateon") == undefined))) {
+                    if ((target.hasClass("inputValidate") || (target.parents(".inputValidate:first") && target.parents(".inputValidate:first").length > 0)) && 
+                        (target.data("validateon") === val || (val === 'input' && target.data("validateon") == undefined))) {
                         if (target.parents(".inputValidate:first").data("excludeinputs") != undefined && target.parents(".inputValidate:first").data("excludeinputs").indexOf(event.currentTarget.id) !== -1) {
                             return;
                         }
