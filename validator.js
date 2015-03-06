@@ -140,13 +140,7 @@ var validator =  function() {
         var inputArray = [];
         inputArray.push(buildInputArray($(input)));
         validateElement(options, inputArray);    //Main function where validation is done.
-
-        if ($(options.input).data("validationdone") !== undefined && $(options.input).data("validationdone")) {
-            return;
-        }
-        else {
-            finalizeValidation(inputArray, options);    //Checks when the validation is complete if it should call the succes function, sends event, etc.
-        }
+        finalizeValidation(inputArray, options);    //Checks when the validation is complete if it should call the succes function, sends event, etc.
     };
 
     this.validateForm = function(continueValidation, form, options) {    //Used as both a callback and internally if no call before function is supplied.
@@ -162,16 +156,10 @@ var validator =  function() {
             formArray = [];
             for (var j = 0, length = inputs.length; j < length; j++) {   //Build out the inputArray with the various validation rules
                 var inputArray = buildInputArray($(inputs[j]));
-                formArray = formArray.concat(inputArray);
+                inputArray === null ? false : formArray = formArray.concat(inputArray);
             }
             validateElement(options, formArray);
-
-            if ($(options.form).data("validationdone") !== undefined && $(options.form).data("validationdone")) {
-                return;
-            }
-            else {
-                finalizeValidation(formArray, options);    //Checks when the validation is complete if it should call the succes function, sends event, etc.
-            }
+            finalizeValidation(formArray, options);    //Checks when the validation is complete if it should call the succes function, sends event, etc.
         }
     }
 
@@ -204,22 +192,18 @@ var validator =  function() {
             inputArray.push({methodInfo: rulesArray[i], valid: "waiting"});
         }
 
-        return { element: elem, rules: inputArray };
+        return rulesArray.length > 0 ? { element: elem, rules: inputArray } : null;
     };
 
     var validateElement = function(options, inputsArray) {      //Starting point for single input validation - reached by both forms and inputs.
         for (var i = 0, len = inputsArray.length; i < len; i++) {
-            if (inputsArray[i].rules.length < 1) {
-                continue;
-            }
             var elem = inputsArray[i].element,
-            failedRequired = false;
+            failedRequired = false,
+            id = performance.now().toString().split(".");
 
             removeErrorText(elem);
             getOtherElem(elem).removeClass("invalid");
-            elem.data("vts", options.time);
-            var id = performance.now().toString().split(".");
-            elem.data("vid", id[1]);
+            elem.data("vts", options.time).data("vid", id[1]);
 
             var rules = inputsArray[i].rules;
             for (var j = 0, length = rules.length; j < length; j++) {
