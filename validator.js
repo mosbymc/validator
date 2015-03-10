@@ -153,7 +153,7 @@ var validator =  function() {
                 $("#" + options.groupErrors).find("br").remove();
             }
 
-            var inputs = $(form).find("input"),
+            var inputs = $(form).find("input, select"),
             formArray = [];
             for (var j = 0, length = inputs.length; j < length; j++) {   //Build out the inputArray with the various validation rules
                 var inputArray = buildInputArray($(inputs[j]));
@@ -825,7 +825,7 @@ var validator =  function() {
         requiredInput: function(obj) {
             var re = new RegExp("^\\s*$");
             var isBlank = re.test(obj.val());
-            if (obj.val().length < 1 || isBlank) {
+            if (obj.val().length < 1 || isBlank || obj.val() === "") {
                return { valid: false, message: "Required field.", width: 100 };
             }
             return { valid: true };
