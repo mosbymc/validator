@@ -3,7 +3,7 @@ validator
 
 JavaScript validator
 
-validator.js is a simple to use JavaScript form validation tool that provides plenty of options for displaying and placing error messages and has been written to make the least amount of coding on the developer's part as possible. Everything runs off html data-attributes and css classes. There is no need to create a validation object with rules and elements/forms to validate. It allows custom validation rules to be written, and they can even be asynchronous. The validator also supports help text and character restrictions on inputs.
+validator.js is a simple to use JavaScript form validation tool that provides lots of options for displaying and placing error messages and has been written to make the least amount of coding on the developer's part as possible. Everything runs off html data-attributes and css classes. There is no need to create a validation object with rules and elements/forms to validate. It allows custom validation rules to be written, and they can even be asynchronous. The validator also supports help text and character restrictions on inputs.
 
 A good place to start is with the HTML page included in this repo (featureTester.html). Most the functionality of the validator is used on that page and it allows you to dynamically add in new feature and see how the markup for the form changes as features are added and removed.
 
