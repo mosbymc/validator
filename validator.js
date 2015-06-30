@@ -1,3 +1,4 @@
+/*
 The MIT License (MIT) 
 Copyright © 2014
 
@@ -15,7 +16,7 @@ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR P
 NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+*/
 var validator =  (function($) {
     //set up event listeners
     $(document).on("click", "input, button", function bindClick(event) {  //Bind form event listener and create "options" object when an input or button with the "formValidate" class is clicked.
