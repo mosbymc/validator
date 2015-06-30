@@ -1,10 +1,13 @@
 <html>
 	<head>
-		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
+		<!--<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />-->
 		<link rel="stylesheet" href="form.css" />
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<!--script src="jquery-1.11.1.js"></script>-->
  		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+ 		<!--<script src="jquery-ui.min.js"></script>-->
 		<script LANGUAGE="javascript" SRC="validator.js"></script>
+		<script LANGUAGE="javascript" SRC="formatter3.js"></script>
 		<script type="text/javascript">
 		function createModal() {
 			$("#modal").dialog({
@@ -30,12 +33,13 @@
 								'<br/><label for="email">Email: </label><input type="text" id="modalemail" data-required data-validationrules="email,custom"/>' +
 								'<br/><label for="selector">Select something: </label><select id="modalchoose" data-required>' +
 								'<option value="0">Select</option><option value="1">Good Choice</option><option value="2">Acceptable Choice</option><option value="3">Bad Choice</option></select>' +
-								'<br/><input type="submit" id="modalSubmit" style="width:800px;" value="Submit" data-form="modalValidate" class="validate"/></div>';
+								'<br/><input type="submit" id="modalSubmit" style="width:800px;" value="Submit" class="validate"/></div>';
 					$("#modal").append(html);
 		        }
 		    });
 
-		    validator().init(["change"]);
+		    validator.setAdditionalEvents(["change"]);
+		    formatter().init();
 		}
 
 		function openModal() {
@@ -44,7 +48,7 @@
 
 		function closeModal() {
 			$("#modalValidate").remove();
-			validator().removeErrors("#modal");
+			validator.removeErrors("#modal");
 		    $("#modal").dialog("close");
 		}
 
@@ -90,7 +94,7 @@
 				callback(true, form, options);
 			},2000);
 		}
-		
+
 		var object = {	//used to test namespaced functions
 			test : function(form, options, callback) {
 				alert("Namespaced function working!");
@@ -103,7 +107,7 @@
 				}
 			}
 		};
-		
+
 		function nameSpace() {
 			this.innerFunction = function(form, options, callback) {
 				alert("Inner function is working!");
@@ -128,13 +132,8 @@
 				}}, 3000);
 		}
 
-		function preventPaste(e){
-		   e.preventDefault();
-		   return false;
-		}
-
 		function testHook() {
-			validator().validate($("#fieldValidate4"));
+			validator.validate($("#fieldValidate4"));
 		}
 
 		$(document).on("validated", function(e, eventData) {
@@ -145,13 +144,13 @@
 					"\nNumber of validation rules tested: " + eventData.testedRules +
 					"\nTotal number of rules: " + eventData.totalRules +
 					"\nTime: " + eventData.time);
-				validator().validate("#fieldValidate5");
-				validator().validate("#testForm");
+				validator.validate("#fieldValidate5");
+				validator.validate("#testForm");
 			}
 		});
 
 		function removeGroupedErrors() {
-			validator().removeErrors("#fieldValidate4");
+			validator.removeErrors("#fieldValidate4");
 		}
 
 		</script>
@@ -166,8 +165,6 @@
 				simiulate an asynchronous function. Also, due to some of the validation rules used on various inputs,<br>
 				not all fields are able to be successfully validated.
 			</p><br><br>
-			<br/>
-			<br/>
 			<input type="button" id="openModal" value="Modal" onclick="openModal()"/>
 			<div id="modal" style="height: 500px;">
 				<div>
@@ -197,13 +194,13 @@
 		<input type="submit" id="hookSubmit" value="Public Validation Hook For Form 4" onclick="testHook()"/>
 		<input type="submit" id="removeGroup" value="Remove Grouped Errors From Form 4" onclick="removeGroupedErrors()"/>
 		<br><br>
-		<div id="groupValidate" class="formValidate hover" data-formaction='submitThisForm'>
+		<div id="groupValidate" class="formValidate  groupByInput" data-location="right" data-formaction='submitThisForm'>
 			<h2>Group Validated</h2>
 			<label for="fName">Name: </label><input type="text" data-required data-validationrules='name' data-displayon=".displaytest,down"/>
 			<br/>
 			<label for="displayTest">Display Name Error Here: </label><input type="text" class="displaytest"/>
 			</br>
-			<label for="homeNum">Home Phone: </label><input type="text" data-required data-validationrules='phone,email' data-offsetwidth="200" data-inputformat="{{###}}-{{###}}-{{####}}"/>
+			<label for="homeNum">Home Phone: </label><input type="text" data-required data-validationrules='phone,email,as' data-offsetwidth="200" data-inputformat="{{###}}-{{###}}-{{####}}"/>
 			<br/>
 			<label for="displayTests">Display Cell Error Here: </label><input type="text" class="displaytest"/>
 			</br>
@@ -214,7 +211,7 @@
 			<label for="email">Email: </label><input type="text" data-required data-validationrules='email'/>
 			<br/>
 			<label for="selector">Select something: </label><select data-required>
-				<option value="0">Select</option>
+				<option value="">Select</option>
 				<option value="1">Good Choice</option>
 				<option value="2">Acceptable Choice</option>
 				<option value="3">Bad Choice</option>
@@ -388,7 +385,7 @@
 			</dl>
 		</fieldset>
 
-		<fieldset id="fieldValidate4" class="formValidate groupByInput" data-formaction="submitThisForm" data-excludeinputs="fv4password" data-beforevalidate="object.innerObj.testFunction">
+		<fieldset id="fieldValidate4" class="formValidate groupByInput" data-location="right" data-formaction="submitThisForm" data-excludeinputs="fv4password" data-beforevalidate="object.innerObj.testFunction">
 	    	<legend>Form Validation - Error messages grouped by input and character restrictions.</legend>
 	      	<dl align='left'>
 	      		<dt><label for='fv4fName'>First Name: </label></dt>
@@ -461,14 +458,14 @@
 				<dt><label for="fv5date">Date: </label></dt>
 				<dd><input type="text" id="fv5date" data-errorprefix="Date" data-required data-validationrules="date"/></dd>
 				<dt><label for="fv5website">Website: </label></dt>
-				<dd><input type="text" id="fv5website" data-errorprefix="Website" data-required data-validationrules="url"/></dd>
+				<dd><input type="text" id="fv5website" data-errorprefix="Website" data-required data-validationrules="url" data-validateon="change"/></dd>
 				<dt><input type="submit" id="fv5groupSubmit" value="Submit" class="validate"/></dt>
 			</dl>
 		</fieldset>
 
 		<fieldset id="formValidate">
+			<legend>Basic Form Validation - uses an actual form and lets the form's action fire on successful validation</legend>
 			<form action="alert('validated');" id="testForm" class="formValidate hover" data-beforevalidate="nameSpace.obj.objFunc">
-		    	<legend>Basic Form Validation - uses an actual form and lets the form's action fire on successful validation</legend>
 		      	<dl align='left'>
 		      		<dt><label for='fv1fName'>First Name: </label></dt>
 					<dd><input type='text' id='fv1fName' title="First Name" size='20' data-required data-type="phone" data-customrules="notMark"/></dd>
