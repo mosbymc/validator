@@ -1,5 +1,3 @@
-/*
-
 The MIT License (MIT) 
 Copyright © 2014
 
@@ -18,10 +16,8 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FO
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-//The starting point of valdation
 var validator =  (function($) {
-    var test = performance.now().toString();
+    //set up event listeners
     $(document).on("click", "input, button", function bindClick(event) {  //Bind form event listener and create "options" object when an input or button with the "formValidate" class is clicked.
         var target = $(event.currentTarget),
         form = target.parents(".formValidate:first");
