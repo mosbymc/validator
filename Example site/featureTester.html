@@ -8,7 +8,7 @@
 
 		<script type="text/javascript">
 			$(document).ready(function() {
-				validator().init(["input", "change", "keyup", "blur"]);
+				validator.setAdditionalEvents(["input", "change", "keyup", "blur"]);
 				initAccordion();
 				var revalidate = false;
 				setDisplayContent(revalidate);
@@ -359,7 +359,7 @@
 						$("#fieldValidate1").removeData("formaction");
 						$("#fieldValidate1").removeAttr("formaction");
 					}
-					validator().validate("#fieldValidate1");
+					validator.validate("#fieldValidate1");
 
 					if (!!beforeFunc) {
 						document.getElementById("fieldValidate1").setAttribute("data-beforevalidate", beforeFunc);
