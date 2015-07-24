@@ -66,67 +66,81 @@
 			$("#text").css("visibility", "visible");
 		}
 
-		function customRule(obj, vState, callback) {
-			if (obj.val().length > 1 || obj.val() === 0) {
-		        callback({ valid: false, message: "Failed custom rule.", width: 150 }, vState);
+		function customRule(callback) {
+			if ($(this).val().length > 1 || $(this).val() === 0) {
+		        callback({ valid: false, message: "Failed custom rule.", width: 150 });
 		    }
 		    else {
-		    	callback({ valid: true }, vState);
+		    	callback({ valid: true });
 		    }
 		}
 		
-		function custom(obj, vState, callback) {
+		function custom(callback) {
+			var elem = this;
 		    setTimeout(function() {
-		    	if (obj.val().length > 1 || obj.val() === 0) {
-			        callback({ valid: false, message: "Failed custom rule.", width: 150 }, vState);
+		    	if ($(elem).val().length > 1 || $(elem).val() === 0) {
+			        callback({ valid: false, message: "Failed custom rule.", width: 150 });
 			    }
 			    else {
-			    	callback({ valid: true }, vState);
+			    	callback({ valid: true });
 			    }},2000);
 		}
 
-		function testFirst(form, options, callback) {
+		function testFirst(callback) {
+			var form = this;
 			setTimeout(function() {
 				alert("Call before validating");
-				callback(true, form, options);
+				callback(true, form);
 			},2000);
 		}
 
 		var object = {	//used to test namespaced functions
-			test : function(form, options, callback) {
+			test : function(callback) {
 				alert("Namespaced function working!");
-				callback(true, form, options);
+				callback(true, this);
 			},
 			innerObj: {
-				testFunction: function(form, options, callback) {
+				testFunction: function(callback) {
 					alert("This function is nested two deep.");
-					callback(true, form, options);
+					callback(true, this);
 				}
 			}
 		};
 
 		function nameSpace() {
-			this.innerFunction = function(form, options, callback) {
+			this.innerFunction = function(callback) {
 				alert("Inner function is working!");
-				callback(true, form, options);
+				callback(true, this);
 			};
 
 			this.obj = {
-				objFunc: function(form, options, callback) {
+				objFunc: function(callback) {
 					alert("Fucntion -> Object -> Function found");
-					callback(true, form, options);
+					callback(true, this);
 				}
 			}
 			return this;
 		}
 
-		function notMark(obj, vState, callback) {
-			setTimeout(function() {
-				if (obj.val() !== "Mark")
+		function notMark(callback) {
+			var elem = this;
+			setTimeout(function () {
+				if ($(elem).val() !== "Mark")
+					callback({ valid: false, message: "You're not Mark!", width: 200 });
+				else {
+					callback({ valid: true });
+				}}, 3000);
+		}
+
+		function notmark(callback) {
+			/*var elem = this;
+			setTimeout(function () {
+				if ($(elem).val() !== "Mark")
 					callback({ valid: false, message: "You're not Mark!", width: 200 }, vState);
 				else {
 					callback({ valid: true }, vState);
-				}}, 3000);
+				}}, 3000);*/
+			throw 1;
 		}
 
 		function testHook() {
@@ -136,18 +150,15 @@
 		$(document).on("validated", function(e, eventData) {
 			if (eventData.element === "fieldValidate3") {
 				alert(eventData.element + " finished validation." + 
-					"\nPassed: " + eventData.passed + 
-					"\nNumber of failed inputs: " + eventData.count +
-					"\nNumber of validation rules tested: " + eventData.testedRules +
-					"\nTotal number of rules: " + eventData.totalRules +
-					"\nTime: " + eventData.time);
+					"\nPassed: " + eventData.succeeded + 
+					"\nNumber of failed inputs: " + eventData.count);
 				validator.validate("#fieldValidate5");
 				validator.validate("#testForm");
 			}
 		});
 
 		function removeGroupedErrors() {
-			validator.removeErrors("#fieldValidate4");
+			validator.removeErrors($("#fieldValidate4"));
 		}
 
 		</script>
@@ -171,7 +182,7 @@
 					<input type="button" id="closeModal" value="Close" onclick="closeModal()"/>
 					<br/><br/>
 					<span class="helptext hideMessage">Password must be at least 8 characters and include both upper and lower case letters and a number.</span>
-					<input type="text" id="modalInput" data-validateon="input" data-validationrules="name" data-inputaction="submitThisForm" data-modalid="modal" class="inputValidate hover"/>
+					<input type="text" id="modalInput" data-validateon="input" data-validationrules="password" data-inputaction="submitThisForm" data-modalid="modal" class="inputValidate hover"/>
 					<BR><BR><BR><BR><BR><BR><BR><BR><BR>
 				</div>
 			</div>
@@ -182,7 +193,7 @@
 				<br/><br/>
 				<input type="text" id="left" data-location="right" data-required data-customrules="custom,notMark" data-validateon="input" class="inputValidate"/><label for="left">Left: </label>
 				<br/><br/>
-				<label for="right">Right: </label><input type="text" id="right" data-max="200" data-offsetwidth="100" data-offsetheight="50" data-validationrules="name,phone" class="inputValidate"/>
+				<label for="right">Right: </label><input type="text" id="right" data-max="200" data-offsetwidth="100" data-offsetheight="50" data-validationrules="phone" class="inputValidate"/>
 				<br/><br/>
 				<label for="bottom">Bottom: </label><input type="text" id="bottom" data-location="bottom" data-inputaction="validInput" data-offsetwidth="-100" data-offsetheight="50" data-validationrules="phone" data-validateon="input" class="inputValidate"/>
 			</div>
@@ -260,9 +271,9 @@
 	    	<legend>Basic Form Validation - no additional display options used</legend>
 	      	<dl align='left'>
 	      		<dt><label for='fv1fName'>First Name: </label></dt>
-				<dd><input type='text' title="First Name" size='20' data-required data-customrules="notMark"/></dd>
+				<dd><input type='text' title="First Name" size='20' data-required data-customrules="notMark,phone,asdsa"/></dd>
 				<dt><label for='fv1lName'>Last Name: </label></dt>
-				<dd><input type='text' size='20' title="Last Name" data-required data-validationrules="name" data-displayon="#fv1displayTest4,down"/></dd>
+				<dd><input type='text' size='20' title="Last Name" data-required data-displayon="#fv1displayTest4,down"/></dd>
 				<dt><label for="fv1displayTest4">Last Name Error Here: </label></dt>
 				<dd><input type="text" id="fv1displayTest4" class="displaytest"/></dd>
 				<dt><label for="fv1homephone">Home Phone: </label></dt>
