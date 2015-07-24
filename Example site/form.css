@@ -8,6 +8,16 @@
 	border: 2px solid #A41919;
 }
 
+#formErrors {
+	background-color: #ffd;
+	padding-left: 30px;
+	padding-bottom: 10px;
+	margin-left: auto;"
+	width: 80%;
+	color: #A41919;
+	border: 2px solid #A41919;
+}
+
 #fieldValidate1 {
 	float: left;
 	display: inline-block;
@@ -108,8 +118,10 @@
 /*Put on the div surrounding the grouped errors at the input level for top/bottom grouping*/
 .vInputGroup {
 	width: 200px;
+	height: 20px;
 	margin-top: 5px;
 	margin-bottom: 5px;
+	margin-left: 140px;
 	border: 1px solid red;
 	border-radius: 5px;
 	text-align: center;
@@ -135,6 +147,19 @@
 	border-radius: 5px;
 	font: normal 11px 'Lucida Grande', Verdana, sans-serif;
 	max-width: 250px;
+}
+
+.testForm dt {
+	float:left;
+	width:150px;
+	padding:5px;
+}
+
+.testForm dd {
+	width:550px;
+	height: 50px;
+	margin:0;
+	padding:5px;
 }
 
 body {
@@ -207,4 +232,8 @@ fieldset .button {
 	color:#FFFFFF;
 	height:30px;
 	width:80px;
+}
+
+pre {
+	margin: 0px;
 }
