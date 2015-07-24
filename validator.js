@@ -17,450 +17,353 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FO
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-var validator =  (function($) {
-    //set up event listeners
-    $(document).on("click", "input, button", function bindClick(event) {
+var validator = (function validator($) {
+    var validationState = {};
+    $(document).on("click", "input, button", function clickHandler(event) {  //Bind form event listener and create "options" object when an input or button with the "formValidate" class is clicked.
         var target = $(event.currentTarget),
         form = target.parents(".formValidate:first");
-        if (form.length > 0 && target.hasClass("validate")) {
+        if (form.length > 0 && target.hasClass("validate")) {   //ensure that there's at least one input inside the "form" element, and it has the correct class before trying to validate
             var formOptions = createOptions(form, event);
-            formOptions.groupErrors = form.data("grouperrors") || null;
-            formOptions.callBefore = form.data("beforevalidate") || false;
-            formOptions.button = target;
-            target.prop("disabled", true);
+            validationState[formOptions.time] = { options: formOptions };
             callBeforeValidate(form, formOptions);
         }
     });
 
-    $(document).on("keypress", "input", function bindKeypress(event) {
+    $(document).on("keypress", "input", function keypressHandler(event) {   //Bind event listener for the keypress event on an input. Used for restricting character input.
         var target = $(event.currentTarget);
         if (target.data("inputtype") != undefined) {
             monitorChars(target, target.data("inputtype"), event);
         }
     });
 
-    $(document).on("focus", "input", function bindFocus(event) {
+    $(document).on("focus", "input", function focusHandler(event) {  //Help text listener. Will display help text for a given input when focused.
         var target = $(event.currentTarget);
-        if (!target.hasClass("invalid") && target.prevUntil("input").filter(".helptext:first").length > 0 && $("[id^='" + target[0].id + "error']").length < 1 && $("#" + target[0].id + "InputGrp").length < 1) {
-            var modal = target.parents(".formValidate:first").data("modalId") || target.parents(".inputValidate:first").data("modalId") || target.data("modalid") || null;
+        if (!target.hasClass("invalid") && target.prevUntil("input").filter(".helptext:first").length > 0 && $("[id^='" + target.data("vid") + "error']").length < 1 && $("#" + target[0].id + "InputGrp").length < 1) {
+            var modal = target.parents(".formValidate:first").data("modalId") || target.parents(".inputValidate:first").data("modalId") || target.data("modalId") || null;
             displayHelpText(target, modal);
 
-            target.one("blur", function bindBlur(event) {
+            target.one("blur", function blurHandler(event) {
                 var helpText = target.prevUntil("input").filter(".helptext:first");
                 helpText.addClass("hideMessage").removeClass("showMessage");
-                if (modal !== null) {
-                    $(document).off("helpTextModalScroll" + target.data("htid"));
-                }
+                if (modal !== null) $(document).off("helpTextModalScroll" + target.data("htid"));   //unbind event listeners for the help text spans
                 $(document).off("helpTextScroll" + target.data("htid"));
             });
         }
     });
     setAdditionalEvents(['input']);
 
-    function setAdditionalEvents(events) {
+    function setAdditionalEvents(events) {  //listens to the 'input' event by default, others can be passed in by the developer
         if (events && events.constructor === Array) {
-            $.each(events, function(index, val) {
-                try {
-                    $(document).on(val, "input", function bindEvents(event) {
-                        var target = $(event.currentTarget), inputOptions;
-                        if ((target.hasClass("inputValidate") || (target.parents(".inputValidate:first") && target.parents(".inputValidate:first").length > 0)) && 
-                            (target.data("validateon") === val || (val === 'input' && target.data("validateon") == undefined))) {
-                            if (target.parents(".inputValidate:first").data("excludeinputs") != undefined && target.parents(".inputValidate:first").data("excludeinputs").indexOf(event.currentTarget.id) !== -1) {
-                                return;
-                            }
-                            inputOptions = createOptions(target, event);
-                            validateInput(target, inputOptions);
+            $.each(events, function iterateAdditionalEventsCallback(index, val) {
+                $(document).on(val, "input", function additionalEventsHandler(event) {  //handler for each additional event that is passed
+                    var target = $(event.currentTarget), 
+                        parent = target.parents(".inputValidate:first") ,inputOptions;
+                    if ((target.hasClass("inputValidate") || (parent && parent.length > 0)) && 
+                        (target.data("validateon") === val || (val === 'input' && target.data("validateon") == undefined))) {
+                        if (parent.data("excludeinputs") && parent.data("excludeinputs").indexOf(event.currentTarget.id) !== -1) {
+                            return;
                         }
-                    });
-                }
-                catch(ex) {
-                    console.log("Could not bind forms to event: '" + val + "'\n" + ex);
-                }
+                        inputOptions = createOptions(target, event);
+                        validateInput(target, inputOptions);
+                    }
+                });
             });
         }
     };
 
-    function validate(formElem) {
+    function validate(formElem) {    //Public function for starting off the validation process. Basically does what the 'form event' listener does: creates options object and starts the process
         if (formElem !== undefined) {
-            var form;
-            if (typeof formElem === "string") {
-                form = $(formElem);
-            }
-            else if (typeof formElem === "object") {
-                form = formElem;
-            }
+            var form = $(formElem);
             try {
-                var button = form.find(".validate"),
-                formOptions = createOptions(form, null);
-                formOptions.groupErrors = form.data("grouperrors") || null;
-                formOptions.callBefore = form.data("beforevalidate") || false;
-                formOptions.button = button;
-                button.prop("disabled", true);
+                var formOptions = createOptions(form, null);
+                validationState[formOptions.time] = { options: formOptions };
                 callBeforeValidate(form, formOptions);
             }
             catch (ex) {
-                console.log("Could not validate form: " + formElem + "\n" + ex);
+                form.find(".validate").prop("disabled", false);
             }
-        }
-        else {
-            console.log("Cannot validate a null form.");
         }
     }
 
-    function callBeforeValidate(form, options) {
-        if (options.callBefore !== false) {
-            var fn = [window].concat(options.callBefore.split('.')).reduce(function (prev, curr) {
+    function callBeforeValidate(form, options) {    //allows the developer to determine at runtime if the form should be validated.
+        form.data("vts", options.time);
+        options.button.prop("disabled", true);
+        if (options.callBefore !== false) {     //Run the "call before" function if it's supplied, and continue validation if true.
+            var fn = [window].concat(options.callBefore.split('.')).reduce(function findCallBeforeFunctionCallback(prev, curr) {
                 return (typeof prev === "function" ? prev()[curr] : prev[curr]);
             });
-            if (typeof fn === "function") {
-                try {
-                    fn.call(this, form, Object.freeze(options), validateForm);
-                }
-                catch (ex) {
-                    console.log("'Call before' function: '" + options.callBefore + "'' failed to execute\n" + ex);
-                    validateForm(true, form, options);
-                }
-            }
-            else {
-                console.log("The supplied 'call before' function: " + options.callBefore + " could not be found.");
-                validateForm(true, form, options);
-            }
+            if (typeof fn === "function") fn.call(form, validateForm);
+            else validateForm(true, form, options);
         }
-        else{
-            validateForm(true, form, options);
-        }
+        else validateForm(true, form, options);
     }
 
-    function validateInput(input, options) {
-        $(options.input).removeData("validationdone").removeAttr("validationdone");
+    function validateInput(input, options) {  //Where inputs go to be validated and the success function called if supplied.
         var inputArray = [];
         inputArray.push(buildInputArray($(input)));
-        validateElement(options, inputArray);
-        finalizeValidation(inputArray, options);
+        if (inputArray[0] === null && inputArray.length === 1) return;  //catch potential validation events on inputs with no rules
+        validationState[options.time] = { options: options, inputArray: inputArray };
+        validateElement(options, inputArray);    //Main function where validation is done.
+        finalizeValidation(input);
     }
 
-    function validateForm(continueValidation, form, options) {
-        $(options.form).removeData("validationdone").removeAttr("validationdone");
-
-        if (continueValidation) {
-            if (options.groupErrors !== null) {
+    function validateForm(continueValidation, form) {    //Used as both a callback and internally if no 'call before validation' function is supplied.
+        var options = validationState[form.data("vts")].options;
+        if (continueValidation) {   //Only continue validating if given the go ahead from the "call before" function.
+            if (options.groupErrors !== null) {     //Remove previous grouped validation errors before validating a new input.
                 $("#" + options.groupErrors).find(".errorSpan").remove();
                 $("#" + options.groupErrors).find("br").remove();
             }
 
             var inputs = $(form).find("input, select"),
             formArray = [];
-            for (var j = 0, length = inputs.length; j < length; j++) {
+            for (var j = 0, length = inputs.length; j < length; j++) {   //Build out the inputArray with the various validation rules
                 var inputArray = buildInputArray($(inputs[j]));
-                inputArray === null ? false : formArray = formArray.concat(inputArray);
+                if (inputArray !== null) formArray = formArray.concat(inputArray);
             }
+            validationState[form.data("vts")].inputArray = formArray;
             validateElement(options, formArray);
-            finalizeValidation(formArray, options);
+            finalizeValidation(form);
         }
     }
 
-    function buildInputArray(elem) {
+    function buildInputArray(elem) {    //builds an array of the necessary validation rules for the element that's passed in.
         var vRules = elem.data("validationrules") || "",
-        customRules = elem.data('customrules') || "",
-        rulesArray = [], inputArray = [];
+            customRules = elem.data('customrules') || "",
+            inputObj = {};
 
-        elem.data("required") === "" ? rulesArray.push({method: "required", type: "required"}) : false;
-        !elem.data("min") ? false : rulesArray.push({method: "testMinValue", type: "validator"});
-        !elem.data("max") ? false : rulesArray.push({method: "testMaxValue", type: "validator"});
-        !elem.data("matchfield") ? false : rulesArray.push({method: "verifyMatch", type: "validator"});
-        !elem.data("maxchecked") ? false : rulesArray.push({method: "maxChecked", type: "validator"});
-        !elem.data("minchecked") ? false : rulesArray.push({method: "minChecked", type: "validator"});
+        if (elem.data("required") === "") inputObj["required"] = "waiting";
+        if (elem.data("min")) inputObj["validator.validationRules.testMinValue"] = "waiting";
+        if (elem.data("max")) inputObj["validator.validationRules.testMaxValue"] = "waiting";
+        if (elem.data("matchfield")) inputObj["validator.validationRules.verifyMatch"] = "waiting";
+        if (elem.data("maxchecked")) inputObj["validator.validationRules.maxChecked"] = "waiting";
+        if (elem.data("minchecked")) inputObj["validator.validationRules.minChecked"] = "waiting";
 
-        var rules = vRules.split(",");
-        for (var l = 0, len = rules.length; l < len; l++) {
-            if (rules[l] !== "") {
-                rulesArray.push({method: rules[l], type: "validator"});
-            }
+        var rules = vRules.replace(/ /g, "").split(",");
+        for (var i = 0; i < rules.length; i++) {
+            if (rules[i] !== "") inputObj["validator.validationRules." + rules[i]] = "waiting";
         }
-        rules = customRules.split(",");
-        for (var i = 0, length = rules.length; i < length; i++) {
-            if (rules[i] !== "") {
-                rulesArray.push({method: rules[i], type: "custom"});
-            }
+        rules = customRules.replace(/ /g, "").split(","); 
+        for (var i = 0; i < rules.length; i++) {
+            if (rules[i] !== "") inputObj[rules[i]] = "waiting";
         }
 
-        for (var i = 0, length = rulesArray.length; i < length; i++) {
-            inputArray.push({methodInfo: rulesArray[i], valid: "waiting"});
-        }
-
-        return rulesArray.length > 0 ? { element: elem, rules: inputArray } : null;
+        return Object.keys(inputObj).length > 0 ? { element: elem, rules: inputObj } : null;   //only return something for this input if it's actually being validated
     }
 
-    function validateElement(options, inputsArray) {
+    function validateElement(options, inputsArray) {      //Starting point for single input validation - reached by both forms and inputs.
         for (var i = 0, len = inputsArray.length; i < len; i++) {
             var elem = inputsArray[i].element,
             failedRequired = false,
-            id = performance.now().toString().split(".");
+            id = performance.now().toString().split(".");   //can't rely on devs giving inputs ids.. need to create our own.
 
             removeErrorText(elem);
             getOtherElem(elem).removeClass("invalid");
-            elem.data("vts", options.time).data("vid", id[1]);
+            elem.data("vts", options.time).data("vid", id[1]).attr("vts", options.time);
 
             var rules = inputsArray[i].rules;
-            for (var j = 0, length = rules.length; j < length; j++) {
-                if (rules[j].methodInfo.type === "required") {
-                    if (elem[0].type === "radio" || elem[0].type === "checkbox") {
+            for (var rule in rules) {
+                if (rule === "required") {
+                    if (elem[0].type === "radio" || elem[0].type === "checkbox") {  //...so it's easier to make them work differently than everything else, rather than hack how everything else works.
                         tested = validationRules.requiredGroup(elem);
                     }
                     else {
                         tested = validationRules.requiredInput(elem);
                     }
-                    postValidation(tested, elem, options, "required", inputsArray);
-                    if (!tested.valid) {
-                        failedRequired = true;
-                    }
+                    postValidation(tested, elem, options, rule);
+
+                    if (!tested.valid) failedRequired = true;   //the current input has no value - don't want to validate any other rules
                 }
                 else {
-                    if (!failedRequired) {
-                        var name = rules[j].methodInfo.method;
-                        var fn = rules[j].methodInfo.type === "validator" ? validationRules[name] : 
-                                    [window].concat(name.split('.')).reduce(function (prev, curr) {
-                                        return (typeof prev === "function" ? prev()[curr] : prev[curr]);
-                                    });;
-                        if (typeof fn === "function") {
-                            var inputState = {
-                                option: options,
-                                element: elem,
-                                rule: name,
-                                inputArray: inputsArray
-                            };
-                            Object.freeze(inputState);
-                            tested = fn.call(this, elem, inputState, customRulesCallback);
-                            rules[j].methodInfo.type === "validator" ? postValidation(tested, elem, options, name, inputsArray) : false;
-                        }
-                        else {
-                            console.log("Could not find library function: " + name + " for element: " + elem);
-                            setRuleStatus(elem, inputsArray, name, null);
-                        }
+                    if (!failedRequired) {      //if the input wasn't 'required', or it passed validation for that function, then move on through the array for that input
+                        var fn = [window].concat(rule.split('.')).reduce(function findValidationRuleCallback(prev, curr) {
+                                    return (typeof prev === "function" ? prev()[curr] : prev[curr]);
+                                });;
+                        if (typeof fn === "function") createContextWrapper(rule, options.time, fn, elem);
+                        else setRuleStatus(elem, rule, null);    //if the validator cannot find the supplied function name, then it just gets skipped.
                     }
-                    else {
-                        setRuleStatus(elem, inputsArray, rules[j].methodInfo.method, null);
-                    }
+                    else setRuleStatus(elem, rule, null); //input failed the required validation and we just need to clear this rule out of the array
                 }
             }
         }
     }
 
-    function postValidation(tested, elem, options, rule, inputsArray) {
+    function createContextWrapper(name, time, fn, elem) {    //need to make use of closures and scope here to ensure each contextWrapper has its own scope
+        var cw = contextWrapper(name, time, fn, elem, function validated(result) {
+            cw.done.call(cw, result); //The custom validation functions will callback to here when they are done validating.
+        });
+        cw.customFunction.call(elem[0], cw.validate); //once the contextWrapper is created, call the custom validation function
+    }
+
+    function postValidation(tested, elem, options, rule) {
         if (!tested.valid) {
             var errorOffsets = getMessageOffset(elem);
             createErrorMessage(elem, tested, options, rule, errorOffsets.width, errorOffsets.height);
-            groupByForm(options, elem, rule);
-            groupByInput(options, elem, rule);
+            if (options.group) groupByInput(options, elem, rule);
+            else if (options.groupErrors !== undefined && options.groupErrors !== null) groupByForm(options, elem, rule);
         }
-        setRuleStatus(elem, inputsArray, rule, tested.valid);
+        setRuleStatus(elem, rule, tested.valid);
     }
 
-    function setRuleStatus(elem, inputsArray, value, status) {
-        for (var k = 0, length = inputsArray.length; k < length; k++) {
-            if (elem[0] === inputsArray[k].element[0]) {
-                for (var i = 0, len = inputsArray[k].rules.length; i < len; i++) {
-                    if (value === inputsArray[k].rules[i].methodInfo.method) {
-                        inputsArray[k].rules[i].valid = status;
-                        break;
-                    }
-                }
+    function setRuleStatus(elem, value, status) {  //sets the status of each validation rule in the array - when none are waiting, we're through validating
+        var instance = elem.data("vts"),
+            input;
+        for (var i = 0, length = validationState[instance].inputArray.length; i < length; i++) {
+            input = validationState[instance].inputArray[i];
+            if (elem.data("vid") === input.element.data("vid")) {
+                input.rules[value] = status;
+                break;
             }
         }
     }
 
-    function customRulesCallback(tested, inputState) {
+    function validationRulesCallback(result) {      //callback for all custom validation rules
         try {
-            if (inputState.element.data("vts") === inputState.option.time) {
-                postValidation(tested, inputState.element, inputState.option, inputState.rule, inputState.inputArray);
+            if ($(this.element).data("vts") === this.timeStamp) {    //If this is the most recent validation instance, go about the clean up.
+                postValidation(result, this.element, validationState[this.timeStamp].options, this.functionName);
+                finalizeValidation(this.element);
             }
-            finalizeValidation(inputState.inputArray, inputState.option);
+            else delete validationState[this.timeStamp];
         }
         catch(ex) {
-            console.log("Returned parameters from custom validation rule: '" + inputState.rule + "', are not in the correct format.\n" + ex);
-            inputState.option.button.prop("disabled", false);
+            if (validationState[this.timeStamp].options.button)
+                validationState[this.timeStamp].options.button.prop("disabled", false);
         }
     }
 
-    function finalizeValidation(inputArray, options) {
-        var element = options.form === undefined ? $(options.input) : $(options.form);
-        if (element.data("validationdone") !== undefined && element.data("validationdone")) {
-            return;
-        }
+    function finalizeValidation(element) {  //this is where we check to see if we're done validating, fire the validation event, and call the supplied 'success' function.
+        var instance = element.data("vts");
+        if (!validationState[instance]) return;
+        var vElem = validationState[instance].options.form || $(validationState[instance].options.input),
+            numFailed = 0,
+            inputArray = validationState[instance].inputArray,
+            options = validationState[instance].options;
 
-        var numFailed = 0,
-        rulesTestedCount = 0;
         for (var i = 0, length = inputArray.length; i < length; i++) {
-            for (var j = 0, len = inputArray[i].rules.length; j < len; j++) {
-                if (inputArray[i].rules[j].valid === "waiting") {
-                    return;
-                }
-                else if (inputArray[i].rules[j].valid === false) {
-                    numFailed++;
-                    rulesTestedCount++;
-                }
-                else if (inputArray[i].rules[j].valid === true) {
-                    rulesTestedCount++;
-                }
+            for (var rule in inputArray[i].rules) {
+                if (inputArray[i].rules[rule] === "waiting") return;
+                else if (inputArray[i].rules[rule] === false) numFailed++;
             }
         }
 
-        element.data("validationdone", true);
+        delete validationState[options.time];   //remove the current instance from the vState object
+        if (options.button) options.button.prop("disabled", false);   //re-enable the submit button
 
-        if (!!options.groupErrors && options.form.hasClass("highlightErrors")) {
-            $.each(inputArray, function(index, value) {
-                $.each(value.rules, function(idx, val) {
-                    if (val.valid === false) {
-                        $(value.element).on("focus", function() {
-                            $("[id='formGrp" + value.element.data("vid") + val.methodInfo.method + "']").addClass("groupHighlight");
+        if (!!options.groupErrors && options.form.hasClass("highlightErrors")) {  //set up "highlight" bindings for each grouped errors
+            $.each(inputArray, function iterateInputsForGroupingCallback(index, value) {
+                $.each(value.rules, function iterateRulesForGroupingCallback(idx, val) {
+                    if (val === false) {
+                        $(value.element).on("focus", function addGroupHighlightHandler() {
+                            $("[id='formGrp" + value.element.data("vid") + idx + "']").addClass("groupHighlight");
                         });
-                        $(value.element).on("blur", function() {
-                            $("[id='formGrp" + value.element.data("vid") + val.methodInfo.method + "']").removeClass("groupHighlight");
+                        $(value.element).on("blur", function removeGroupHighlightHandler() {
+                            $("[id='formGrp" + value.element.data("vid") + idx + "']").removeClass("groupHighlight");
                         });
                     }
                 });
             });
         }
 
-        if (options.button !== undefined) {
-            options.button.prop("disabled", false);
-        }
-
         $(document).trigger("validated", [{
             type: options.form === undefined ? "input validation" : "form validation",
             element: options.form !== undefined ? options.form[0].id : options.input,
-            passed: numFailed === 0,
-            count: numFailed,
-            totalRules: inputArray.length,
-            testedRules: rulesTestedCount,
-            time: options.time,
+            succeeded: numFailed === 0,
             event: options.event
         }]);
 
-        if (numFailed === 0 && options.success !== null) {
-            var fn = [window].concat(options.success.split('.')).reduce(function (prev, curr) {
+        if (numFailed === 0 && options.success !== null) {       //If the "form" passed validation and doesn't have an action attribute, call the success function if one was supplied.
+            var fn = [window].concat(options.success.split('.')).reduce(function findSuccessFunctionCallback(prev, curr) {
                 return (typeof prev === "function" ? prev()[curr] : prev[curr]);
             });
-            if (typeof fn === "function") {
-                try {
-                   fn.call(this); 
-                }
-                catch(ex) {
-                    console.log("'Success' function: '" + options.success + "'' failed to execute\n" + ex);
-                }
-            }
-            else {
-                console.log("Could not find successful validation function: '" + options.success + "' for the current form.");
-            }
+            if (typeof fn === "function") fn.call(options.form ? options.form[0] : options.input[0]);
         }
-        else if (numFailed === 0 && options.event !== null && options.event.currentTarget !== null && options.input === undefined) {
-            options.event.preventDefault();
-            options.form[0].submit();
+        else if (numFailed === 0 && options.event !== null && options.event.currentTarget !== null && options.input === undefined) {  //We need to programmatically submit the form here - async function will prevent the form action from firing.
+            options.event.preventDefault();   //prevent default form sumbit
+            options.form[0].submit();       //then call it programmatically.
         }
-        else if (numFailed !== 0 && options.event !== null && options.event.currentTarget !== null) {
+        else if (numFailed !== 0 && options.event !== null && options.event.currentTarget !== null) {   //If the form failed validation and has an action attribute, prevent the default action of the form.
             options.event.preventDefault();
         }
     }
 
-    function groupByInput(options, elem, rule) {
-        if (options.group) {
-            if ($("#" + elem.data("vid") + "InputGrp").length === 0) {
-                placeGroupErrorDiv(getOtherElem(elem), options, elem);
-            }
-            var errorToMove = $("#" + elem.data("vid") + "error" + rule),
-            html = errorToMove.html(),
-            span = "<span class='inputGrpErrorSpan'>" + html + "</span></br>";
-            $("#" + elem.data("vid") + "InputGrp").append(span);
-            errorToMove.remove();
+    function groupByInput(options, elem, rule) {    //groups all error messages from the validation by input
+        if ($("#" + elem.data("vid") + "InputGrp").length === 0) {
+            placeGroupErrorDiv(getOtherElem(elem), options, elem);
         }
+        var errorToMove = $("#" + elem.data("vid") + "error" + rule),
+        html = errorToMove.html(),
+        span = "<span class='inputGrpErrorSpan'>" + html + "</span></br>";
+        $("#" + elem.data("vid") + "InputGrp").append(span);
+        errorToMove.remove();
     }
 
     function placeGroupErrorDiv(toDisplay, options, elem) {
-        var loc = elem.hasClass("groupByInput") === false ? elem.parents(".formValidate:first").data("location") : elem.data("location");
-
+        var loc = elem.hasClass("groupByInput") === false ? elem.parents(".formValidate:first").data("location") || "right"  : elem.data("location") || "right";
         switch (loc) {
             case "right":
-                toDisplay.after("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup alignInput'></div>");
-                return;
+                return toDisplay.after("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup alignInput'></div>");
             case "left":
-                toDisplay.before("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup alignInput'></div>");
-                return;
+                return toDisplay.before("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='hInputGroup alignInput'></div>");
             case "top":
-                toDisplay.before("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='vInputGroup'></div>");
-                return;
+                return toDisplay.before("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='vInputGroup'></div>");
             case "bottom":
-                toDisplay.after("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='vInputGroup'></div>");
-                return;
+                return toDisplay.after("<div id='" + elem.data("vid") + "InputGrp' data-parentinput='" + elem.data("vid") + "' class='vInputGroup'></div>");
         }
     }
 
-    function groupByForm(options, input, rule) {
-        if (options.groupErrors !== undefined && options.groupErrors !== null) {
-            $("#" + input.data("vid") + "error" + rule).each(function(index, val) {
-                var prefix = $(input).data("errorprefix");
-                if (prefix !== undefined) {
-                    $(val).html(prefix + ": " + $(val).html());
-                }
-                var span = "<span class='errorSpan' id='formGrp" + input.data("vid") + rule + "' data-parentinput='" + input.data("vid") + "'>" + $(val).html() + "</span>";
-                placeErrorSpan(options, input.data("vid"), span, rule);
-                $(val).remove();
-            });
-            var grpContainer = $("#" + options.groupErrors);
-            if (!grpContainer.hasClass("showGroupedErrors")) {
-                grpContainer.removeClass("hideGroupedErrors").addClass("showGroupedErrors");
+    function groupByForm(options, input, rule) {        //groups the error messages from validation into a DOM element supplied by the data-grouperrors attr.
+        $("#" + input.data("vid") + "error" + rule).each(function iterateErrorDivsCallback(index, val) {    //Grab all error divs for the current input and put them in the div.
+            var prefix = $(input).data("errorprefix");
+            if (prefix !== undefined) {
+                $(val).html(prefix + ": " + $(val).html());
             }
+            var span = "<span class='errorSpan' id='formGrp" + input.data("vid") + rule + "' data-parentinput='" + input.data("vid") + "'>" + $(val).html() + "</span>";
+            placeErrorSpan(options, input.data("vid"), span, rule);
+            $(val).remove();
+        });
+        var grpContainer = $("#" + options.groupErrors);
+        if (!grpContainer.hasClass("showGroupedErrors")) {
+            grpContainer.removeClass("hideGroupedErrors").addClass("showGroupedErrors");
         }
     }
 
     function placeErrorSpan(options, inputId, span, rule) {
-        var errorSpans = $("#" + options.groupErrors).children(".errorSpan"),
-        foundSibling = false;
-        if (errorSpans !== undefined && errorSpans.length > 0) {
-            errorSpans.each(function(index, val) {
-                if ($(val).data("parentinput") === inputId) {
-                    $(span).insertBefore($(val));
+        var siblings = $("#" + options.groupErrors).find("[id^='formGrp" + inputId + "']"); //if the current error span has sibling errors for the same input already created, just prepend the new span to them.
+        if (siblings.length > 0) {
+            $(span).insertBefore(siblings[0]);
+            $("</br>").insertAfter($("#formGrp" + inputId + rule));
+            return;
+        }
+        var inputs = options.form.find("input"),    //If no sibling was found, get all the inputs in the current form...
+        parentInput = inputs.filter(function() {
+            return $(this).data("vid") === inputId ? $(this) : false;
+        }),
+        inputIndex = inputs.index(parentInput); 
+        if (inputIndex < inputs.length - 1) {       //...and starting with the next input in the form after the current input, find the next posted error, and prepend the new error span to it.
+            for (var i = inputIndex + 1; i < inputs.length; i++) {
+                var siblingSpan = $("#" + options.groupErrors).children("[data-parentinput='" + $(inputs[i]).data("vid") + "']");
+                if (siblingSpan.length > 0) {
+                    $(span).insertBefore(siblingSpan);
                     $("</br>").insertAfter($("#formGrp" + inputId + rule));
-                    foundSibling = true;
-                    return false;
-                }
-            });
-            if (!foundSibling) {
-                var inputs = options.form.find("input"),
-                parentInput = $("#" + inputId),
-                inputIndex = inputs.index(parentInput);
-                if (inputIndex < inputs.length - 1) {
-                    for (var i = inputIndex + 1; i < inputs.length; i++) {
-                        var siblingSpan = $("#" + options.groupErrors).children("[data-parentinput='" + inputs[i].id + "']");
-                        if (siblingSpan.length > 0) {
-                            $(span).insertBefore(siblingSpan);
-                            $("</br>").insertAfter($("#formGrp" + inputId + rule));
-                            foundSibling = true;
-                            break;
-                        }
-                    }
-                    if (!foundSibling) {
-                        $("#" + options.groupErrors).append(span).append("</br>");
-                    }
+                    return;
                 }
             }
         }
-        else {
-            $("#" + options.groupErrors).append(span).append("</br>");
-        }
+        $("#" + options.groupErrors).append(span).append("</br>");  //if this is the first error span to be placed in the group, just place it.
     }
 
     function createErrorMessage(element, errorData, options, errorName, offsetWidth, offsetHeight) {
         displayErrorText(element, errorData, options, errorName, offsetWidth, offsetHeight);
 
         var messageDiv = $("#" + element.data("vid") + "error" + errorName);
-        if ((element).prevUntil("input").filter(".helptext:first").length > 0) {
+        if ((element).prevUntil("input").filter(".helptext:first").length > 0) {   //Remove help text because there's an error being displayed now.
             element.prevUntil("input").filter(".helptext:first").addClass("hideMessage").removeClass("showMessage");
         }
         if (options.display) {
             displayErrorTextOnHover(options, element, messageDiv, offsetWidth, offsetHeight);
         }
         else if (!options.display && options.modalId === null) {
-            $(window).scroll(function() {
+            $(window).scroll(function windowScrollHandler() {
                 setErrorPos(element, offsetWidth, offsetHeight, messageDiv);
             });
         }
@@ -480,20 +383,15 @@ var validator =  (function($) {
             var errorMessage = errorData.message === undefined ? "Validation Error" : errorData.message;
             popup.html(errorMessage).css('width', errorData.width === undefined ? "" : errorData.width);
             setErrorPos(element, offsetWidth, offsetHeight, popup);
-            if (options.display) {
-                popup.addClass("hideMessage").removeClass("showMessage");
-            }
-            else {
-                popup.addClass("showMessage").removeClass("hideMessage");
-            }
+            if (options.display) popup.addClass("hideMessage").removeClass("showMessage");
+            else popup.addClass("showMessage").removeClass("hideMessage");
         }
     }
 
     function determinePlacement(position, element, offsetWidth, offsetHeight, messageDiv) {
         var location = element.data("location") === undefined ? "right" : element.data("location"),
         offset = getElemOffset(element);
-        switch (location)
-        {
+        switch (location) {  //add all the offsets for a given element to calculate the error message placement
             case "right": 
                 return [position.left + getOtherElem(element).width() + offsetWidth + offset.left + 8 - $(window).scrollLeft(), position.top - $(window).scrollTop() - offset.top];
             case "left":
@@ -506,7 +404,7 @@ var validator =  (function($) {
     }
 
     function removeErrorText(element) {
-        $("[id^='" + element.data("vid") + "']").each(function(index, val) {
+        $("[id^='" + element.data("vid") + "']").each(function removeErrorsCallback(index, val) {
             $(val).remove();
         });
     }
@@ -518,7 +416,7 @@ var validator =  (function($) {
 
     function displayErrorTextOnHover(options, element, messageDiv, offsetWidth, offsetHeight) {
         var toDisplay = getOtherElem(element);
-        toDisplay.bind("mouseover", function () {
+        toDisplay.bind("mouseover", function mouseOverHandler() {
             if (options.modalId !== null) {
                 if (isContainerVisible(options.modalId, element, offsetWidth, offsetHeight, messageDiv)) {
                     setErrorPos(element, offsetWidth, offsetHeight, messageDiv);
@@ -529,12 +427,12 @@ var validator =  (function($) {
             setErrorPos(element, offsetWidth, offsetHeight, messageDiv);
         });
 
-        toDisplay.bind("mouseout", function () {
+        toDisplay.bind("mouseout", function mouseOutHandler() {
             messageDiv.addClass("hideMessage").removeClass("showMessage");
         });
     }
 
-    function isContainerVisible(modalId, element, offsetWidth, offsetHeight, messageDiv) {
+    function isContainerVisible(modalId, element, offsetWidth, offsetHeight, messageDiv) {  //used to determine if help text spans should be removed if they scroll outside of the modal
         var placement = determinePlacement(getOtherElem(element).offset(), element, offsetWidth, offsetHeight, messageDiv),
         modal = $("#" + modalId),
         modaloffset = modal.offset(),
@@ -543,13 +441,8 @@ var validator =  (function($) {
         modalLeft = modaloffset.left - $(window).scrollLeft(),
         modalRight = modalLeft + modal.width();
 
-        if ((modalTop > placement[1]) || (modalBottom < placement[1]) ) {
-            return false;
-        }
-
-        if ((modalLeft > placement[0]) || (modalRight < placement[0] + messageDiv.width())) {
-            return false;
-        }
+        if ((modalTop > placement[1]) || (modalBottom < placement[1]) ) return false;
+        if ((modalLeft > placement[0]) || (modalRight < placement[0] + messageDiv.width())) return false;
         return true;
     }
 
@@ -558,7 +451,7 @@ var validator =  (function($) {
             messageDiv.addClass("hideMessage").removeClass("showMessage");
         }
 
-        $("#" + options.modalId).on("scroll", function() {
+        $("#" + modalId).on("scroll", function modalScrollHandler() {
             if (!isContainerVisible(modalId, element, offsetWidth, offsetHeight, messageDiv)) {
                 messageDiv.addClass("hideMessage").removeClass("showMessage");
             }
@@ -568,7 +461,7 @@ var validator =  (function($) {
             }
         });
 
-        $(window).scroll(function() {
+        $(window).scroll(function windowAndModalScrollHandler() {
             if (!isContainerVisible(modalId, element, offsetWidth, offsetHeight, messageDiv)) {
                 messageDiv.addClass("hideMessage").removeClass("showMessage");
             }
@@ -583,46 +476,49 @@ var validator =  (function($) {
     function getMessageOffset(element) {
         var width = 0,
         height = 0;
-        $("[id^='" + element.data("vid") + "error']").each(function(index, val) {
+        $("[id^='" + element.data("vid") + "error']").each(function findTotalOffsetCallback(index, val) {
             width += $(val).width() + 5;
             height += $(val).height() + 5;
         });
         return {width: width, height: height};
     }
 
-    function getElemOffset(element) {
-        return {
-            left: parseInt(element.data("offsetwidth")) || 0,
-            top: parseInt(element.data("offsetheight")) || 0
-        };
+    function getElemOffset(element) {     //gets the user-defined offset for the error messages from the element they are being displayed for.
+        return { left: parseInt(element.data("offsetwidth")) || 0, top: parseInt(element.data("offsetheight")) || 0 };
     }
 
     function getOtherElem(element) {
+        //If the error text should be displayed on a different element, will search through the dom till it finds the specified element.
         var displayOther = element.data("displayon") === undefined ? null : element.data("displayon"),
         other, ident, move;
         if (displayOther !== null) {
             other = displayOther.split(",");
             ident = other[0];
             move = other[1];
-            if ($(ident).length === 1) {
-              return $(ident);
+            if ($(ident).length === 1) {  //If the "identity" of the other element is an id, or only one class exists in the DOM, then there's no
+              return $(ident);            //need to step through everything, we'll just return it here.
             }
+            //If "prev" was specified, and the first filtered sibling doesn't match, search through the dom
+            //starting with the first parent's children, and moving up and back until the match is found or there
+            //are no more parents. Does the reverse for "next".
+            //Note: If more than one match is found, it will return the closest one. Finding more than match
+            //becomes more likely the further it steps up in parents.
             var place = other[1] === "up" ? ":last" : ":first";
             var otherElem = move === "up" ? element.prevAll(ident + ":first") : element.nextAll(ident + ":first");
-            if (otherElem.length === 0) {
+            if (otherElem.length === 0) {   //if no immediate ancestor was found, look through the DOM till we find it
                 var stepOut = element.parent();
                 while (stepOut.length !== 0) {
                     if (stepOut.hasClass(ident.substring(1,ident.length))) {
-                        return stepOut;
+                        return stepOut;     //return parent
                     }
                     var sibling = move === "up" ? stepOut.prev() : stepOut.next();
                     while (sibling.length !== 0) {
                         if (sibling.hasClass(ident.substring(1,ident.length))) {
-                            return sibling;
+                            return sibling;     //return uncle
                         }
                         var otherElement = sibling.find(ident + place);
                         if (otherElement.length !== 0) {
-                            return otherElement;
+                            return otherElement;    //return cousin
                         }
                         sibling = move === "up" ? sibling.prev() : sibling.next();
                     }
@@ -636,40 +532,24 @@ var validator =  (function($) {
         return element;
     }
 
-    function removeErrors(elem) {
-        var element;
-        if (elem !== undefined) {
-            if (typeof elem === "string") {
-                element = $(elem);
-            }
-            else if (typeof elem === "object") {
-                element = elem;
-            }
-        }
-        else {
-            element = $("body");
-        }
-        try {
-            element.find("input").each(function(index, val) {
-                $("[id^='" + $(val).data("vid") + "error']").remove();
-                $("[id^='" + $(val).data("vid") + "InputGrp']").remove();
-            });
-            $("[id^='" + element.data("vid") + "']").each(function(index, val) {
-                val.remove();
-            });
-            element.find(".errorMessage").each(function(index, val) {
-                val.remove();
-            });
-            element.find(".invalid").each(function(index, val) {
-                $(val).removeClass("invalid");
-            });
-            element.find(".showGroupedErrors").each(function(index, val) {
-                $(val).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");
-            });
-        }
-        catch (ex) {
-            console.log("Could not remove errors from the supplied element: " + elem + "\n" + ex);
-        }
+    function removeErrors(elem) {  //public function to remove error messages
+        var element = elem === undefined ? $("body") : $(elem);
+        element.find("input").each(function removeGroupedFormErrorsCallback(index, val) {
+            $("[id^='" + $(val).data("vid") + "error']").remove();
+            $("[id^='" + $(val).data("vid") + "InputGrp']").remove();
+        });
+        $("[id^='" + element.data("vid") + "']").each(function removeFormErrorsCallback(index, val) {
+            val.remove();
+        });
+        element.find(".errorMessage").each(function removeErrorMessageCallback(index, val) {
+            val.remove();
+        });
+        element.find(".invalid").each(function removeInvalidClassCallback(index, val) {
+            $(val).removeClass("invalid");
+        });
+        element.find(".showGroupedErrors").each(function emptyGroupedErrorsDivCallback(index, val) {
+            $(val).empty().removeClass("showGroupedErrors").addClass("hideGroupedErrors");
+        });
     }
 
     function helpTextScrollModalListener(modalId, element, offsetWidth, offsetHeight, messageDiv) {
@@ -682,7 +562,7 @@ var validator =  (function($) {
         }
     }
 
-    function displayHelpText(elem, modalId) {
+    function displayHelpText(elem, modalId) {   //sets up event listeners for help text when the window/modal is scrolled
         var helpText = elem.prevUntil("input").filter(".helptext:first"),
         position = getOtherElem(elem).offset(),
         errorOffsets = getMessageOffset(elem);
@@ -690,54 +570,40 @@ var validator =  (function($) {
         var placement = determinePlacement(position, elem, 0, 0, helpText);
         helpText.css('top', placement[1]).css('left', placement[0]);
 
-        elem.data("htid", new Date().getTime());
+        elem.data("htid", new Date().getTime());    //add a timestamp id so we can bind an event listener to the specific input's help text - keeps all hidden help text from scolling when not shown.
 
-        if (modalId !== null) {
-            $(document).on("helpTextModalScroll" + elem.data("htid"), function() {
+        if (modalId !== null) { //setup up a listener/handler for a modal scroll event
+            $(document).on("helpTextModalScroll" + elem.data("htid"), function helptTextModalScrollHandler() {
                 helpTextScrollModalListener(modalId, elem, errorOffsets.width, errorOffsets.height, helpText);
             });
-            $("#" + modalId).on("scroll", function() {
+            $("#" + modalId).on("scroll", function helpTextModalScrollEventListner() {
                 $(document).trigger("helpTextModalScroll" + elem.data("htid"), [{}]);
             });
         }
-        $(document).on("helpTextScroll" + elem.data("htid"), function() {
+        $(document).on("helpTextScroll" + elem.data("htid"), function helpTextWindowScrollHandler() {   //set up listener/handler for a window scroll event
             var placement = determinePlacement(position, elem, errorOffsets.width, errorOffsets.height, helpText);
             helpText.css('top', placement[1]).css('left', placement[0]);
         });
-        $(window).on("scroll", function() {
+        $(window).on("scroll", function helpTextWindowScrollListner() {
             $(document).trigger("helpTextScroll" + elem.data("htid"), [{}]);
         });
     }
 
-    function monitorChars(elem, charRestrictions, event) {
-        testedArray = [];
-        $.each(charRestrictions.split(','), function(index, value) {
+    function monitorChars(elem, charRestrictions, event) {   //tests input characters before allowing event to continue
+        $.each(charRestrictions.split(','), function iterateCharRestrictionCallback(index, value) {
             var fn = inputTypes[value];
             if (typeof fn === "function") {
-                try {
-                    testedArray.push(fn.call(this, elem, event));
+                var tested = fn.call(elem, event);
+                if (!tested) {
+                    event.preventDefault();
+                    return false;
                 }
-                catch(ex) {
-                    console.log("The supplied character restriction type: '" + value + "' could not be executed.\n" + ex);
-                }
-            }
-            else {
-                console.log("The supplied character restriction type: '" + value + "' is not an acceptable type.");
             }
         });
-
-        if (testedArray.length > 0) {
-            for (var i = 0, length = testedArray.length; i < length; i++) {
-                if (!testedArray[i]) {
-                    event.preventDefault();
-                    break;
-                }
-            }
-        }
     }
 
-    function createOptions(elem, event) {
-        options = {
+    function createOptions(elem, event) {   //creates the options object for the form/input event listeners as well as the public validate function
+        var options = {
             display: elem.hasClass("hover"),
             success: elem.data("formaction") || elem.data("inputaction") || null,
             modalId: elem.data("modalid") || null,
@@ -745,199 +611,168 @@ var validator =  (function($) {
             time: new Date().getTime(),
             event: event
         };
-        elem[0].tagName === "INPUT" ? options.input = elem : options.form = elem;
+        elem[0].tagName === "INPUT" ? options.input = elem : (options.form = elem, options.groupErrors = elem.data("grouperrors") || null, options.callBefore = elem.data("beforevalidate") || false, options.button = elem.find(".validate") || event.currentTarget);
         return options;
     }
 
+    function contextWrapper(name, timeStamp, fn, elem, validated) {     //Returns an object with some "validation state" info + a couple of callbacks.
+        return { done: validationRulesCallback, customFunction: fn, functionName: name, element: elem, validate: validated, timeStamp: timeStamp };
+    };
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+        Character restriction tests
+    */
+    ////////////////////////////////////////////////////////////////////////////////////////////
     var inputTypes = {
-        inputTypeTester: function(charArray, e) {
+        inputTypeTester: function inputTypeTester(charArray, e) {
             var unicode = e.charCode? e.charCode : e.keyCode;
             for (var i = 0, length = charArray.length; i < length; i++) {
                 if ($.isArray(charArray[i])) {
-                    if (unicode > charArray[i][0] && unicode < charArray[i][1]) {
-                        return true;
-                    }
+                    if (unicode > charArray[i][0] && unicode < charArray[i][1]) return true;
                 }
-                else if (unicode === charArray[i]) {
-                        return true;
-                }
+                else if (unicode === charArray[i]) return true;
             }
             return false;
         },
-        numeric: function(obj, e) {
+        numeric: function numeric(e) {
             return inputTypes.inputTypeTester([8, [43, 47], [47, 58]], e);
         },
-        integer: function(obj, e) {
+        integer: function integer(e) {
             return inputTypes.inputTypeTester([8, 45, [47, 58]], e);
         },
-        positiveInt: function(obj, e) {
+        positiveInt: function positiveInt(e) {
             return inputTypes.inputTypeTester([8, [47, 58]], e);
         },
-        nonNumeric: function(obj, e) {
+        nonNumeric: function nonNumeric(e) {
             return inputTypes.inputTypeTester([[-1, 48], [57, 128]], e);
         },
-        alphaNumeric: function(obj, e) {
+        alphaNumeric: function alphaNumeric(e) {
             return inputTypes.inputTypeTester([8, [47, 58], [64, 91], [96, 123]], e);
         },
-        nonAlphaNumeric: function(obj, e) {
+        nonAlphaNumeric: function nonAlphaNumeric(e) {
             return inputTypes.inputTypeTester([[-1, 48], [57, 65], [90, 97], [122, 128]], e);
         },
-        printable: function(obj, e) {
-            return inputTypes.inputTypeTester([8, [31, 128]], e);
-        },
-        printableNonNumeric: function(obj, e) {
-            return inputTypes.inputTypeTester([8, [31, 48], [57, 128]], e);
-        },
-        phone: function(obj, e) {
-            return inputTypes.inputTypeTester([8, 32, 40, 41, 45, 46, [47, 58]], e);
-        },
-        shortDate: function(obj, e) {
+        shortDate: function shortDate(e) {
             return inputTypes.inputTypeTester([8, [44, 58]], e);
         },
-        longDate: function(obj, e) {
+        longDate: function longDate(e) {
             return inputTypes.inputTypeTester([8, 32, 44, 46, [47, 58], [64, 91], [96, 123]], e);
         }
     };
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+        Predefined validation rules.
+    */
+    ////////////////////////////////////////////////////////////////////////////////////////////
     var validationRules = {
-        requiredInput: function(obj) {
+        requiredInput: function requiredInput(obj) {
             var re = new RegExp("^\\s*$");
             var isBlank = re.test(obj.val());
-            if (obj.val().length < 1 || isBlank || obj.val() === "") {
-               return { valid: false, message: "Required field.", width: 100 };
-            }
+            if (obj.val().length < 1 || isBlank || obj.val() === "") return { valid: false, message: "Required field.", width: 100 };
             return { valid: true };
         },
-        requiredGroup: function(obj) {
+        requiredGroup: function requiredGroup(obj) {
             if (obj.attr("name")) {
                 var grpName = obj.attr("name");
                 var selected = $("input[name=" + grpName + "]:checked").val();
-                if (selected === undefined) {
-                    return { valid: false, message: "You must select an option.", width: 175 };
-                }
+                if (selected === undefined) return { valid: false, message: "You must select an option.", width: 175 };
                 return { valid: true };
             }
             else if (obj.data("checkboxgroup")) {
                 var grpName = obj.data("checkboxgroup");
-                if ($("input[data-checkboxgroup=" + grpName + "]:checked").length < 1) {
-                    return { valid: false, message: "You must select an option.", width: 175 };
-                }
-                else {
-                    return { valid: true };
-                }
+                if ($("input[data-checkboxgroup=" + grpName + "]:checked").length < 1) return { valid: false, message: "You must select an option.", width: 175 };
+                else return { valid: true };
             }
             return { valid: false, message: "This input has no identifying name." };
         },
-        testMinValue: function(obj) {
-            var minVal = obj.data("min");
-            if (parseInt(minVal) > parseInt(obj.val())) {
-                return { valid: false, message: "Minimum allowed value: " + minVal, width: 175 };
-            }
-            else if (!parseInt(obj.val())) {
-                return { valid: false, message: "The value entered is not a number.", width: 200 };
-            }
-            return { valid: true };
+        testMinValue: function testMinValue(callback) {
+            var minVal = $(this).data("min");
+            if (parseInt(minVal) > parseInt($(this).val())) callback({ valid: false, message: "Minimum allowed value: " + minVal, width: 175 });
+            else if (!parseInt($(this).val())) callback({ valid: false, message: "The value entered is not a number.", width: 200 });
+            else callback({ valid: true });
         },
-        testMaxValue: function(obj) {
-            var maxVal = obj.data("max");
-            if (parseInt(maxVal) < parseInt(obj.val())) {
-                return { valid: false, message: "Maximum allowed value: " + maxVal, width: 175 };
-            }
-            else if (!parseInt(obj.val())) {
-                return { valid: false, message: "The value entered is not a number.", width: 200 };
-            }
-            return { valid: true };
+        testMaxValue: function testMaxValue(callback) {
+            var maxVal = $(this).data("max");
+            if (parseInt(maxVal) < parseInt($(this).val())) callback({ valid: false, message: "Maximum allowed value: " + maxVal, width: 175 });
+            else if (!parseInt($(this).val())) callback({ valid: false, message: "The value entered is not a number.", width: 200 });
+            else callback({ valid: true });
         },
-        maxChecked: function(obj) {
-            var maxNum = obj.data("maxchecked");
-            if (obj.data("checkboxgroup")) {
-                var grpName = obj.data("checkboxgroup");
+        maxChecked: function maxChecked(callback) {
+            var maxNum = $(this).data("maxchecked");
+            if ($(this).data("checkboxgroup")) {
+                var grpName = $(this).data("checkboxgroup");
                 var selected = $("input[data-checkboxgroup=" + grpName + "]:checked");
-                if (selected.length > maxNum) {
-                    return { valid: false, message: "You cannot select more than " + maxNum + " option(s).", width: 250 };
-                }
-                return { valid: true };
+                if (selected.length > maxNum) callback({ valid: false, message: "You cannot select more than " + maxNum + " option(s).", width: 250 });
+                else callback({ valid: true });
             }
-            return { valid: true };
+            else callback({ valid: true }); //if the input isn't a checkbox group, it succeeds automatically
         },
-        minChecked: function(obj) {
-            var minNum = obj.data("minchecked");
-            if (obj.data("checkboxgroup")) {
-                var grpName = obj.data("checkboxgroup");
+        minChecked: function minChecked(callback) {
+            var minNum = $(this).data("minchecked");
+            if ($(this).data("checkboxgroup")) {
+                var grpName = $(this).data("checkboxgroup");
                 var selected = $("input[data-checkboxgroup=" + grpName + "]:checked");
-                if (selected.length < minNum) {
-                    return { valid: false, message: "You must select at least " + minNum + " option(s).", width: 250 };
-                }
-                return { valid: true };
+                if (selected.length < minNum) callback({ valid: false, message: "You must select at least " + minNum + " option(s).", width: 250 });
+                else callback({ valid: true });
             }
-            return { valid: true };
+            else callback({ valid: true }); //if the input isn't a checkbox group, it succeeds automatically
         },
-        verifyMatch: function(obj) {
-            var toMatch = $("#" + obj.data("matchfield"));
-            if (obj.val() === toMatch.val()) {
-                return { valid: true };
-            }
-            return { valid: false, message: "Passwords must match.", width: 200 };
+        verifyMatch: function verifyMatch(callback) {
+            var toMatch = $("#" + $(this).data("matchfield"));
+            if ($(this).val() === toMatch.val()) callback({ valid: true });
+            else callback({ valid: false, message: "Passwords must match.", width: 200 });
         },
-        email: function(obj) {
+        email: function email(callback) {
             var re = new RegExp("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$");
-            return validationRules.regexTester(obj, re, "Not a valid email format.", 200);
+            callback(validationRules.regexTester($(this), re, "Not a valid email format.", 200));
         },
-        name: function(obj) {
-            var re = new RegExp("^([a-zA-z\\s]{4,32})$");
-            return validationRules.regexTester(obj, re, "Not a valid name.", 200);
-        },
-        ssn: function(obj) {
+        ssn: function ssn(callback) {
             var re = new RegExp("^(?!000)([0-6]\\d{2}|7([0-6]\\d|7[012]))([ -]?)(?!00)\\d\\d\\3(?!0000)\\d{4}$");
-            return validationRules.regexTester(obj, re, "Not a valid social security number.", 200);
+            callback(validationRules.regexTester($(this), re, "Not a valid social security number.", 200));
         },
-        uscurrency: function(obj) {
+        uscurrency: function uscurrency(callback) {
             var re = new RegExp("^(\\$|)([1-9]\\d{0,2}(\\,\\d{3})*|([1-9]\\d*))(\\.\\d{2})?$");
-            return validationRules.regexTester(obj, re, "Not a valid amount.", 200);
+            callback(validationRules.regexTester($(this), re, "Not a valid amount.", 200));
         },
-        phone: function(obj) {
+        phone: function phone(callback) {
             var re = new RegExp("^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$");
-            return validationRules.regexTester(obj, re, "Not a valid phone number.", 200);
+            callback(validationRules.regexTester($(this), re, "Not a valid phone number.", 200));
         },
-        address: function(obj) {
-            var re = new RegExp("^\\d+\\s?\\w+\\s?\\w+\\s?\\w+$");
-            return validationRules.regexTester(obj, re, "Not a street address.", 200);
-        },
-        numeric: function(obj) {
+        numeric: function numeric(callback) {
             var re = new RegExp("/[0-9]|\\./");
-            return validationRules.regexTester(obj, re, "Only digits are allowed.", 200);
+            callback(validationRules.regexTester($(this), re, "Only digits are allowed.", 200));
         },
-        zip: function(obj) {
+        zip: function zip(callback) {
             var re = new RegExp("^\\d{5}$");
-            return validationRules.regexTester(obj, re, "Not a valid zip code.", 200);
+            callback(validationRules.regexTester($(this), re, "Not a valid zip code.", 200));
         },
-        date: function(obj) {
+        date: function date(callback) {
             var re = new RegExp("^(?:(?:(?:0?[13578]|1[02])(\\/|-|\\.)31)\\1|(?:(?:0?[1,3-9]|1[0-2])(\\/|-|\\.)(?:29|30)\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d" +
                 "{2})$|^(?:0?2(\\/|-|\\.)29\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|" +
                 "^(?:(?:0?[1-9])|(?:1[0-2]))(\\/|-|\\.)(?:0?[1-9]|1\\d|2[0-8])\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$");
-            return validationRules.regexTester(obj, re, "Not a valid date.", 200);
+            callback(validationRules.regexTester($(this), re, "Not a valid date.", 200));
         },
-        url: function(obj) {
+        url: function url(callback) {
             var re = new RegExp("^(http|https|ftp)\\://[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\\-\\._\\?\\,\\'/\\\\+&amp;%\\$#\\=~])*$");
-            return validationRules.regexTester(obj, re, "Not a valid url.", 200);
+            callback(validationRules.regexTester($(this), re, "Not a valid url.", 200));
         },
-        password: function(obj) {
+        password: function password(callback) { //Password must be at least 8 characters, no more than 40 characters, and must include at least one upper case letter, one lower case letter, and one digit.
             var re = new RegExp("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,40}$");
-            return validationRules.regexTester(obj, re, "Password must be at least 8 characters and include both upper and lower case letters and a number.", 300);
+            callback(validationRules.regexTester($(this), re, "Password must be at least 8 characters and include both upper and lower case letters and a number.", 300));
         },
-        regexTester: function(obj, regEx, message, width) {
+        regexTester: function regexTester(obj, regEx, message, width) {
             var isValid = regEx.test(obj.val());
-            if (obj.val() !== "" && !isValid) {
-                return {valid: isValid, message: message, width: width};
-            }
+            if (obj.val() !== "" && !isValid) return {valid: isValid, message: message, width: width};
             return {valid: true};
         }
     };
-    return {
+    return {    //exposed functions
         setAdditionalEvents: setAdditionalEvents,
         validate: validate,
         validateForm: validateForm,
-        customRulesCallback: customRulesCallback,
-        removeErrors: removeErrors
+        removeErrors: removeErrors,
+        validationRules: validationRules
     };
 })(jQuery);
