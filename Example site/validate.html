@@ -68,10 +68,10 @@
 
 		function customRule(callback) {
 			if ($(this).val().length > 1 || $(this).val() === 0) {
-		        callback({ valid: false, message: "Failed custom rule.", width: 150 });
+		        callback(false, "Failed custom rule.", 150);
 		    }
 		    else {
-		    	callback({ valid: true });
+		    	callback(true);
 		    }
 		}
 		
@@ -79,10 +79,10 @@
 			var elem = this;
 		    setTimeout(function() {
 		    	if ($(elem).val().length > 1 || $(elem).val() === 0) {
-			        callback({ valid: false, message: "Failed custom rule.", width: 150 });
+			        callback(false, "Failed custom rule.", 150);
 			    }
 			    else {
-			    	callback({ valid: true });
+			    	callback(true);
 			    }},2000);
 		}
 
@@ -126,20 +126,13 @@
 			var elem = this;
 			setTimeout(function () {
 				if ($(elem).val() !== "Mark")
-					callback({ valid: false, message: "You're not Mark!", width: 200 });
+					callback(false, "You're not Mark!", 200);
 				else {
-					callback({ valid: true });
+					callback(true);
 				}}, 3000);
 		}
 
 		function notmark(callback) {
-			/*var elem = this;
-			setTimeout(function () {
-				if ($(elem).val() !== "Mark")
-					callback({ valid: false, message: "You're not Mark!", width: 200 }, vState);
-				else {
-					callback({ valid: true }, vState);
-				}}, 3000);*/
 			throw 1;
 		}
 
