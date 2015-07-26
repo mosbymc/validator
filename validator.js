@@ -189,8 +189,8 @@ var validator = (function validator($) {
     }
 
     function createContextWrapper(name, time, fn, elem) {    //need to make use of closures and scope here to ensure each contextWrapper has its own scope
-        var cw = contextWrapper(name, time, fn, elem, function validated(result) {
-            cw.done.call(cw, result); //The custom validation functions will callback to here when they are done validating.
+        var cw = contextWrapper(name, time, fn, elem, function validated(valid, message, width) {
+            cw.done.call(cw, {valid: valid, message: message, width: width}); //The custom validation functions will callback to here when they are done validating.
         });
         cw.customFunction.call(elem[0], cw.validate); //once the contextWrapper is created, call the custom validation function
     }
@@ -689,83 +689,83 @@ var validator = (function validator($) {
         },
         testMinValue: function testMinValue(callback) {
             var minVal = $(this).data("min");
-            if (parseInt(minVal) > parseInt($(this).val())) callback({ valid: false, message: "Minimum allowed value: " + minVal, width: 175 });
-            else if (!parseInt($(this).val())) callback({ valid: false, message: "The value entered is not a number.", width: 200 });
-            else callback({ valid: true });
+            if (parseInt(minVal) > parseInt($(this).val())) callback(false, "Minimum allowed value: " + minVal, 175);
+            else if (!parseInt($(this).val())) callback(false, "The value entered is not a number.", 200);
+            else callback(true);
         },
         testMaxValue: function testMaxValue(callback) {
             var maxVal = $(this).data("max");
-            if (parseInt(maxVal) < parseInt($(this).val())) callback({ valid: false, message: "Maximum allowed value: " + maxVal, width: 175 });
-            else if (!parseInt($(this).val())) callback({ valid: false, message: "The value entered is not a number.", width: 200 });
-            else callback({ valid: true });
+            if (parseInt(maxVal) < parseInt($(this).val())) callback(false, "Maximum allowed value: " + maxVal, 175);
+            else if (!parseInt($(this).val())) callback(false, "The value entered is not a number.", 200);
+            else callback(true);
         },
         maxChecked: function maxChecked(callback) {
             var maxNum = $(this).data("maxchecked");
             if ($(this).data("checkboxgroup")) {
                 var grpName = $(this).data("checkboxgroup");
                 var selected = $("input[data-checkboxgroup=" + grpName + "]:checked");
-                if (selected.length > maxNum) callback({ valid: false, message: "You cannot select more than " + maxNum + " option(s).", width: 250 });
-                else callback({ valid: true });
+                if (selected.length > maxNum) callback(false, "You cannot select more than " + maxNum + " option(s).", 250);
+                else callback(true);
             }
-            else callback({ valid: true }); //if the input isn't a checkbox group, it succeeds automatically
+            else callback(true); //if the input isn't a checkbox group, it succeeds automatically
         },
         minChecked: function minChecked(callback) {
             var minNum = $(this).data("minchecked");
             if ($(this).data("checkboxgroup")) {
                 var grpName = $(this).data("checkboxgroup");
                 var selected = $("input[data-checkboxgroup=" + grpName + "]:checked");
-                if (selected.length < minNum) callback({ valid: false, message: "You must select at least " + minNum + " option(s).", width: 250 });
-                else callback({ valid: true });
+                if (selected.length < minNum) callback(false, "You must select at least " + minNum + " option(s).", 250);
+                else callback(true);
             }
-            else callback({ valid: true }); //if the input isn't a checkbox group, it succeeds automatically
+            else callback(true); //if the input isn't a checkbox group, it succeeds automatically
         },
         verifyMatch: function verifyMatch(callback) {
             var toMatch = $("#" + $(this).data("matchfield"));
-            if ($(this).val() === toMatch.val()) callback({ valid: true });
-            else callback({ valid: false, message: "Passwords must match.", width: 200 });
+            if ($(this).val() === toMatch.val()) callback(true);
+            else callback(false, "Passwords must match.", 200 );
         },
         email: function email(callback) {
             var re = new RegExp("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$");
-            callback(validationRules.regexTester($(this), re, "Not a valid email format.", 200));
+            callback(validationRules.regexTester($(this), re), "Not a valid email format.", 200);
         },
         ssn: function ssn(callback) {
             var re = new RegExp("^(?!000)([0-6]\\d{2}|7([0-6]\\d|7[012]))([ -]?)(?!00)\\d\\d\\3(?!0000)\\d{4}$");
-            callback(validationRules.regexTester($(this), re, "Not a valid social security number.", 200));
+            callback(validationRules.regexTester($(this), re), "Not a valid social security number.", 200);
         },
         uscurrency: function uscurrency(callback) {
             var re = new RegExp("^(\\$|)([1-9]\\d{0,2}(\\,\\d{3})*|([1-9]\\d*))(\\.\\d{2})?$");
-            callback(validationRules.regexTester($(this), re, "Not a valid amount.", 200));
+            callback(validationRules.regexTester($(this), re), "Not a valid amount.", 200);
         },
         phone: function phone(callback) {
             var re = new RegExp("^\\D?(\\d{3})\\D?\\D?(\\d{3})\\D?(\\d{4})$");
-            callback(validationRules.regexTester($(this), re, "Not a valid phone number.", 200));
+            callback(validationRules.regexTester($(this), re), "Not a valid phone number.", 200);
         },
         numeric: function numeric(callback) {
             var re = new RegExp("/[0-9]|\\./");
-            callback(validationRules.regexTester($(this), re, "Only digits are allowed.", 200));
+            callback(validationRules.regexTester($(this), re), "Only digits are allowed.", 200);
         },
         zip: function zip(callback) {
             var re = new RegExp("^\\d{5}$");
-            callback(validationRules.regexTester($(this), re, "Not a valid zip code.", 200));
+            callback(validationRules.regexTester($(this), re), "Not a valid zip code.", 200);
         },
         date: function date(callback) {
             var re = new RegExp("^(?:(?:(?:0?[13578]|1[02])(\\/|-|\\.)31)\\1|(?:(?:0?[1,3-9]|1[0-2])(\\/|-|\\.)(?:29|30)\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d" +
                 "{2})$|^(?:0?2(\\/|-|\\.)29\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|" +
                 "^(?:(?:0?[1-9])|(?:1[0-2]))(\\/|-|\\.)(?:0?[1-9]|1\\d|2[0-8])\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$");
-            callback(validationRules.regexTester($(this), re, "Not a valid date.", 200));
+            callback(validationRules.regexTester($(this), re), "Not a valid date.", 200);
         },
         url: function url(callback) {
             var re = new RegExp("^(http|https|ftp)\\://[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\\-\\._\\?\\,\\'/\\\\+&amp;%\\$#\\=~])*$");
-            callback(validationRules.regexTester($(this), re, "Not a valid url.", 200));
+            callback(validationRules.regexTester($(this), re), "Not a valid url.", 200);
         },
         password: function password(callback) { //Password must be at least 8 characters, no more than 40 characters, and must include at least one upper case letter, one lower case letter, and one digit.
             var re = new RegExp("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,40}$");
-            callback(validationRules.regexTester($(this), re, "Password must be at least 8 characters and include both upper and lower case letters and a number.", 300));
+            callback(validationRules.regexTester($(this), re), "Password must be at least 8 characters and include both upper and lower case letters and a number.", 300);
         },
-        regexTester: function regexTester(obj, regEx, message, width) {
+        regexTester: function regexTester(obj, regEx) {
             var isValid = regEx.test(obj.val());
-            if (obj.val() !== "" && !isValid) return {valid: isValid, message: message, width: width};
-            return {valid: true};
+            if (obj.val() !== "" && !isValid) return isValid;
+            return true;
         }
     };
     return {    //exposed functions
