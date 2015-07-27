@@ -300,11 +300,8 @@ var validator = (function validator($) {
 
     function groupByForm(options, input, rule) {        //groups the error messages from validation into a DOM element supplied by the data-grouperrors attr.
         $("#" + input.data("vid") + "error" + rule.replace( /(:|\.|\[|\]|,)/g, "\\$1" )).each(function iterateErrorDivsCallback(index, val) {    //Grab all error divs for the current input and put them in the div.
-            var prefix = $(input).data("errorprefix");
-            if (prefix !== undefined) {
-                $(val).html(prefix + ": " + $(val).html());
-            }
-            var span = "<span class='errorSpan' id='formGrp" + input.data("vid") + rule + "' data-parentinput='" + input.data("vid") + "'>" + $(val).html() + "</span>";
+            var prefix = $(input).data("errorprefix") === undefined ? "" : $(input).data("errorprefix") + ": ";
+            var span = "<span class='errorSpan' id='formGrp" + input.data("vid") + rule + "' data-parentinput='" + input.data("vid") + "'>" + prefix + $(val).html() + "</span>";
             placeErrorSpan(options, input.data("vid"), span, rule);
             $(val).remove();
         });
