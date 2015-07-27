@@ -39,7 +39,7 @@ var validator = (function validator($) {
     $(document).on("focus", "input", function focusHandler(event) {  //Help text listener. Will display help text for a given input when focused.
         var target = $(event.currentTarget);
         if (!target.hasClass("invalid") && target.prevUntil("input").filter(".helptext:first").length > 0 && $("[id^='" + target.data("vid") + "error']").length < 1 && $("#" + target[0].id + "InputGrp").length < 1) {
-            var modal = target.parents(".formValidate:first").data("modalId") || target.parents(".inputValidate:first").data("modalId") || target.data("modalId") || null;
+            var modal = target.parents(".formValidate:first").data("modalid") || target.parents(".inputValidate:first").data("modalid") || target.data("modalid") || null;
             displayHelpText(target, modal);
 
             target.one("blur", function blurHandler(event) {
@@ -128,22 +128,21 @@ var validator = (function validator($) {
     }
 
     function buildInputArray(elem) {    //builds an array of the necessary validation rules for the element that's passed in.
-        var vRules = elem.data("validationrules") || "",
-            customRules = elem.data('customrules') || "",
-            inputObj = {};
+        var inputObj = {};
 
-        if (elem.data("required") === "") inputObj["required"] = "waiting";
+        if (elem.data("required") === "" && (elem[0].type === "text" || elem[0].type.indexOf("select") !== -1)) inputObj["validator.validationRules.requiredInput"] = "waiting";
+        if (elem.data("required") === "" && (elem[0].type === "radio" || elem[0].type === "checkbox")) inputObj["validator.validationRules.requiredGroup"] = "waiting";
         if (elem.data("min")) inputObj["validator.validationRules.testMinValue"] = "waiting";
         if (elem.data("max")) inputObj["validator.validationRules.testMaxValue"] = "waiting";
         if (elem.data("matchfield")) inputObj["validator.validationRules.verifyMatch"] = "waiting";
         if (elem.data("maxchecked")) inputObj["validator.validationRules.maxChecked"] = "waiting";
         if (elem.data("minchecked")) inputObj["validator.validationRules.minChecked"] = "waiting";
 
-        var rules = vRules.replace(/ /g, "").split(",");
+        var rules = (elem.data('validationrules') || "").replace(/ /g, "").split(",");
         for (var i = 0; i < rules.length; i++) {
             if (rules[i] !== "") inputObj["validator.validationRules." + rules[i]] = "waiting";
         }
-        rules = customRules.replace(/ /g, "").split(","); 
+        rules = (elem.data('customrules') || "").replace(/ /g, "").split(",");
         for (var i = 0; i < rules.length; i++) {
             if (rules[i] !== "") inputObj[rules[i]] = "waiting";
         }
@@ -154,7 +153,6 @@ var validator = (function validator($) {
     function validateElement(options, inputsArray) {      //Starting point for single input validation - reached by both forms and inputs.
         for (var i = 0, len = inputsArray.length; i < len; i++) {
             var elem = inputsArray[i].element,
-            failedRequired = false,
             id = performance.now().toString().split(".");   //can't rely on devs giving inputs ids.. need to create our own.
 
             removeErrorText(elem);
@@ -163,36 +161,25 @@ var validator = (function validator($) {
 
             var rules = inputsArray[i].rules;
             for (var rule in rules) {
-                if (rule === "required") {
-                    if (elem[0].type === "radio" || elem[0].type === "checkbox") {  //...so it's easier to make them work differently than everything else, rather than hack how everything else works.
-                        tested = validationRules.requiredGroup(elem);
-                    }
-                    else {
-                        tested = validationRules.requiredInput(elem);
-                    }
-                    postValidation(tested, elem, options, rule);
-
-                    if (!tested.valid) failedRequired = true;   //the current input has no value - don't want to validate any other rules
+                if (!inputsArray[i].failedRequired) {      //if the input wasn't 'required', or it passed validation for that function, then move on through the array for that input
+                    var fn = [window].concat(rule.split('.')).reduce(function findValidationRuleCallback(prev, curr) {
+                                return (typeof prev === "function" ? prev()[curr] : prev[curr]);
+                            });;
+                    if (typeof fn === "function") createContextWrapper(rule, options.time, fn, elem, inputsArray[i]);
+                    else setRuleStatus(elem, rule, null);    //if the validator cannot find the supplied function name, then it just gets skipped.
                 }
-                else {
-                    if (!failedRequired) {      //if the input wasn't 'required', or it passed validation for that function, then move on through the array for that input
-                        var fn = [window].concat(rule.split('.')).reduce(function findValidationRuleCallback(prev, curr) {
-                                    return (typeof prev === "function" ? prev()[curr] : prev[curr]);
-                                });;
-                        if (typeof fn === "function") createContextWrapper(rule, options.time, fn, elem);
-                        else setRuleStatus(elem, rule, null);    //if the validator cannot find the supplied function name, then it just gets skipped.
-                    }
-                    else setRuleStatus(elem, rule, null); //input failed the required validation and we just need to clear this rule out of the array
-                }
+                else setRuleStatus(elem, rule, null); //input failed the required validation and we just need to clear this rule out of the array
             }
         }
     }
 
-    function createContextWrapper(name, time, fn, elem) {    //need to make use of closures and scope here to ensure each contextWrapper has its own scope
+    function createContextWrapper(name, time, fn, elem, elemRules) {    //need to make use of closures and scope here to ensure each contextWrapper has its own scope
         var cw = contextWrapper(name, time, fn, elem, function validated(valid, message, width) {
             cw.done.call(cw, {valid: valid, message: message, width: width}); //The custom validation functions will callback to here when they are done validating.
         });
-        cw.customFunction.call(elem[0], cw.validate); //once the contextWrapper is created, call the custom validation function
+        if (cw.functionName === "validator.validationRules.requiredInput" || cw.functionName === "validator.validationRules.requiredGroup")
+            cw.customFunction.call(elem[0], elemRules, cw.validate);
+        else cw.customFunction.call(elem[0], cw.validate); //once the contextWrapper is created, call the custom validation function
     }
 
     function postValidation(tested, elem, options, rule) {
@@ -266,7 +253,7 @@ var validator = (function validator($) {
 
         $(document).trigger("validated", [{
             type: options.form === undefined ? "input validation" : "form validation",
-            element: options.form !== undefined ? options.form[0].id : options.input,
+            element: options.form !== undefined ? options.form[0].id : options.input[0].id,
             succeeded: numFailed === 0,
             event: options.event
         }]);
@@ -290,7 +277,7 @@ var validator = (function validator($) {
         if ($("#" + elem.data("vid") + "InputGrp").length === 0) {
             placeGroupErrorDiv(getOtherElem(elem), options, elem);
         }
-        var errorToMove = $("#" + elem.data("vid") + "error" + rule),
+        var errorToMove = $("#" + elem.data("vid") + "error" + rule.replace( /(:|\.|\[|\]|,)/g, "\\$1" )),
         html = errorToMove.html(),
         span = "<span class='inputGrpErrorSpan'>" + html + "</span></br>";
         $("#" + elem.data("vid") + "InputGrp").append(span);
@@ -312,7 +299,7 @@ var validator = (function validator($) {
     }
 
     function groupByForm(options, input, rule) {        //groups the error messages from validation into a DOM element supplied by the data-grouperrors attr.
-        $("#" + input.data("vid") + "error" + rule).each(function iterateErrorDivsCallback(index, val) {    //Grab all error divs for the current input and put them in the div.
+        $("#" + input.data("vid") + "error" + rule.replace( /(:|\.|\[|\]|,)/g, "\\$1" )).each(function iterateErrorDivsCallback(index, val) {    //Grab all error divs for the current input and put them in the div.
             var prefix = $(input).data("errorprefix");
             if (prefix !== undefined) {
                 $(val).html(prefix + ": " + $(val).html());
@@ -331,7 +318,7 @@ var validator = (function validator($) {
         var siblings = $("#" + options.groupErrors).find("[id^='formGrp" + inputId + "']"); //if the current error span has sibling errors for the same input already created, just prepend the new span to them.
         if (siblings.length > 0) {
             $(span).insertBefore(siblings[0]);
-            $("</br>").insertAfter($("#formGrp" + inputId + rule));
+            $("</br>").insertAfter($("#formGrp" + inputId + rule.replace( /(:|\.|\[|\]|,)/g, "\\$1" )));
             return;
         }
         var inputs = options.form.find("input"),    //If no sibling was found, get all the inputs in the current form...
@@ -344,7 +331,7 @@ var validator = (function validator($) {
                 var siblingSpan = $("#" + options.groupErrors).children("[data-parentinput='" + $(inputs[i]).data("vid") + "']");
                 if (siblingSpan.length > 0) {
                     $(span).insertBefore(siblingSpan);
-                    $("</br>").insertAfter($("#formGrp" + inputId + rule));
+                    $("</br>").insertAfter($("#formGrp" + inputId + rule.replace( /(:|\.|\[|\]|,)/g, "\\$1" )));
                     return;
                 }
             }
@@ -355,7 +342,7 @@ var validator = (function validator($) {
     function createErrorMessage(element, errorData, options, errorName, offsetWidth, offsetHeight) {
         displayErrorText(element, errorData, options, errorName, offsetWidth, offsetHeight);
 
-        var messageDiv = $("#" + element.data("vid") + "error" + errorName);
+        var messageDiv = $("#" + element.data("vid") + "error" + errorName.replace( /(:|\.|\[|\]|,)/g, "\\$1" ));
         if ((element).prevUntil("input").filter(".helptext:first").length > 0) {   //Remove help text because there's an error being displayed now.
             element.prevUntil("input").filter(".helptext:first").addClass("hideMessage").removeClass("showMessage");
         }
@@ -378,7 +365,7 @@ var validator = (function validator($) {
         var popupId = element.data("vid") + "error" + errorName;
         if ($("#" + popupId).length < 1) {
             toDisplay.parent().append("<div id='" + popupId + "' data-parentinput='" + element.data("vid") + "'></div>");
-            var popup = $("#" + popupId);
+            var popup = $("#" + popupId.replace( /(:|\.|\[|\]|,)/g, "\\$1" ));
             popup.addClass("errorMessage");
             var errorMessage = errorData.message === undefined ? "Validation Error" : errorData.message;
             popup.html(errorMessage).css('width', errorData.width === undefined ? "" : errorData.width);
@@ -667,25 +654,31 @@ var validator = (function validator($) {
     */
     ////////////////////////////////////////////////////////////////////////////////////////////
     var validationRules = {
-        requiredInput: function requiredInput(obj) {
+        requiredInput: function requiredInput(rulesObj, callback) {
             var re = new RegExp("^\\s*$");
-            var isBlank = re.test(obj.val());
-            if (obj.val().length < 1 || isBlank || obj.val() === "") return { valid: false, message: "Required field.", width: 100 };
-            return { valid: true };
+            var isBlank = re.test($(this).val());
+            if ($(this).val().length < 1 || isBlank || $(this).val() === "") {
+                rulesObj.failedRequired = true;
+                callback(false, "Required field.", 100);
+            }
+            else callback(true);
         },
-        requiredGroup: function requiredGroup(obj) {
-            if (obj.attr("name")) {
-                var grpName = obj.attr("name");
-                var selected = $("input[name=" + grpName + "]:checked").val();
-                if (selected === undefined) return { valid: false, message: "You must select an option.", width: 175 };
-                return { valid: true };
+        requiredGroup: function requiredGroup(rulesObj, callback) {
+            if ($(this).attr("name")) {
+                if ($("input[name=" + $(this).attr("name") + "]:checked").val() === undefined) {
+                    rulesObj.failedRequired = true;
+                    callback(false, "You must select an option.", 175);
+                }
+                else callback(true);
             }
-            else if (obj.data("checkboxgroup")) {
-                var grpName = obj.data("checkboxgroup");
-                if ($("input[data-checkboxgroup=" + grpName + "]:checked").length < 1) return { valid: false, message: "You must select an option.", width: 175 };
-                else return { valid: true };
+            else if ($(this).data("checkboxgroup")) {
+                if ($("input[data-checkboxgroup=" + $(this).data("checkboxgroup") + "]:checked").length < 1) {
+                    rulesObj.failedRequired = true;
+                    callback(false, "You must select an option.", 175);
+                }
+                else callback(true);
             }
-            return { valid: false, message: "This input has no identifying name." };
+            else callback(false, "This input has no identifying attribute.");
         },
         testMinValue: function testMinValue(callback) {
             var minVal = $(this).data("min");
