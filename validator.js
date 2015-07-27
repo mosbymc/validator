@@ -637,11 +637,8 @@ var validator = (function validator($) {
         alphaNumeric: function alphaNumeric(e) {
             return inputTypes.inputTypeTester([8, [47, 58], [64, 91], [96, 123]], e);
         },
-        shortDate: function shortDate(e) {
+        date: function shortDate(e) {
             return inputTypes.inputTypeTester([8, [44, 58]], e);
-        },
-        longDate: function longDate(e) {
-            return inputTypes.inputTypeTester([8, 32, 44, 46, [47, 58], [64, 91], [96, 123]], e);
         }
     };
 
