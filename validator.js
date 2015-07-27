@@ -764,7 +764,6 @@ var validator = (function validator($) {
     return {    //exposed functions
         setAdditionalEvents: setAdditionalEvents,
         validate: validate,
-        validateForm: validateForm,
         removeErrors: removeErrors,
         validationRules: validationRules
     };
