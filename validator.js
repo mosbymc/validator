@@ -18,6 +18,7 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 var validator = (function validator($) {
+    'use strict';
     var validationState = {};
     $(document).on("click", "input, button", function clickHandler(event) {  //Bind form event listener and create "options" object when an input or button with the "formValidate" class is clicked.
         var target = $(event.currentTarget),
