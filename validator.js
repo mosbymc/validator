@@ -749,7 +749,7 @@ var validator = (function validator($) {
         },
         regexTester: function regexTester(obj, regEx) {
             var val = obj.val();
-            return !(val !== '' && !regEx.test(val));
+            return val === '' || regEx.test(val);
         }
     };
     return {    //exposed functions
