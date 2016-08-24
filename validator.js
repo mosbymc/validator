@@ -748,9 +748,8 @@ var validator = (function validator($) {
             callback(validationRules.regexTester($(this), re), "Password must be at least 8 characters and include both upper and lower case letters and a number.", 300);
         },
         regexTester: function regexTester(obj, regEx) {
-            var isValid = regEx.test(obj.val());
-            if (obj.val() !== "" && !isValid) return isValid;
-            return true;
+            var val = obj.val();
+            return !(val !== '' && !regEx.test(val));
         }
     };
     return {    //exposed functions
